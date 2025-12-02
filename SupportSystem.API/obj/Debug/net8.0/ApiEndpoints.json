@@ -1,0 +1,12 @@
+[
+  {
+    "ContainingType": "SupportSystem.API.Controllers.TestController",
+    "Method": "CheckDatabase",
+    "RelativePath": "api/Test/db-check",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
