@@ -1,12 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -14,20 +9,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Data\\Models\\User.cs",
-              "RelativeDocumentMoniker": "SupportSystem.API\\Data\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Data\\Models\\User.cs",
-              "RelativeToolTip": "SupportSystem.API\\Data\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-02T12:27:33.31Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             }
           ]
         }

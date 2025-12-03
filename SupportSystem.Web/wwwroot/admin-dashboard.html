@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - Support System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">
+                <a href="/index.html" style="color: #f44336; text-decoration: none;">Support System</a>
+            </h1>
+            <div class="user-info">
+                <span id="userName">Администратор</span>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i> Выйти
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="role-card admin-card">
+                <div class="role-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h2>Панель администратора</h2>
+                <p class="role-description">
+                    Вы вошли в систему как <strong>администратор</strong>. Полный доступ к системе:
+                </p>
+                <ul class="role-features">
+                    <li><i class="bi bi-check-circle"></i> Управление пользователями</li>
+                    <li><i class="bi bi-check-circle"></i> Конфигурация системы</li>
+                    <li><i class="bi bi-check-circle"></i> Просмотр всех данных</li>
+                    <li><i class="bi bi-check-circle"></i> Резервное копирование</li>
+                    <li><i class="bi bi-check-circle"></i> Аналитика и отчеты</li>
+                    <li><i class="bi bi-check-circle"></i> Настройка прав доступа</li>
+                    <li><i class="bi bi-check-circle"></i> Мониторинг системы</li>
+                    <li><i class="bi bi-check-circle"></i> Управление ролями</li>
+                </ul>
+            </div>
+
+            <div class="admin-panels">
+                <div class="panel-section">
+                    <h3><i class="bi bi-people"></i> Управление пользователями</h3>
+                    <div class="panel-grid">
+                        <button class="panel-button" onclick="manageUsers()">
+                            <i class="bi bi-person-plus"></i>
+                            Добавить пользователя
+                        </button>
+                        <button class="panel-button" onclick="viewUsers()">
+                            <i class="bi bi-list-ul"></i>
+                            Список пользователей
+                        </button>
+                        <button class="panel-button" onclick="manageRoles()">
+                            <i class="bi bi-person-badge"></i>
+                            Управление ролями
+                        </button>
+                        <button class="panel-button" onclick="viewLogs()">
+                            <i class="bi bi-clock-history"></i>
+                            Логи активности
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="bi bi-gear"></i> Системные настройки</h3>
+                    <div class="panel-grid">
+                        <button class="panel-button" onclick="systemSettings()">
+                            <i class="bi bi-sliders"></i>
+                            Настройки системы
+                        </button>
+                        <button class="panel-button" onclick="databaseBackup()">
+                            <i class="bi bi-database"></i>
+                            Резервная копия
+                        </button>
+                        <button class="panel-button" onclick="securitySettings()">
+                            <i class="bi bi-shield-lock"></i>
+                            Безопасность
+                        </button>
+                        <button class="panel-button" onclick="apiSettings()">
+                            <i class="bi bi-plug"></i>
+                            API настройки
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="bi bi-graph-up"></i> Мониторинг</h3>
+                    <div class="panel-grid">
+                        <button class="panel-button" onclick="systemAnalytics()">
+                            <i class="bi bi-bar-chart"></i>
+                            Аналитика
+                        </button>
+                        <button class="panel-button" onclick="performanceMonitor()">
+                            <i class="bi bi-speedometer"></i>
+                            Производительность
+                        </button>
+                        <button class="panel-button" onclick="errorReports()">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Ошибки системы
+                        </button>
+                        <button class="panel-button" onclick="auditTrail()">
+                            <i class="bi bi-file-earmark-text"></i>
+                            Аудит системы
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <p>© 2024 Support System. Панель администратора</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'https://localhost:7100';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin dashboard loaded');
+
+            checkAuth();
+            loadUserData();
+        });
+
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userJson = localStorage.getItem('user');
+
+            if (!token || !userJson) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const user = JSON.parse(userJson);
+
+                if (user.role !== 'Admin') {
+                    redirectByRole(user.role);
+                    return false;
+                }
+
+                const response = await fetch(`${API_URL}/api/Users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    localStorage.clear();
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                return true;
+
+            } catch (error) {
+                localStorage.clear();
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        function loadUserData() {
+            const userJson = localStorage.getItem('user');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                const userNameElement = document.getElementById('userName');
+                if (userNameElement) {
+                    userNameElement.textContent = user.name || user.email;
+                }
+            }
+        }
+
+        function redirectByRole(role) {
+            switch(role) {
+                case 'Admin':
+                    window.location.href = '/admin-dashboard.html';
+                    break;
+                case 'Manager':
+                    window.location.href = '/manager-dashboard.html';
+                    break;
+                case 'User':
+                    window.location.href = '/user-dashboard.html';
+                    break;
+                default:
+                    window.location.href = '/login.html';
+            }
+        }
+
+        window.logout = function() {
+            localStorage.clear();
+            window.location.href = '/login.html';
+        };
+
+        // Функции администрирования
+        window.manageUsers = function() { alert('Добавление пользователя\n(функция в разработке)'); };
+        window.viewUsers = function() { alert('Просмотр пользователей\n(функция в разработке)'); };
+        window.manageRoles = function() { alert('Управление ролями\n(функция в разработке)'); };
+        window.viewLogs = function() { alert('Просмотр логов\n(функция в разработке)'); };
+        window.systemSettings = function() { alert('Настройки системы\n(функция в разработке)'); };
+        window.databaseBackup = function() { alert('Резервное копирование\n(функция в разработке)'); };
+        window.securitySettings = function() { alert('Настройки безопасности\n(функция в разработке)'); };
+        window.apiSettings = function() { alert('Настройки API\n(функция в разработке)'); };
+        window.systemAnalytics = function() { alert('Аналитика системы\n(функция в разработке)'); };
+        window.performanceMonitor = function() { alert('Мониторинг производительности\n(функция в разработке)'); };
+        window.errorReports = function() { alert('Отчеты об ошибках\n(функция в разработке)'); };
+        window.auditTrail = function() { alert('Аудит системы\n(функция в разработке)'); };
+    </script>
+
+    <style>
+        .admin-panels {
+            margin-top: 30px;
+        }
+
+        .panel-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+            .panel-section h3 {
+                color: #333;
+                margin-bottom: 20px;
+                font-size: 1.3rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .panel-section h3 i {
+                    color: #f44336;
+                }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .panel-button {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 2px solid #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+            .panel-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                border-color: #f44336;
+                background: #fff5f5;
+            }
+
+            .panel-button i {
+                font-size: 2rem;
+                color: #f44336;
+            }
+    </style>
+</body>
+</html>

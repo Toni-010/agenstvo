@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support System - Главная</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container main-page">
+        <h1 class="main-title">Support System</h1>
+        <p class="main-subtitle">
+            Профессиональная система управления и поддержки клиентов
+        </p>
+
+        <div class="button-grid">
+            <a href="about.html" class="main-button">
+                <i class="bi bi-info-circle"></i>
+                О нас
+            </a>
+
+            <a href="#" class="main-button" onclick="showComingSoon()">
+                <i class="bi bi-briefcase"></i>
+                Услуги
+                <small style="font-size: 0.8rem;">(скоро)</small>
+            </a>
+
+            <a href="login.html" class="main-button">
+                <i class="bi bi-person-circle"></i>
+                Войти
+            </a>
+        </div>
+
+        <div style="margin-top: 50px; color: rgba(255, 255, 255, 0.7);">
+            <p>Система поддержки © 2024</p>
+        </div>
+    </div>
+
+    <script>
+        function showComingSoon() {
+            alert('Раздел "Услуги" находится в разработке');
+            return false;
+        }
+    </script>
+</body>
+</html>

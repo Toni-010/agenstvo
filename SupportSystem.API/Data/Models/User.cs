@@ -16,7 +16,7 @@ namespace SupportSystem.API.Data.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(255)]  // Увеличил для хэшей
+        [StringLength(255)]  
         public string Password { get; set; } = string.Empty;
 
         [StringLength(100)]

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Новый профиль",
+    "Projects": [
+      {
+        "Path": "SupportSystem.API\\SupportSystem.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "SupportSystem.Web\\SupportSystem.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

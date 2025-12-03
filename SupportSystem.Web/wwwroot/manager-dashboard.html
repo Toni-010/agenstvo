@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель менеджера - Support System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">
+                <a href="/index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
+            </h1>
+            <div class="user-info">
+                <span id="userName">Менеджер</span>
+                <button onclick="logout()" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i> Выйти
+                </button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="role-card manager-card">
+                <div class="role-icon">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <h2>Панель менеджера</h2>
+                <p class="role-description">
+                    Вы вошли в систему как <strong>менеджер</strong>. Ваши возможности:
+                </p>
+                <ul class="role-features">
+                    <li><i class="bi bi-check-circle"></i> Управление заказами клиентов</li>
+                    <li><i class="bi bi-check-circle"></i> Назначение исполнителей</li>
+                    <li><i class="bi bi-check-circle"></i> Обработка запросов поддержки</li>
+                    <li><i class="bi bi-check-circle"></i> Создание отчетов</li>
+                    <li><i class="bi bi-check-circle"></i> Мониторинг выполнения услуг</li>
+                    <li><i class="bi bi-check-circle"></i> Управление командой</li>
+                </ul>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e3f2fd;">
+                        <i class="bi bi-list-task" style="color: #2196F3;"></i>
+                    </div>
+                    <h3>Активные заказы</h3>
+                    <div class="stat-value">24</div>
+                    <small>+3 за сегодня</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f3e5f5;">
+                        <i class="bi bi-headset" style="color: #9C27B0;"></i>
+                    </div>
+                    <h3>Запросы поддержки</h3>
+                    <div class="stat-value">12</div>
+                    <small>4 требуют ответа</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e8f5e9;">
+                        <i class="bi bi-clock-history" style="color: #4CAF50;"></i>
+                    </div>
+                    <h3>В работе</h3>
+                    <div class="stat-value">8</div>
+                    <small>2 с высоким приоритетом</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff3e0;">
+                        <i class="bi bi-check-circle" style="color: #FF9800;"></i>
+                    </div>
+                    <h3>Завершено</h3>
+                    <div class="stat-value">156</div>
+                    <small>за этот месяц</small>
+                </div>
+            </div>
+
+            <div class="manager-controls">
+                <h3>Управление</h3>
+                <div class="controls-grid">
+                    <button class="control-button" onclick="manageOrders()">
+                        <i class="bi bi-clipboard-data"></i>
+                        Заказы
+                    </button>
+                    <button class="control-button" onclick="manageSupport()">
+                        <i class="bi bi-headset"></i>
+                        Поддержка
+                    </button>
+                    <button class="control-button" onclick="manageTeam()">
+                        <i class="bi bi-people"></i>
+                        Команда
+                    </button>
+                    <button class="control-button" onclick="generateReports()">
+                        <i class="bi bi-graph-up"></i>
+                        Отчеты
+                    </button>
+                    <button class="control-button" onclick="assignTasks()">
+                        <i class="bi bi-person-plus"></i>
+                        Назначения
+                    </button>
+                    <button class="control-button" onclick="viewAnalytics()">
+                        <i class="bi bi-bar-chart"></i>
+                        Аналитика
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <p>© 2024 Support System. Панель менеджера</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'https://localhost:7100';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Manager dashboard loaded');
+
+            checkAuth();
+            loadUserData();
+        });
+
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userJson = localStorage.getItem('user');
+
+            if (!token || !userJson) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const user = JSON.parse(userJson);
+
+                if (user.role !== 'Manager' && user.role !== 'Admin') {
+                    redirectByRole(user.role);
+                    return false;
+                }
+
+                const response = await fetch(`${API_URL}/api/Users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    localStorage.clear();
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                return true;
+
+            } catch (error) {
+                localStorage.clear();
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        function loadUserData() {
+            const userJson = localStorage.getItem('user');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                const userNameElement = document.getElementById('userName');
+                if (userNameElement) {
+                    userNameElement.textContent = user.name || user.email;
+                }
+            }
+        }
+
+        function redirectByRole(role) {
+            switch(role) {
+                case 'Admin':
+                    window.location.href = '/admin-dashboard.html';
+                    break;
+                case 'Manager':
+                    window.location.href = '/manager-dashboard.html';
+                    break;
+                case 'User':
+                    window.location.href = '/user-dashboard.html';
+                    break;
+                default:
+                    window.location.href = '/login.html';
+            }
+        }
+
+        window.logout = function() {
+            localStorage.clear();
+            window.location.href = '/login.html';
+        };
+
+        window.manageOrders = function() {
+            alert('Управление заказами\n(функция в разработке)');
+        };
+
+        window.manageSupport = function() {
+            alert('Управление поддержкой\n(функция в разработке)');
+        };
+
+        window.manageTeam = function() {
+            alert('Управление командой\n(функция в разработке)');
+        };
+
+        window.generateReports = function() {
+            alert('Генерация отчетов\n(функция в разработке)');
+        };
+
+        window.assignTasks = function() {
+            alert('Назначение задач\n(функция в разработке)');
+        };
+
+        window.viewAnalytics = function() {
+            alert('Просмотр аналитики\n(функция в разработке)');
+        };
+    </script>
+
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+            .stat-icon i {
+                font-size: 2rem;
+            }
+
+        .stat-card h3 {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .stat-card small {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .control-button {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+            .control-button:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                border-color: #4CAF50;
+            }
+
+            .control-button i {
+                font-size: 2.5rem;
+                color: #4CAF50;
+            }
+    </style>
+</body>
+</html>
