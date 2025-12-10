@@ -6,6 +6,430 @@
     <title>Панель клиента - Support System</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* Стили для панели профиля */
+        .dashboard-page {
+            background: #f8fafc;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .profile-info h2 {
+            color: #1e293b;
+            margin-bottom: 5px;
+            font-size: 1.4rem;
+        }
+
+        .profile-info .user-role {
+            color: #64748b;
+            font-size: 0.9rem;
+            background: #f1f5f9;
+            padding: 3px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* Таблица данных */
+        .profile-data {
+            margin-bottom: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .data-table th {
+                text-align: left;
+                padding: 12px 16px;
+                color: #475569;
+                font-weight: 500;
+                font-size: 0.9rem;
+                border-bottom: 1px solid #e2e8f0;
+                width: 200px;
+            }
+
+            .data-table td {
+                padding: 12px 16px;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+        .data-value {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .edit-btn:hover {
+                background: #f8fafc;
+            }
+
+        /* Формы редактирования */
+        .edit-form {
+            display: none;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+            .edit-form.active {
+                display: block;
+            }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+            .form-row label {
+                min-width: 120px;
+                color: #475569;
+                font-size: 0.9rem;
+            }
+
+            .form-row input {
+                flex: 1;
+                padding: 8px 12px;
+                border: 1px solid #cbd5e1;
+                border-radius: 6px;
+                font-size: 0.9rem;
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-save {
+            background: #667eea;
+            color: white;
+        }
+
+            .btn-save:hover {
+                background: #5a6fd8;
+            }
+
+        .btn-cancel {
+            background: white;
+            color: #64748b;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+            .btn-cancel:hover {
+                background: #f8fafc;
+            }
+
+        /* Раздел смены пароля */
+        .password-section {
+            background: #fefce8;
+            border: 1px solid #fef08a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+            .password-section h3 {
+                color: #854d0e;
+                margin-bottom: 15px;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .password-form .form-row {
+            margin-bottom: 12px;
+        }
+
+        .password-form input {
+            width: 250px;
+        }
+
+        .btn-change-password {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+            .btn-change-password:hover {
+                background: #e68a00;
+            }
+
+        /* Быстрые действия */
+        .quick-actions {
+            margin-bottom: 30px;
+        }
+
+            .quick-actions h3 {
+                color: #1e293b;
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        a.action-button {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-button {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: none;
+            width: 100%;
+        }
+
+            .action-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border-color: #667eea;
+            }
+
+            .action-button i {
+                font-size: 2rem;
+                color: #667eea;
+            }
+
+        /* Последняя активность */
+        .recent-activity {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+            .recent-activity h3 {
+                color: #1e293b;
+                margin-bottom: 20px;
+                font-size: 1.2rem;
+            }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+            .activity-item i {
+                font-size: 1rem;
+            }
+
+            .activity-item span {
+                flex-grow: 1;
+                color: #334155;
+                font-size: 0.9rem;
+            }
+
+            .activity-item small {
+                color: #64748b;
+                font-size: 0.85rem;
+            }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #1e293b;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+            .notification.success {
+                background: #10b981;
+            }
+
+            .notification.error {
+                background: #ef4444;
+            }
+
+        /* Футер */
+        .dashboard-footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .form-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+                .form-row label {
+                    min-width: auto;
+                    margin-bottom: 0;
+                }
+
+                .form-row input {
+                    width: 100%;
+                }
+
+            .password-form input {
+                width: 100%;
+            }
+
+            .data-table th,
+            .data-table td {
+                display: block;
+                width: 100%;
+                padding: 8px 0;
+            }
+
+            .data-table th {
+                padding-top: 12px;
+                border-bottom: none;
+                font-weight: 600;
+            }
+
+            .data-table td {
+                padding-bottom: 12px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-card,
+            .recent-activity {
+                padding: 20px;
+            }
+        }
+
+        /* Загрузка */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Сообщения об ошибках */
+        .error-text {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
 </head>
 <body class="dashboard-page">
     <div class="container">
@@ -14,7 +438,7 @@
                 <a href="/index.html" style="color: #667eea; text-decoration: none;">Support System</a>
             </h1>
             <div class="user-info">
-                <span id="userName">Клиент</span>
+                <span id="userName">Загрузка...</span>
                 <button onclick="logout()" class="btn-logout">
                     <i class="bi bi-box-arrow-right"></i> Выйти
                 </button>
@@ -22,30 +446,149 @@
         </header>
 
         <div class="dashboard-content">
-            <div class="role-card user-card">
-                <div class="role-icon">
-                    <i class="bi bi-person"></i>
+            <!-- Панель профиля -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profileName">Загрузка...</h2>
+                        <span class="user-role">Клиент</span>
+                    </div>
                 </div>
-                <h2>Панель клиента</h2>
-                <p class="role-description">
-                    Вы вошли в систему как <strong>клиент</strong>. Здесь вы можете:
-                </p>
-                <ul class="role-features">
-                    <li><i class="bi bi-check-circle"></i> Создавать заказы</li>
-                    <li><i class="bi bi-check-circle"></i> Отправлять запросы в поддержку</li>
-                    <li><i class="bi bi-check-circle"></i> Отслеживать статус услуг</li>
-                    <li><i class="bi bi-check-circle"></i> Просматривать историю заказов</li>
-                    <li><i class="bi bi-check-circle"></i> Скачивать отчеты</li>
-                </ul>
+
+                <!-- Личные данные -->
+                <div class="profile-data">
+                    <table class="data-table">
+                        <tr>
+                            <th>Имя:</th>
+                            <td>
+                                <span id="displayName" class="data-value"></span>
+                                <button onclick="editField('name')" class="edit-btn">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="editNameForm" class="edit-form">
+                                    <div class="form-row">
+                                        <label>Имя:</label>
+                                        <input type="text" id="editName" placeholder="Ваше имя">
+                                    </div>
+                                    <div class="error-text" id="nameError"></div>
+                                    <div class="form-actions">
+                                        <button onclick="saveField('name')" class="btn-small btn-save" id="saveNameBtn">
+                                            Сохранить
+                                        </button>
+                                        <button onclick="cancelEdit('name')" class="btn-small btn-cancel">
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Email:</th>
+                            <td>
+                                <span id="displayEmail" class="data-value"></span>
+                                <button onclick="editField('email')" class="edit-btn">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="editEmailForm" class="edit-form">
+                                    <div class="form-row">
+                                        <label>Email:</label>
+                                        <input type="email" id="editEmail" placeholder="example@mail.com">
+                                    </div>
+                                    <div class="error-text" id="emailError"></div>
+                                    <div class="form-actions">
+                                        <button onclick="saveField('email')" class="btn-small btn-save" id="saveEmailBtn">
+                                            Сохранить
+                                        </button>
+                                        <button onclick="cancelEdit('email')" class="btn-small btn-cancel">
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Телефон:</th>
+                            <td>
+                                <span id="displayPhone" class="data-value"></span>
+                                <button onclick="editField('phone')" class="edit-btn">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="editPhoneForm" class="edit-form">
+                                    <div class="form-row">
+                                        <label>Телефон:</label>
+                                        <input type="tel" id="editPhone" placeholder="+7 (999) 123-45-67">
+                                    </div>
+                                    <div class="error-text" id="phoneError"></div>
+                                    <div class="form-actions">
+                                        <button onclick="saveField('phone')" class="btn-small btn-save" id="savePhoneBtn">
+                                            Сохранить
+                                        </button>
+                                        <button onclick="cancelEdit('phone')" class="btn-small btn-cancel">
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Дата регистрации:</th>
+                            <td>
+                                <span id="displayRegDate" class="data-value"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Смена пароля -->
+                <div class="password-section">
+                    <h3><i class="bi bi-shield-lock"></i> Смена пароля</h3>
+                    <div class="password-form">
+                        <div class="form-row">
+                            <label>Старый пароль:</label>
+                            <input type="password" id="oldPassword" placeholder="Введите старый пароль">
+                        </div>
+                        <div class="form-row">
+                            <label>Новый пароль:</label>
+                            <input type="password" id="newPassword" placeholder="Введите новый пароль">
+                        </div>
+                        <div class="form-row">
+                            <label>Повторите пароль:</label>
+                            <input type="password" id="confirmPassword" placeholder="Повторите новый пароль">
+                        </div>
+                        <div class="error-text" id="passwordError"></div>
+                        <button onclick="changePassword()" class="btn-change-password" id="changePasswordBtn">
+                            <i class="bi bi-key"></i> Сменить пароль
+                        </button>
+                    </div>
+                </div>
             </div>
 
+            <!-- Быстрые действия -->
             <div class="quick-actions">
                 <h3>Быстрые действия</h3>
                 <div class="action-grid">
-                    <button class="action-button" onclick="createOrder()">
+                    <a href="/create-order.html" class="action-button">
                         <i class="bi bi-plus-circle"></i>
                         Новый заказ
-                    </button>
+                    </a>
                     <button class="action-button" onclick="openSupport()">
                         <i class="bi bi-headset"></i>
                         Поддержка
@@ -61,16 +604,17 @@
                 </div>
             </div>
 
+            <!-- Последняя активность -->
             <div class="recent-activity">
                 <h3>Последняя активность</h3>
                 <div class="activity-list">
                     <div class="activity-item">
-                        <i class="bi bi-check-circle-fill" style="color: #4CAF50;"></i>
+                        <i class="bi bi-check-circle-fill" style="color: #10b981;"></i>
                         <span>Заказ #125 завершен</span>
                         <small>Сегодня, 10:30</small>
                     </div>
                     <div class="activity-item">
-                        <i class="bi bi-clock-fill" style="color: #FF9800;"></i>
+                        <i class="bi bi-clock-fill" style="color: #f59e0b;"></i>
                         <span>Запрос в поддержку обрабатывается</span>
                         <small>Вчера, 15:45</small>
                     </div>
@@ -88,40 +632,46 @@
         </footer>
     </div>
 
+    <!-- Уведомление -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
     <script>
         const API_URL = 'https://localhost:7100';
+        let currentUser = null;
+        let editingField = null;
 
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('User dashboard loaded');
-
-            checkAuth();
-
-            
-            loadUserData();
+            initializeDashboard();
         });
+
+        async function initializeDashboard() {
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                await loadUserProfile();
+            }
+        }
 
         async function checkAuth() {
             const token = localStorage.getItem('token');
             const userJson = localStorage.getItem('user');
 
             if (!token || !userJson) {
-                console.log('Not authenticated, redirecting to login');
-                window.location.href = '/login.html';
+                showNotification('Требуется авторизация', 'error');
+                setTimeout(() => window.location.href = '/login.html', 1500);
                 return false;
             }
 
             try {
-                const user = JSON.parse(userJson);
+                currentUser = JSON.parse(userJson);
 
-                
-                if (user.role !== 'User') {
-                    console.log('Wrong role, redirecting to appropriate dashboard');
-                    redirectByRole(user.role);
+                // Проверяем, что пользователь имеет роль User
+                if (currentUser.role !== 'User') {
+                    redirectByRole(currentUser.role);
                     return false;
                 }
 
-                
-                const response = await fetch(`${API_URL}/api/Users`, {
+                // Проверяем токен
+                const response = await fetch(`${API_URL}/api/Auth/check`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -129,138 +679,352 @@
 
                 if (!response.ok) {
                     localStorage.clear();
-                    window.location.href = '/login.html';
+                    showNotification('Сессия истекла', 'error');
+                    setTimeout(() => window.location.href = '/login.html', 1500);
                     return false;
                 }
 
                 return true;
-
             } catch (error) {
                 console.error('Auth check error:', error);
                 localStorage.clear();
-                window.location.href = '/login.html';
+                showNotification('Ошибка авторизации', 'error');
+                setTimeout(() => window.location.href = '/login.html', 1500);
                 return false;
             }
         }
 
-        function loadUserData() {
-            const userJson = localStorage.getItem('user');
-            if (userJson) {
-                const user = JSON.parse(userJson);
-                const userNameElement = document.getElementById('userName');
-                if (userNameElement) {
-                    userNameElement.textContent = user.name || user.email;
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+
+                // Используем endpoint для получения текущего пользователя
+                const response = await fetch(`${API_URL}/api/Users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    updateProfileDisplay(userData);
+                } else {
+                    // Если endpoint /me не работает, пробуем получить по ID
+                    await loadUserById();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+        }
+
+        async function loadUserById() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/Users/${currentUser.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    updateProfileDisplay(userData);
+                } else {
+                    showNotification('Ошибка загрузки профиля', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading user by ID:', error);
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+        }
+
+        function updateProfileDisplay(user) {
+            // Обновляем имя в шапке
+            document.getElementById('userName').textContent = user.name || user.email || 'Пользователь';
+            document.getElementById('profileName').textContent = user.name || user.email || 'Пользователь';
+
+            // Обновляем данные в таблице
+            document.getElementById('displayName').textContent = user.name || 'Не указано';
+            document.getElementById('displayEmail').textContent = user.email || 'Не указано';
+            document.getElementById('displayPhone').textContent = user.phone || 'Не указано';
+
+            // Дата регистрации
+            if (user.regDate) {
+                const regDate = new Date(user.regDate);
+                document.getElementById('displayRegDate').textContent =
+                    regDate.toLocaleDateString('ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+            } else {
+                document.getElementById('displayRegDate').textContent = 'Неизвестно';
+            }
+        }
+
+        function editField(field) {
+            // Закрываем предыдущую открытую форму
+            if (editingField && editingField !== field) {
+                cancelEdit(editingField);
+            }
+
+            editingField = field;
+            const form = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`);
+            const errorElement = document.getElementById(`${field}Error`);
+
+            // Скрываем ошибки
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            // Устанавливаем текущее значение в поле ввода
+            const currentValue = document.getElementById(`display${field.charAt(0).toUpperCase() + field.slice(1)}`).textContent;
+            const input = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}`);
+
+            input.value = currentValue === 'Не указано' ? '' : currentValue;
+
+            // Показываем форму
+            form.classList.add('active');
+            input.focus();
+        }
+
+        function cancelEdit(field) {
+            editingField = null;
+            const form = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`);
+            form.classList.remove('active');
+
+            // Сбрасываем состояние кнопок
+            const saveBtn = document.getElementById(`save${field.charAt(0).toUpperCase() + field.slice(1)}Btn`);
+            if (saveBtn) {
+                saveBtn.innerHTML = 'Сохранить';
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function saveField(field) {
+            const input = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            const saveBtn = document.getElementById(`save${field.charAt(0).toUpperCase() + field.slice(1)}Btn`);
+            const errorElement = document.getElementById(`${field}Error`);
+            const value = input.value.trim();
+
+            // Скрываем предыдущую ошибку
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            // Базовая валидация
+            if (!value && field !== 'phone') { // телефон может быть пустым
+                showError(field, 'Поле не может быть пустым');
+                return;
+            }
+
+            // Валидация email
+            if (field === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showError(field, 'Введите корректный email');
+                    return;
                 }
             }
+
+            // Показываем загрузку на кнопке
+            saveBtn.innerHTML = '<span class="loading-spinner"></span> Сохранение...';
+            saveBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                // Создаем объект с данными для обновления
+                const updateData = {
+                    name: field === 'name' ? value : currentUser.name,
+                    email: field === 'email' ? value : currentUser.email,
+                    phone: field === 'phone' ? value : currentUser.phone
+                };
+
+                const response = await fetch(`${API_URL}/api/Users/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Обновляем отображение
+                    if (result.user) {
+                        updateProfileDisplay(result.user);
+
+                        // Обновляем данные в localStorage
+                        const storedUser = JSON.parse(localStorage.getItem('user'));
+                        if (result.user.name) storedUser.name = result.user.name;
+                        if (result.user.email) storedUser.email = result.user.email;
+                        if (result.user.phone) storedUser.phone = result.user.phone;
+                        localStorage.setItem('user', JSON.stringify(storedUser));
+
+                        // Обновляем currentUser
+                        currentUser = { ...currentUser, ...result.user };
+                    }
+
+                    // Закрываем форму
+                    cancelEdit(field);
+
+                    showNotification(result.message || 'Данные успешно обновлены', 'success');
+                } else {
+                    showError(field, result.message || 'Ошибка обновления данных');
+                }
+            } catch (error) {
+                console.error(`Error saving ${field}:`, error);
+                showError(field, 'Ошибка соединения с сервером');
+            } finally {
+                // Восстанавливаем кнопку
+                saveBtn.innerHTML = 'Сохранить';
+                saveBtn.disabled = false;
+            }
+        }
+
+        function showError(field, message) {
+            const errorElement = document.getElementById(`${field}Error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        async function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const changeBtn = document.getElementById('changePasswordBtn');
+            const errorElement = document.getElementById('passwordError');
+
+            // Скрываем предыдущую ошибку
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            // Валидация
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showPasswordError('Заполните все поля');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showPasswordError('Новые пароли не совпадают');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showPasswordError('Пароль должен быть не менее 6 символов');
+                return;
+            }
+
+            // Показываем загрузку на кнопке
+            changeBtn.innerHTML = '<span class="loading-spinner"></span> Смена пароля...';
+            changeBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/Auth/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        oldPassword,
+                        newPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Пароль успешно изменен', 'success');
+                    // Очищаем поля
+                    document.getElementById('oldPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showPasswordError(result.message || 'Ошибка смены пароля');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showPasswordError('Ошибка соединения с сервером');
+            } finally {
+                // Восстанавливаем кнопку
+                changeBtn.innerHTML = '<i class="bi bi-key"></i> Сменить пароль';
+                changeBtn.disabled = false;
+            }
+        }
+
+        function showPasswordError(message) {
+            const errorElement = document.getElementById('passwordError');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+
+            // Автоматическое скрытие
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, type === 'error' ? 5000 : 3000);
+
+            // Возможность закрыть кликом
+            notification.onclick = () => {
+                notification.style.display = 'none';
+            };
         }
 
         function redirectByRole(role) {
-            switch (role) {
-                case 'Admin':
-                    window.location.href = '/admin-dashboard.html';
-                    break;
-                case 'Manager':
-                    window.location.href = '/manager-dashboard.html';
-                    break;
-                case 'User':
-                    window.location.href = '/user-dashboard.html';
-                    break;
-                default:
-                    window.location.href = '/login.html';
-            }
+            const dashboards = {
+                'Admin': '/admin-dashboard.html',
+                'Manager': '/manager-dashboard.html',
+                'User': '/user-dashboard.html'
+            };
+            window.location.href = dashboards[role] || '/login.html';
         }
 
         window.logout = function () {
-            localStorage.clear();
-            window.location.href = '/login.html';
-        };
-
-        window.createOrder = function () {
-            alert('Создание нового заказа\n(функция в разработке)');
+            if (confirm('Вы уверены, что хотите выйти из системы?')) {
+                localStorage.clear();
+                window.location.href = '/login.html';
+            }
         };
 
         window.openSupport = function () {
-            alert('Открытие чата поддержки\n(функция в разработке)');
+            showNotification('Функция поддержки в разработке', 'info');
         };
 
         window.viewOrders = function () {
-            alert('Просмотр списка заказов\n(функция в разработке)');
+            showNotification('Функция просмотра заказов в разработке', 'info');
         };
 
         window.viewReports = function () {
-            alert('Просмотр отчетов\n(функция в разработке)');
+            showNotification('Функция просмотра отчетов в разработке', 'info');
         };
+
+        // Обработка нажатия Escape для отмены редактирования
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && editingField) {
+                cancelEdit(editingField);
+            }
+        });
     </script>
-
-    <style>
-        .recent-activity {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-top: 30px;
-        }
-
-            .recent-activity h3 {
-                color: #333;
-                margin-bottom: 20px;
-                font-size: 1.4rem;
-            }
-
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-            .activity-item i {
-                font-size: 1.2rem;
-            }
-
-            .activity-item span {
-                flex-grow: 1;
-                color: #333;
-            }
-
-            .activity-item small {
-                color: #888;
-                font-size: 0.9rem;
-            }
-
-        .action-button {
-            background: white;
-            padding: 25px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 2px solid transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-        }
-
-            .action-button:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-                border-color: #667eea;
-            }
-    </style>
 </body>
 </html>

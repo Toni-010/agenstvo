@@ -1,6 +1,32 @@
 [
   {
     "ContainingType": "SupportSystem.API.Controllers.AuthController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/Auth/change-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "changePasswordDto",
+        "Type": "SupportSystem.API.Controllers.ChangePasswordDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.AuthController",
+    "Method": "CheckAuth",
+    "RelativePath": "api/Auth/check",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
     "HttpMethod": "POST",
@@ -10,6 +36,22 @@
       {
         "Name": "loginDto",
         "Type": "SupportSystem.API.Controllers.LoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/Auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerDto",
+        "Type": "SupportSystem.API.Controllers.RegisterDto",
         "IsRequired": true
       }
     ],
@@ -125,6 +167,42 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/Orders/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderDto",
+        "Type": "SupportSystem.API.DTOs.CreateOrderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "GetMyOrders",
+    "RelativePath": "api/Orders/my",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.OrderDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "SupportSystem.API.Controllers.TestController",
     "Method": "CheckDatabase",
     "RelativePath": "api/Test/db-check",
@@ -144,7 +222,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.Data.Models.User, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.UserDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -163,8 +241,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "user",
-        "Type": "SupportSystem.API.Data.Models.User",
+        "Name": "createUserDto",
+        "Type": "SupportSystem.API.DTOs.CreateUserDto",
         "IsRequired": true
       }
     ],
@@ -196,7 +274,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "SupportSystem.API.Data.Models.User",
+        "Type": "SupportSystem.API.DTOs.UserDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -220,8 +298,8 @@
         "IsRequired": true
       },
       {
-        "Name": "user",
-        "Type": "SupportSystem.API.Data.Models.User",
+        "Name": "updateUserDto",
+        "Type": "SupportSystem.API.DTOs.UpdateUserDto",
         "IsRequired": true
       }
     ],
@@ -242,5 +320,25 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.UsersController",
+    "Method": "GetCurrentUser",
+    "RelativePath": "api/Users/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "SupportSystem.API.DTOs.UserDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

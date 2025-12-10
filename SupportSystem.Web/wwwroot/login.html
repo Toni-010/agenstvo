@@ -11,7 +11,7 @@
     <div class="container">
         <div class="login-box">
             <h1 class="login-title">
-                <a href="/index.html" style="color: #667eea; text-decoration: none;">Support System</a>
+                <a href="/register.html" style="color: #667eea; text-decoration: none;">Регистрация</a>
             </h1>
             <h2 class="login-title">Вход в систему</h2>
 
@@ -31,7 +31,7 @@
                 </button>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="/index.html" style="color: #667eea; text-decoration: none;">
+                    <a href="/index.html" style="color: #667eea; text-decoration: none; margin-right: 15px;">
                         ← Вернуться на главную
                     </a>
                 </div>
@@ -45,7 +45,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             console.log('Login page loaded');
 
-           
+
             checkAuthAndRedirect();
 
             const form = document.getElementById('loginForm');
@@ -64,7 +64,7 @@
                     return;
                 }
 
-                
+
                 loginButton.innerHTML = 'Вход...';
                 loginButton.disabled = true;
 
@@ -98,13 +98,13 @@
                     const data = await response.json();
                     console.log('✅ Успешный ответ:', data);
 
-                    
+
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
 
                     alert('Вход выполнен успешно! Перенаправляю...');
 
-                    
+
                     setTimeout(() => {
                         redirectByRole(data.user.role);
                     }, 500);
@@ -127,17 +127,17 @@
                     const user = JSON.parse(userJson);
                     console.log('Уже авторизован как:', user.role);
 
-                    
+
                     fetch(`${API_URL}/api/Users`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     }).then(response => {
                         if (response.ok) {
-                            
+
                             redirectByRole(user.role);
                         } else {
-                            
+
                             localStorage.clear();
                         }
                     }).catch(() => {
