@@ -1,13 +1,13 @@
 wwwroot\404.html
+wwwroot\css\app.css
+wwwroot\favicon.png
+wwwroot\js\auth.js
 wwwroot\about.html
 wwwroot\admin-dashboard.html
-wwwroot\css\app.css
+wwwroot\create-order.html
 wwwroot\css\style.css
-wwwroot\favicon.png
 wwwroot\index.html
-wwwroot\js\auth.js
 wwwroot\login.html
 wwwroot\manager-dashboard.html
 wwwroot\register.html
 wwwroot\user-dashboard.html
-wwwroot\create-order.html

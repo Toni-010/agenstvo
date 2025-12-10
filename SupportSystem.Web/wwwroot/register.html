@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация - Support System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body class="login-page">
     <div class="container">
         <div class="login-box">
             <h1 class="login-title">
-                <a href="/index.html" style="color: #667eea; text-decoration: none;">Support System</a>
+                <a href="index.html" style="color: #667eea; text-decoration: none;">Support System</a>
             </h1>
             <h2 class="login-title">Регистрация нового пользователя</h2>
 
@@ -58,7 +58,7 @@
                 </button>
 
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="/login.html" style="color: #667eea; text-decoration: none;">
+                    <a href="login.html" style="color: #667eea; text-decoration: none;">
                         ← Уже есть аккаунт? Войти
                     </a>
                 </div>
@@ -165,16 +165,16 @@
         function redirectByRole(role) {
             switch (role) {
                 case 'Admin':
-                    window.location.href = '/admin-dashboard.html';
+                    window.location.href = 'admin-dashboard.html';
                     break;
                 case 'Manager':
-                    window.location.href = '/manager-dashboard.html';
+                    window.location.href = 'manager-dashboard.html';
                     break;
                 case 'User':
-                    window.location.href = '/user-dashboard.html';
+                    window.location.href = 'user-dashboard.html';
                     break;
                 default:
-                    window.location.href = '/';
+                    window.location.href = 'index.html';
             }
         }
     </script>

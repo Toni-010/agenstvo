@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создание заказа - Support System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body class="dashboard-page">
     <div class="container">
         <header class="dashboard-header">
             <h1 class="dashboard-title">
-                <a href="/user-dashboard.html" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                <a href="user-dashboard.html" style="color: #667eea; text-decoration: none; display: flex; align-items: center; gap: 8px;">
                     <i class="bi bi-arrow-left"></i> Support System
                 </a>
             </h1>
@@ -144,7 +144,7 @@
 
             if (!token || !userJson) {
                 showNotification('Необходима авторизация', 'error');
-                setTimeout(() => window.location.href = '/login.html', 1500);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return false;
             }
 
@@ -155,7 +155,6 @@
                     return false;
                 }
 
-                // ИСПРАВЛЕНО: Используем правильный endpoint для проверки авторизации
                 const response = await fetch(`${API_URL}/api/Auth/check`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -165,7 +164,7 @@
                 if (!response.ok) {
                     localStorage.clear();
                     showNotification('Сессия истекла', 'error');
-                    setTimeout(() => window.location.href = '/login.html', 1500);
+                    setTimeout(() => window.location.href = 'login.html', 1500);
                     return false;
                 }
 
@@ -179,7 +178,6 @@
 
                     if (userResponse.ok) {
                         const userData = await userResponse.json();
-                        // Обновляем данные пользователя в localStorage
                         const storedUser = JSON.parse(userJson);
                         storedUser.name = userData.name || storedUser.name;
                         storedUser.email = userData.email || storedUser.email;
@@ -195,7 +193,7 @@
                 console.error('Auth check error:', error);
                 localStorage.clear();
                 showNotification('Ошибка авторизации', 'error');
-                setTimeout(() => window.location.href = '/login.html', 1500);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return false;
             }
         }
@@ -217,15 +215,15 @@
 
         function redirectByRole(role) {
             const dashboards = {
-                'Admin': '/admin-dashboard.html',
-                'Manager': '/manager-dashboard.html',
-                'User': '/user-dashboard.html'
+                'Admin': 'admin-dashboard.html',
+                'Manager': 'manager-dashboard.html',
+                'User': 'user-dashboard.html'
             };
             const target = dashboards[role];
             if (target) {
                 window.location.href = target;
             } else {
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
             }
         }
 
@@ -431,7 +429,7 @@
                         updateCounter('descriptionCounter', 0, 3500);
 
                         setTimeout(() => {
-                            window.location.href = '/user-dashboard.html';
+                            window.location.href = 'user-dashboard.html';
                         }, 1000);
                     }, 2000);
 
@@ -485,13 +483,13 @@
             if (hasData && !confirm('Все несохраненные данные будут потеряны. Продолжить?')) {
                 return;
             }
-            window.location.href = '/user-dashboard.html';
+            window.location.href = 'user-dashboard.html';
         }
 
         function logout() {
             if (confirm('Вы уверены, что хотите выйти?')) {
                 localStorage.clear();
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
             }
         }
 
@@ -500,26 +498,6 @@
                 goBack();
             }
         });
-
-        // Добавляем спиннер в CSS через JavaScript
-        const style = document.createElement('style');
-        style.textContent = `
-            .loading-spinner {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                border: 2px solid #f3f3f3;
-                border-top: 2px solid #667eea;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-                margin-right: 8px;
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>

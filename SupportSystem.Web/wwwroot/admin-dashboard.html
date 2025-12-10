@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель администратора - Support System</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body class="dashboard-page">
     <div class="container">
         <header class="dashboard-header">
             <h1 class="dashboard-title">
-                <a href="/index.html" style="color: #f44336; text-decoration: none;">Support System</a>
+                <a href="index.html" style="color: #f44336; text-decoration: none;">Support System</a>
             </h1>
             <div class="user-info">
                 <span id="userName">Администратор</span>
@@ -119,7 +119,7 @@
     <script>
         const API_URL = 'https://localhost:7100';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('Admin dashboard loaded');
 
             checkAuth();
@@ -131,7 +131,7 @@
             const userJson = localStorage.getItem('user');
 
             if (!token || !userJson) {
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
                 return false;
             }
 
@@ -151,7 +151,7 @@
 
                 if (!response.ok) {
                     localStorage.clear();
-                    window.location.href = '/login.html';
+                    window.location.href = 'login.html';
                     return false;
                 }
 
@@ -159,7 +159,7 @@
 
             } catch (error) {
                 localStorage.clear();
-                window.location.href = '/login.html';
+                window.location.href = 'login.html';
                 return false;
             }
         }
@@ -176,102 +176,39 @@
         }
 
         function redirectByRole(role) {
-            switch(role) {
+            switch (role) {
                 case 'Admin':
-                    window.location.href = '/admin-dashboard.html';
+                    window.location.href = 'admin-dashboard.html';
                     break;
                 case 'Manager':
-                    window.location.href = '/manager-dashboard.html';
+                    window.location.href = 'manager-dashboard.html';
                     break;
                 case 'User':
-                    window.location.href = '/user-dashboard.html';
+                    window.location.href = 'user-dashboard.html';
                     break;
                 default:
-                    window.location.href = '/login.html';
+                    window.location.href = 'login.html';
             }
         }
 
-        window.logout = function() {
+        window.logout = function () {
             localStorage.clear();
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
         };
 
         // Функции администрирования
-        window.manageUsers = function() { alert('Добавление пользователя\n(функция в разработке)'); };
-        window.viewUsers = function() { alert('Просмотр пользователей\n(функция в разработке)'); };
-        window.manageRoles = function() { alert('Управление ролями\n(функция в разработке)'); };
-        window.viewLogs = function() { alert('Просмотр логов\n(функция в разработке)'); };
-        window.systemSettings = function() { alert('Настройки системы\n(функция в разработке)'); };
-        window.databaseBackup = function() { alert('Резервное копирование\n(функция в разработке)'); };
-        window.securitySettings = function() { alert('Настройки безопасности\n(функция в разработке)'); };
-        window.apiSettings = function() { alert('Настройки API\n(функция в разработке)'); };
-        window.systemAnalytics = function() { alert('Аналитика системы\n(функция в разработке)'); };
-        window.performanceMonitor = function() { alert('Мониторинг производительности\n(функция в разработке)'); };
-        window.errorReports = function() { alert('Отчеты об ошибках\n(функция в разработке)'); };
-        window.auditTrail = function() { alert('Аудит системы\n(функция в разработке)'); };
+        window.manageUsers = function () { alert('Добавление пользователя\n(функция в разработке)'); };
+        window.viewUsers = function () { alert('Просмотр пользователей\n(функция в разработке)'); };
+        window.manageRoles = function () { alert('Управление ролями\n(функция в разработке)'); };
+        window.viewLogs = function () { alert('Просмотр логов\n(функция в разработке)'); };
+        window.systemSettings = function () { alert('Настройки системы\n(функция в разработке)'); };
+        window.databaseBackup = function () { alert('Резервное копирование\n(функция в разработке)'); };
+        window.securitySettings = function () { alert('Настройки безопасности\n(функция в разработке)'); };
+        window.apiSettings = function () { alert('Настройки API\n(функция в разработке)'); };
+        window.systemAnalytics = function () { alert('Аналитика системы\n(функция в разработке)'); };
+        window.performanceMonitor = function () { alert('Мониторинг производительности\n(функция в разработке)'); };
+        window.errorReports = function () { alert('Отчеты об ошибках\n(функция в разработке)'); };
+        window.auditTrail = function () { alert('Аудит системы\n(функция в разработке)'); };
     </script>
-
-    <style>
-        .admin-panels {
-            margin-top: 30px;
-        }
-
-        .panel-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-
-            .panel-section h3 {
-                color: #333;
-                margin-bottom: 20px;
-                font-size: 1.3rem;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-                .panel-section h3 i {
-                    color: #f44336;
-                }
-
-        .panel-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .panel-button {
-            background: white;
-            padding: 20px 15px;
-            border-radius: 10px;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            border: 2px solid #f0f0f0;
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-            text-align: center;
-        }
-
-            .panel-button:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                border-color: #f44336;
-                background: #fff5f5;
-            }
-
-            .panel-button i {
-                font-size: 2rem;
-                color: #f44336;
-            }
-    </style>
 </body>
 </html>
