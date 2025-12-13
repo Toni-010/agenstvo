@@ -1406,3 +1406,60 @@ a.action-button {
         transform: translateY(0);
     }
 }
+/* Добавить в существующие стили */
+.btn-small {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+    .btn-small.btn-save {
+        background: #4CAF50;
+        color: white;
+    }
+
+        .btn-small.btn-save:hover {
+            background: #388e3c;
+        }
+
+/* Стиль для информации о клиенте */
+.client-contact-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.contact-item {
+    background: white;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.contact-label {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+}
+
+.contact-value {
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+    .contact-value a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+        .contact-value a:hover {
+            text-decoration: underline;
+        }

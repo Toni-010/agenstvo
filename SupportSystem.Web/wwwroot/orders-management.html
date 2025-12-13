@@ -6,156 +6,6 @@
     <title>Управление заказами - Support System</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-</head>
-<body class="dashboard-page">
-    <div class="container">
-        <header class="dashboard-header">
-            <h1 class="dashboard-title">
-                <a href="index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
-            </h1>
-            <div class="user-info">
-                <span id="userName">Загрузка...</span>
-                <div>
-                    <button onclick="goBack()" class="btn-secondary" style="margin-right: 10px;">
-                        <i class="bi bi-arrow-left"></i> Назад
-                    </button>
-                    <button onclick="logout()" class="btn-logout">
-                        <i class="bi bi-box-arrow-right"></i> Выйти
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <div class="dashboard-content">
-            <!-- Заголовок страницы -->
-            <div class="page-header">
-                <h1>
-                    <i class="bi bi-clipboard-data"></i> Управление заказами
-                </h1>
-                <p class="page-subtitle">
-                    Просмотр, фильтрация и управление всеми заказами системы
-                </p>
-            </div>
-
-            <!-- Фильтры и поиск -->
-            <div class="form-container" style="margin-bottom: 20px;">
-                <div class="filters-row">
-                    <div class="search-box">
-                        <i class="bi bi-search"></i>
-                        <input type="text" id="searchInput" placeholder="Поиск по названию или описанию..."
-                               onkeyup="searchOrders()">
-                    </div>
-                    <div class="filter-controls">
-                        <select id="statusFilter" onchange="filterOrders()">
-                            <option value="">Все статусы</option>
-                            <option value="New">Новые</option>
-                            <option value="Processing">В обработке</option>
-                            <option value="Completed">Завершенные</option>
-                            <option value="Cancelled">Отмененные</option>
-                        </select>
-                        <select id="priorityFilter" onchange="filterOrders()">
-                            <option value="">Все приоритеты</option>
-                            <option value="Low">Низкий</option>
-                            <option value="Medium">Средний</option>
-                            <option value="High">Высокий</option>
-                        </select>
-                        <button onclick="loadOrders()" class="btn-small btn-refresh">
-                            <i class="bi bi-arrow-clockwise"></i> Обновить
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Доска заказов (Kanban) -->
-            <div class="orders-kanban">
-                <div class="kanban-column" id="newOrdersColumn">
-                    <div class="column-header">
-                        <h3><i class="bi bi-plus-circle"></i> Новые</h3>
-                        <span class="column-count" id="newCount">0</span>
-                    </div>
-                    <div class="column-content" id="newOrdersList">
-                        <!-- Новые заказы будут здесь -->
-                    </div>
-                </div>
-
-                <div class="kanban-column" id="processingOrdersColumn">
-                    <div class="column-header">
-                        <h3><i class="bi bi-gear"></i> В обработке</h3>
-                        <span class="column-count" id="processingCount">0</span>
-                    </div>
-                    <div class="column-content" id="processingOrdersList">
-                        <!-- Заказы в обработке будут здесь -->
-                    </div>
-                </div>
-
-                <div class="kanban-column" id="completedOrdersColumn">
-                    <div class="column-header">
-                        <h3><i class="bi bi-check-circle"></i> Завершенные</h3>
-                        <span class="column-count" id="completedCount">0</span>
-                    </div>
-                    <div class="column-content" id="completedOrdersList">
-                        <!-- Завершенные заказы будут здесь -->
-                    </div>
-                </div>
-
-                <div class="kanban-column" id="cancelledOrdersColumn">
-                    <div class="column-header">
-                        <h3><i class="bi bi-x-circle"></i> Отмененные</h3>
-                        <span class="column-count" id="cancelledCount">0</span>
-                    </div>
-                    <div class="column-content" id="cancelledOrdersList">
-                        <!-- Отмененные заказы будут здесь -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Статистика -->
-            <div class="orders-stats" style="margin-top: 30px;">
-                <h3><i class="bi bi-graph-up"></i> Статистика заказов</h3>
-                <div class="stats-row">
-                    <div class="stat-item">
-                        <div class="stat-label">Всего заказов:</div>
-                        <div class="stat-value" id="totalOrders">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Мои заказы:</div>
-                        <div class="stat-value" id="myOrders">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Высокий приоритет:</div>
-                        <div class="stat-value" id="highPriority">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Сегодня:</div>
-                        <div class="stat-value" id="todayOrders">0</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="dashboard-footer">
-            <p>© 2024 Support System. Управление заказами</p>
-        </footer>
-    </div>
-
-    <!-- Модальное окно редактирования заказа -->
-    <div id="orderModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Редактирование заказа</h3>
-                <button onclick="closeModal()" class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="orderDetails">
-                    <!-- Данные заказа будут здесь -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Уведомление -->
-    <div id="notification" class="notification" style="display: none;"></div>
-
     <style>
         /* Стили для доски заказов */
         .orders-kanban {
@@ -462,31 +312,264 @@
         }
 
         /* Модальное окно */
-        .order-details {
-            padding: 10px 0;
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
         }
 
-        .detail-row {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e9ecef;
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
-            .detail-row:last-child {
-                border-bottom: none;
-                margin-bottom: 0;
-                padding-bottom: 0;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px 12px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .modal-header h3 {
+                margin: 0;
+                color: #1e293b;
+                font-size: 1.3rem;
+                font-weight: 600;
             }
 
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+            .modal-close:hover {
+                background: #e2e8f0;
+                color: #475569;
+            }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Детали заказа */
+        .order-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .detail-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+            .detail-section h4 {
+                color: #334155;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #4CAF50;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
         .detail-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .detail-value {
-            color: #212529;
+            color: #1e293b;
             font-weight: 500;
+            line-height: 1.5;
+        }
+
+            .detail-value.description {
+                white-space: pre-wrap;
+                background: white;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                margin-top: 8px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+        /* Статусы */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffe0b2;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-cancelled {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+            .tab:hover {
+                color: #4CAF50;
+            }
+
+            .tab.active {
+                color: #4CAF50;
+                border-bottom-color: #4CAF50;
+                background: #f1f8e9;
+            }
+
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        /* Связанные элементы */
+        .related-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .related-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+            .related-item:hover {
+                border-color: #4CAF50;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .item-status {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Форма редактирования */
+        .edit-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
         }
 
         .form-group {
@@ -496,23 +579,23 @@
             .form-group label {
                 display: block;
                 margin-bottom: 5px;
-                color: #495057;
+                color: #475057;
                 font-weight: 500;
             }
 
-            .form-group select,
-            .form-group input,
-            .form-group textarea {
-                width: 100%;
-                padding: 8px 12px;
-                border: 2px solid #dee2e6;
-                border-radius: 6px;
-                font-size: 0.95rem;
-            }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
 
-            .form-group textarea {
-                min-height: 100px;
-                resize: vertical;
+            .form-control:focus {
+                outline: none;
+                border-color: #4CAF50;
+                box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
             }
 
         .modal-actions {
@@ -521,40 +604,88 @@
             gap: 10px;
             margin-top: 20px;
             padding-top: 20px;
-            border-top: 1px solid #e9ecef;
+            border-top: 1px solid #e2e8f0;
         }
 
         .btn-save {
             background: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
             .btn-save:hover {
                 background: #388e3c;
+                transform: translateY(-2px);
             }
 
         .btn-cancel {
             background: #6c757d;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 24px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
 
             .btn-cancel:hover {
                 background: #545b62;
             }
 
+        /* Статистика в модальном окне */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+            .stat-box .value {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #4CAF50;
+                margin: 5px 0;
+            }
+
+            .stat-box .label {
+                color: #64748b;
+                font-size: 0.85rem;
+            }
+
+        /* Пустая колонка */
+        .empty-column {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: 40px 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            margin: 10px;
+        }
+
+        /* Адаптивность */
         @media (max-width: 1200px) {
             .orders-kanban {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .order-detail-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -571,8 +702,216 @@
             .search-box {
                 min-width: auto;
             }
+
+            .filter-controls {
+                flex-wrap: wrap;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                min-width: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .order-action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .btn-save, .btn-cancel {
+                width: 100%;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .modal-content {
+            animation: fadeIn 0.2s ease forwards;
         }
     </style>
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">
+                <a href="index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
+            </h1>
+            <div class="user-info">
+                <span id="userName">Загрузка...</span>
+                <div>
+                    <button onclick="goBack()" class="btn-secondary" style="margin-right: 10px;">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </button>
+                    <button onclick="logout()" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i> Выйти
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- Заголовок страницы -->
+            <div class="page-header">
+                <h1>
+                    <i class="bi bi-clipboard-data"></i> Управление заказами
+                </h1>
+                <p class="page-subtitle">
+                    Просмотр, фильтрация и управление всеми заказами системы
+                </p>
+            </div>
+
+            <!-- Фильтры и поиск -->
+            <div class="form-container" style="margin-bottom: 20px;">
+                <div class="filters-row">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="searchInput" placeholder="Поиск по названию или описанию..."
+                               onkeyup="searchOrders()">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="statusFilter" onchange="filterOrders()">
+                            <option value="">Все статусы</option>
+                            <option value="New">Новые</option>
+                            <option value="Processing">В обработке</option>
+                            <option value="Completed">Завершенные</option>
+                            <option value="Cancelled">Отмененные</option>
+                        </select>
+                        <select id="priorityFilter" onchange="filterOrders()">
+                            <option value="">Все приоритеты</option>
+                            <option value="Low">Низкий</option>
+                            <option value="Medium">Средний</option>
+                            <option value="High">Высокий</option>
+                        </select>
+                        <button onclick="loadOrders()" class="btn-refresh">
+                            <i class="bi bi-arrow-clockwise"></i> Обновить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Доска заказов (Kanban) -->
+            <div class="orders-kanban">
+                <div class="kanban-column" id="newOrdersColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-plus-circle"></i> Новые</h3>
+                        <span class="column-count" id="newCount">0</span>
+                    </div>
+                    <div class="column-content" id="newOrdersList">
+                        <!-- Новые заказы будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="processingOrdersColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-gear"></i> В обработке</h3>
+                        <span class="column-count" id="processingCount">0</span>
+                    </div>
+                    <div class="column-content" id="processingOrdersList">
+                        <!-- Заказы в обработке будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="completedOrdersColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-check-circle"></i> Завершенные</h3>
+                        <span class="column-count" id="completedCount">0</span>
+                    </div>
+                    <div class="column-content" id="completedOrdersList">
+                        <!-- Завершенные заказы будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="cancelledOrdersColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-x-circle"></i> Отмененные</h3>
+                        <span class="column-count" id="cancelledCount">0</span>
+                    </div>
+                    <div class="column-content" id="cancelledOrdersList">
+                        <!-- Отмененные заказы будут здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="orders-stats" style="margin-top: 30px;">
+                <h3><i class="bi bi-graph-up"></i> Статистика заказов</h3>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Всего заказов:</div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Мои заказы:</div>
+                        <div class="stat-value" id="myOrders">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Высокий приоритет:</div>
+                        <div class="stat-value" id="highPriority">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Сегодня:</div>
+                        <div class="stat-value" id="todayOrders">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <p>© 2024 Support System. Управление заказами</p>
+        </footer>
+    </div>
+
+    <!-- Модальное окно просмотра заказа -->
+    <div id="orderModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Загрузка...</h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="orderDetails">
+                    <!-- Детали заказа будут здесь -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div id="notification" class="notification" style="display: none;"></div>
 
     <script>
         const API_URL = 'https://localhost:7100';
@@ -605,7 +944,6 @@
             try {
                 currentUser = JSON.parse(userJson);
 
-                // Проверяем, что пользователь имеет роль Manager или Admin
                 if (currentUser.role !== 'Manager' && currentUser.role !== 'Admin') {
                     redirectByRole(currentUser.role);
                     return false;
@@ -646,20 +984,15 @@
         }
 
         function renderOrders() {
-            // Очищаем колонки
             clearColumns();
 
-            // Счетчики для каждой колонки
             const counts = { new: 0, processing: 0, completed: 0, cancelled: 0 };
-            const myOrdersCount = { new: 0, processing: 0, completed: 0, cancelled: 0 };
 
-            // Фильтры
             const statusFilter = document.getElementById('statusFilter').value;
             const priorityFilter = document.getElementById('priorityFilter').value;
             const searchText = document.getElementById('searchInput').value.toLowerCase();
 
             allOrders.forEach(order => {
-                // Применяем фильтры
                 if (statusFilter && order.status !== statusFilter) return;
                 if (priorityFilter && order.priority !== priorityFilter) return;
                 if (searchText &&
@@ -668,38 +1001,31 @@
 
                 const orderElement = createOrderCard(order);
 
-                // Добавляем в соответствующую колонку
-                switch(order.status) {
+                switch (order.status) {
                     case 'New':
                         document.getElementById('newOrdersList').appendChild(orderElement);
                         counts.new++;
-                        if (order.assignedToId === currentUser.id) myOrdersCount.new++;
                         break;
                     case 'Processing':
                         document.getElementById('processingOrdersList').appendChild(orderElement);
                         counts.processing++;
-                        if (order.assignedToId === currentUser.id) myOrdersCount.processing++;
                         break;
                     case 'Completed':
                         document.getElementById('completedOrdersList').appendChild(orderElement);
                         counts.completed++;
-                        if (order.assignedToId === currentUser.id) myOrdersCount.completed++;
                         break;
                     case 'Cancelled':
                         document.getElementById('cancelledOrdersList').appendChild(orderElement);
                         counts.cancelled++;
-                        if (order.assignedToId === currentUser.id) myOrdersCount.cancelled++;
                         break;
                 }
             });
 
-            // Обновляем счетчики
             document.getElementById('newCount').textContent = counts.new;
             document.getElementById('processingCount').textContent = counts.processing;
             document.getElementById('completedCount').textContent = counts.completed;
             document.getElementById('cancelledCount').textContent = counts.cancelled;
 
-            // Если колонки пустые, показываем сообщение
             showEmptyMessages(counts);
         }
 
@@ -733,7 +1059,6 @@
             card.className = `order-card ${order.status.toLowerCase()}`;
             card.setAttribute('data-id', order.id);
 
-            // Определяем цвет приоритета
             let priorityClass = 'priority-medium';
             let priorityText = 'Средний';
             if (order.priority === 'High') {
@@ -744,59 +1069,857 @@
                 priorityText = 'Низкий';
             }
 
-            // Форматируем дату
             const createDate = new Date(order.createDate);
             const formattedDate = createDate.toLocaleDateString('ru-RU');
-
-            // Форматируем стоимость
             const cost = order.cost ? `${order.cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
-
-            // Определяем, назначен ли заказ текущему менеджеру
             const isAssignedToMe = order.assignedToId === currentUser.id;
 
             card.innerHTML = `
-                <div class="order-header">
-                    <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
-                    <span class="order-id">#${order.id}</span>
-                </div>
-                <div class="order-priority ${priorityClass}">${priorityText}</div>
-                <div class="order-info">
-                    <div class="order-client">
-                        <i class="bi bi-person"></i>
-                        ${escapeHtml(order.clientName)}
+                    <div class="order-header">
+                        <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
+                        <span class="order-id">#${order.id}</span>
                     </div>
-                    <div class="order-date">
-                        <i class="bi bi-calendar"></i>
-                        ${formattedDate}
+                    <div class="order-priority ${priorityClass}">${priorityText}</div>
+                    <div class="order-info">
+                        <div class="order-client">
+                            <i class="bi bi-person"></i>
+                            ${escapeHtml(order.clientName)}
+                        </div>
+                        <div class="order-date">
+                            <i class="bi bi-calendar"></i>
+                            ${formattedDate}
+                        </div>
+                        <div class="order-cost">
+                            <i class="bi bi-cash"></i>
+                            ${cost}
+                        </div>
                     </div>
-                    <div class="order-cost">
-                        <i class="bi bi-cash"></i>
-                        ${cost}
-                    </div>
-                </div>
-                <div class="order-actions">
-                    ${!isAssignedToMe && order.status === 'New' ? `
-                        <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
-                            <i class="bi bi-person-check"></i> Принять
+                    <div class="order-actions">
+                        ${!isAssignedToMe && order.status === 'New' ? `
+                            <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
+                                <i class="bi bi-person-check"></i> Принять
+                            </button>
+                        ` : ''}
+                        <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
+                            <i class="bi bi-eye"></i> Просмотр
                         </button>
-                    ` : ''}
-                    <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
-                        <i class="bi bi-pencil"></i> ${isAssignedToMe ? 'Редактировать' : 'Просмотр'}
-                    </button>
-                    ${isAssignedToMe && order.status === 'Processing' ? `
-                        <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
-                            <i class="bi bi-check-circle"></i> Завершить
-                        </button>
-                    ` : ''}
-                </div>
-            `;
+                        ${isAssignedToMe && order.status === 'Processing' ? `
+                            <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
+                                <i class="bi bi-check-circle"></i> Завершить
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
 
             return card;
         }
 
-        async function assignOrderToSelf(orderId, event) {
-            event.stopPropagation();
+        async function viewOrderDetails(orderId, event) {
+            if (event) event.stopPropagation();
 
+            currentOrderId = orderId;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    showNotification('Требуется авторизация', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                    return;
+                }
+
+                // Показываем загрузку
+                document.getElementById('modalTitle').textContent = 'Загрузка...';
+                document.getElementById('orderDetails').innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <div class="loading-spinner" style="margin: 0 auto;"></div>
+                <p style="color: #64748b; margin-top: 15px;">Загрузка информации о заказе...</p>
+            </div>
+        `;
+
+                document.getElementById('orderModal').style.display = 'flex';
+
+                // Пробуем получить данные через обычный endpoint
+                const response = await fetch(`${API_URL}/api/Orders/${orderId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
+                        localStorage.clear();
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                        return;
+                    }
+
+                    const errorText = await response.text();
+                    console.error('API Error:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
+                }
+
+                const order = await response.json();
+                console.log('Order data from API:', order);
+
+                // Преобразуем данные в нужный формат
+                const formattedOrder = formatOrderData(order);
+                renderOrderDetails(formattedOrder);
+
+            } catch (error) {
+                console.error('Error loading order details:', error);
+
+                document.getElementById('orderDetails').innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
+                <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали заказа</h4>
+                <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                    <p style="color: #92400e; font-size: 0.85rem; margin: 0;">
+                        <i class="bi bi-lightbulb"></i> Советы по устранению:
+                    </p>
+                    <ul style="text-align: left; color: #92400e; font-size: 0.85rem; margin: 10px 0 0 20px;">
+                        <li>Убедитесь, что вы вошли в систему</li>
+                        <li>Проверьте подключение к интернету</li>
+                        <li>Обновите страницу и попробуйте снова</li>
+                    </ul>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button onclick="closeModal()" class="btn-cancel">
+                        <i class="bi bi-x"></i> Закрыть
+                    </button>
+                    <button onclick="viewOrderDetails(${orderId})" class="btn-save">
+                        <i class="bi bi-arrow-clockwise"></i> Повторить попытку
+                    </button>
+                </div>
+            </div>
+        `;
+            }
+        }
+
+        // Функция для преобразования данных заказа в нужный формат
+        function formatOrderData(orderData) {
+            console.log('Formatting order data:', orderData);
+
+            // Проверяем, что данные есть
+            if (!orderData) {
+                return createEmptyOrder();
+            }
+
+            // Определяем структуру данных (в зависимости от того, какой endpoint вернул)
+            let order = {};
+
+            if (orderData.id) {
+                // Стандартная структура из /api/Orders/{id}
+                order = {
+                    Id: orderData.id,
+                    OrderName: orderData.orderName || orderData.OrderName || '',
+                    Description: orderData.description || orderData.Description || '',
+                    Cost: orderData.cost || orderData.Cost || null,
+                    Status: orderData.status || orderData.Status || 'New',
+                    Priority: orderData.priority || orderData.Priority || 'Medium',
+                    CreateDate: orderData.createDate || orderData.CreateDate || new Date().toISOString(),
+                    CompleteDate: orderData.completeDate || orderData.CompleteDate || null,
+                    Client: {
+                        Id: orderData.clientId || orderData.ClientId || 0,
+                        Name: orderData.clientName || orderData.ClientName || 'Неизвестный клиент',
+                        Email: orderData.clientEmail || '',
+                        Phone: orderData.clientPhone || ''
+                    },
+                    Manager: (orderData.assignedToId || orderData.AssignedToId) ? {
+                        Id: orderData.assignedToId || orderData.AssignedToId,
+                        Name: orderData.managerName || orderData.ManagerName || 'Неизвестный менеджер',
+                        Email: '',
+                        Phone: ''
+                    } : null,
+                    ServiceRequests: [],
+                    SupportRequests: [],
+                    Reports: [],
+                    Statistics: {
+                        ServiceRequestCount: 0,
+                        SupportRequestCount: 0,
+                        ReportCount: 0,
+                        TotalTimeInDays: 0
+                    }
+                };
+
+                // Рассчитываем дни в работе
+                if (order.CompleteDate) {
+                    const createDate = new Date(order.CreateDate);
+                    const completeDate = new Date(order.CompleteDate);
+                    order.Statistics.TotalTimeInDays = (completeDate - createDate) / (1000 * 60 * 60 * 24);
+                }
+
+            } else if (orderData.order && orderData.order.Id) {
+                // Структура из /api/Orders/manager/detail/{id}
+                order = {
+                    Id: orderData.order.Id,
+                    OrderName: orderData.order.OrderName,
+                    Description: orderData.order.Description,
+                    Cost: orderData.order.Cost,
+                    Status: orderData.order.Status,
+                    Priority: orderData.order.Priority,
+                    CreateDate: orderData.order.CreateDate,
+                    CompleteDate: orderData.order.CompleteDate,
+                    Client: orderData.order.Client || {
+                        Id: 0,
+                        Name: 'Неизвестный клиент',
+                        Email: '',
+                        Phone: ''
+                    },
+                    Manager: orderData.order.Manager,
+                    ServiceRequests: orderData.order.ServiceRequests || [],
+                    SupportRequests: orderData.order.SupportRequests || [],
+                    Reports: orderData.order.Reports || [],
+                    Statistics: orderData.order.Statistics || {
+                        ServiceRequestCount: 0,
+                        SupportRequestCount: 0,
+                        ReportCount: 0,
+                        TotalTimeInDays: 0
+                    }
+                };
+            }
+
+            return order;
+        }
+
+        function createEmptyOrder() {
+            return {
+                Id: 0,
+                OrderName: 'Заказ не найден',
+                Description: 'Информация о заказе отсутствует',
+                Cost: null,
+                Status: 'New',
+                Priority: 'Medium',
+                CreateDate: new Date().toISOString(),
+                CompleteDate: null,
+                Client: {
+                    Id: 0,
+                    Name: 'Неизвестный клиент',
+                    Email: '',
+                    Phone: ''
+                },
+                Manager: null,
+                ServiceRequests: [],
+                SupportRequests: [],
+                Reports: [],
+                Statistics: {
+                    ServiceRequestCount: 0,
+                    SupportRequestCount: 0,
+                    ReportCount: 0,
+                    TotalTimeInDays: 0
+                }
+            };
+        }
+
+        function renderOrderDetails(orderData) {
+            // Проверяем и нормализуем данные
+            const order = orderData || createEmptyOrder();
+
+            // Убедимся, что все поля существуют
+            order.Id = order.Id || 0;
+            order.OrderName = order.OrderName || 'Без названия';
+            order.Description = order.Description || 'Нет описания';
+            order.Status = order.Status || 'New';
+            order.Priority = order.Priority || 'Medium';
+            order.CreateDate = order.CreateDate || new Date().toISOString();
+            order.Cost = order.Cost || null;
+
+            // Нормализуем вложенные объекты
+            order.Client = order.Client || {
+                Id: 0,
+                Name: 'Неизвестный клиент',
+                Email: 'Не указан',
+                Phone: 'Не указан',
+                RegistrationDate: null
+            };
+
+            order.Manager = order.Manager || null;
+
+            // Нормализуем массивы
+            order.ServiceRequests = Array.isArray(order.ServiceRequests) ? order.ServiceRequests : [];
+            order.SupportRequests = Array.isArray(order.SupportRequests) ? order.SupportRequests : [];
+            order.Reports = Array.isArray(order.Reports) ? order.Reports : [];
+
+            // Нормализуем статистику
+            order.Statistics = order.Statistics || {
+                ServiceRequestCount: order.ServiceRequests.length,
+                SupportRequestCount: order.SupportRequests.length,
+                ReportCount: order.Reports.length,
+                TotalTimeInDays: 0,
+                HighPriorityServiceRequests: 0,
+                ActiveSupportRequests: 0,
+                TotalCost: 0
+            };
+
+            const isAssignedToMe = order.Manager && order.Manager.Id === currentUser.id;
+            const canEdit = isAssignedToMe || currentUser.role === 'Admin';
+
+            document.getElementById('modalTitle').textContent = `Заказ #${order.Id}: ${escapeHtml(order.OrderName)}`;
+
+            // Форматируем даты
+            const createDate = new Date(order.CreateDate);
+            const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const completeDate = order.CompleteDate ?
+                new Date(order.CompleteDate).toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : 'Не завершен';
+
+            // Форматируем дату регистрации клиента
+            const clientRegDate = order.Client.RegistrationDate ?
+                new Date(order.Client.RegistrationDate).toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }) : 'Неизвестно';
+
+            const cost = order.Cost ? `${order.Cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
+
+            // Определяем стили статуса
+            let statusClass = '';
+            let statusIcon = '';
+            switch (order.Status) {
+                case 'New':
+                    statusClass = 'status-new';
+                    statusIcon = 'bi-plus-circle';
+                    break;
+                case 'Processing':
+                    statusClass = 'status-processing';
+                    statusIcon = 'bi-gear';
+                    break;
+                case 'Completed':
+                    statusClass = 'status-completed';
+                    statusIcon = 'bi-check-circle';
+                    break;
+                case 'Cancelled':
+                    statusClass = 'status-cancelled';
+                    statusIcon = 'bi-x-circle';
+                    break;
+                default:
+                    statusClass = 'status-new';
+                    statusIcon = 'bi-question-circle';
+            }
+
+            // Определяем стили приоритета
+            let priorityClass = 'priority-medium';
+            let priorityText = 'Средний';
+            if (order.Priority === 'High') {
+                priorityClass = 'priority-high';
+                priorityText = 'Высокий';
+            } else if (order.Priority === 'Low') {
+                priorityClass = 'priority-low';
+                priorityText = 'Низкий';
+            }
+
+            // Информация о клиенте
+            const clientInfo = `
+        <div class="detail-item">
+            <div class="detail-label">Имя клиента:</div>
+            <div class="detail-value">${escapeHtml(order.Client.Name)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Email клиента:</div>
+            <div class="detail-value">
+                ${order.Client.Email && order.Client.Email !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(order.Client.Email)}" style="color: #4CAF50;">
+                        ${escapeHtml(order.Client.Email)}
+                    </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+            </div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Телефон клиента:</div>
+            <div class="detail-value">
+                ${order.Client.Phone && order.Client.Phone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(order.Client.Phone)}" style="color: #4CAF50;">
+                        ${escapeHtml(order.Client.Phone)}
+                    </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+            </div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Дата регистрации:</div>
+            <div class="detail-value">${clientRegDate}</div>
+        </div>
+    `;
+
+            // Информация о менеджере
+            const managerInfo = order.Manager ? `
+        <div class="detail-item">
+            <div class="detail-label">Имя менеджера:</div>
+            <div class="detail-value">${escapeHtml(order.Manager.Name)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Роль менеджера:</div>
+            <div class="detail-value">
+                <span class="manager-user-role" style="display: inline-block; margin-left: 0;">
+                    ${escapeHtml(order.Manager.Role || 'Менеджер')}
+                </span>
+            </div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Email менеджера:</div>
+            <div class="detail-value">
+                ${order.Manager.Email && order.Manager.Email !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(order.Manager.Email)}" style="color: #4CAF50;">
+                        ${escapeHtml(order.Manager.Email)}
+                    </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+            </div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Телефон менеджера:</div>
+            <div class="detail-value">
+                ${order.Manager.Phone && order.Manager.Phone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(order.Manager.Phone)}" style="color: #4CAF50;">
+                        ${escapeHtml(order.Manager.Phone)}
+                    </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+            </div>
+        </div>
+    ` : `
+        <div class="detail-item">
+            <div class="detail-label">Менеджер:</div>
+            <div class="detail-value">
+                <span style="color: #94a3b8; font-style: italic;">
+                    <i class="bi bi-person-x"></i> Не назначен
+                </span>
+            </div>
+        </div>
+        ${canEdit ? `
+            <div class="detail-item" style="margin-top: 10px;">
+                <button onclick="assignOrderToSelf(${order.Id})" class="btn-assign" style="padding: 6px 12px; font-size: 0.85rem;">
+                    <i class="bi bi-person-check"></i> Принять этот заказ
+                </button>
+            </div>
+        ` : ''}
+    `;
+
+            // Генерируем HTML
+            const html = `
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('general')">
+                <i class="bi bi-info-circle"></i> Основная информация
+            </button>
+            <button class="tab" onclick="switchTab('service-requests')">
+                <i class="bi bi-tools"></i> Сервисные запросы (${order.ServiceRequests.length})
+            </button>
+            <button class="tab" onclick="switchTab('support-requests')">
+                <i class="bi bi-headset"></i> Поддержка (${order.SupportRequests.length})
+            </button>
+            <button class="tab" onclick="switchTab('reports')">
+                <i class="bi bi-file-text"></i> Отчеты (${order.Reports.length})
+            </button>
+            ${canEdit ? `
+                <button class="tab" onclick="switchTab('edit')">
+                    <i class="bi bi-pencil"></i> Редактировать
+                </button>
+            ` : ''}
+        </div>
+        
+        <!-- Основная информация -->
+        <div id="tab-general" class="tab-content active">
+            <div class="order-detail-grid">
+                <div class="detail-section">
+                    <h4><i class="bi bi-card-checklist"></i> Информация о заказе</h4>
+                    <div class="detail-item">
+                        <div class="detail-label">Название:</div>
+                        <div class="detail-value">${escapeHtml(order.OrderName)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Статус:</div>
+                        <div class="detail-value">
+                            <span class="status-badge ${statusClass}">
+                                <i class="bi ${statusIcon}"></i> ${order.Status}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Приоритет:</div>
+                        <div class="detail-value">
+                            <span class="order-priority ${priorityClass}">${priorityText}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Стоимость заказа:</div>
+                        <div class="detail-value">${cost}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Дата создания:</div>
+                        <div class="detail-value">${formattedCreateDate}</div>
+                    </div>
+                    ${order.CompleteDate ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Дата завершения:</div>
+                            <div class="detail-value">${completeDate}</div>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <div class="detail-section">
+                    <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
+                    ${clientInfo}
+                </div>
+                
+                <div class="detail-section">
+                    <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
+                    ${managerInfo}
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4><i class="bi bi-card-text"></i> Описание заказа</h4>
+                <div class="detail-value description">${escapeHtml(order.Description)}</div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value">${order.Statistics.ServiceRequestCount}</div>
+                    <div class="label">Сервисных запросов</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">${order.Statistics.SupportRequestCount}</div>
+                    <div class="label">Запросов поддержки</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">${order.Statistics.ReportCount}</div>
+                    <div class="label">Отчетов</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">${Math.round(order.Statistics.TotalTimeInDays)}</div>
+                    <div class="label">Дней в работе</div>
+                </div>
+                ${order.Statistics.TotalCost > 0 ? `
+                    <div class="stat-box">
+                        <div class="value">${order.Statistics.TotalCost.toLocaleString('ru-RU')}</div>
+                        <div class="label">Общая стоимость услуг</div>
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+        
+        <!-- Сервисные запросы -->
+        <div id="tab-service-requests" class="tab-content">
+            <div class="related-items">
+                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        <i class="bi bi-tools"></i> Сервисные запросы по заказу
+                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
+                            (${order.ServiceRequests.length} запросов)
+                        </small>
+                    </span>
+                    ${canEdit ? `
+                        <button class="btn-small btn-save" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <i class="bi bi-plus-circle"></i> Добавить запрос
+                        </button>
+                    ` : ''}
+                </h4>
+                ${order.ServiceRequests.length > 0 ?
+                    order.ServiceRequests.map(sr => {
+                        const srStatus = sr.Status || 'New';
+                        const srStatusClass = getStatusClass(srStatus);
+                        const srDate = sr.CreateDate ? new Date(sr.CreateDate).toLocaleDateString('ru-RU', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Неизвестно';
+
+                        return `
+                            <div class="related-item" style="border-left: 4px solid ${srStatus === 'Completed' ? '#4CAF50' : srStatus === 'Processing' ? '#ff9800' : '#667eea'};">
+                                <div class="item-header">
+                                    <h5 class="item-title">${escapeHtml(sr.ServiceType || 'Сервисный запрос')}</h5>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="item-status status-badge ${srStatusClass}">
+                                            ${srStatus}
+                                        </span>
+                                        <span style="color: #4CAF50; font-weight: 600;">
+                                            ${sr.Cost ? `${sr.Cost.toLocaleString('ru-RU')} ₽` : 'Бесплатно'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <p style="color: #475569; font-size: 0.9rem; margin: 10px 0;">
+                                    ${escapeHtml(sr.Description || 'Нет описания')}
+                                </p>
+                                <div class="item-meta">
+                                    <span><i class="bi bi-calendar"></i> ${srDate}</span>
+                                    <span><i class="bi bi-person"></i> ${escapeHtml(sr.ClientName || 'Неизвестно')}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') :
+                    '<div class="empty-list">Сервисные запросы отсутствуют</div>'
+                }
+            </div>
+        </div>
+        
+        <!-- Запросы поддержки -->
+        <div id="tab-support-requests" class="tab-content">
+            <div class="related-items">
+                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        <i class="bi bi-headset"></i> Запросы поддержки по заказу
+                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
+                            (${order.SupportRequests.length} запросов)
+                        </small>
+                    </span>
+                </h4>
+                ${order.SupportRequests.length > 0 ?
+                    order.SupportRequests.map(sr => {
+                        const srStatus = sr.Status || 'New';
+                        const srStatusClass = getStatusClass(srStatus);
+                        const srDate = sr.CreateDate ? new Date(sr.CreateDate).toLocaleDateString('ru-RU', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Неизвестно';
+
+                        // Форматируем email и телефон клиента
+                        const clientEmail = sr.ClientEmail && sr.ClientEmail !== 'Не указан' ?
+                            `<a href="mailto:${escapeHtml(sr.ClientEmail)}" style="color: #4CAF50; font-size: 0.85rem;">
+                                ${escapeHtml(sr.ClientEmail)}
+                            </a>` :
+                            '<span style="color: #94a3b8;">Не указан</span>';
+
+                        const clientPhone = sr.ClientPhone && sr.ClientPhone !== 'Не указан' ?
+                            `<a href="tel:${escapeHtml(sr.ClientPhone)}" style="color: #4CAF50; font-size: 0.85rem;">
+                                ${escapeHtml(sr.ClientPhone)}
+                            </a>` :
+                            '<span style="color: #94a3b8;">Не указан</span>';
+
+                        return `
+                            <div class="related-item" style="border-left: 4px solid ${srStatus === 'Completed' ? '#4CAF50' : srStatus === 'Processing' ? '#ff9800' : '#667eea'};">
+                                <div class="item-header">
+                                    <h5 class="item-title">${escapeHtml(sr.Topic || 'Запрос поддержки')}</h5>
+                                    <span class="item-status status-badge ${srStatusClass}">
+                                        ${srStatus}
+                                    </span>
+                                </div>
+                                <div style="background: #f8fafc; border-radius: 6px; padding: 12px; margin: 10px 0;">
+                                    <p style="color: #475569; font-size: 0.9rem; margin: 0; white-space: pre-wrap;">
+                                        ${escapeHtml(sr.Message || 'Сообщение отсутствует')}
+                                    </p>
+                                </div>
+                                <div class="item-meta">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Клиент:</div>
+                                            <div style="font-weight: 500; color: #334155;">${escapeHtml(sr.ClientName || 'Неизвестно')}</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Дата:</div>
+                                            <div style="font-weight: 500; color: #334155;">${srDate}</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Email:</div>
+                                            <div>${clientEmail}</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Телефон:</div>
+                                            <div>${clientPhone}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${canEdit && srStatus !== 'Completed' ? `
+                                    <div style="margin-top: 15px; display: flex; gap: 8px;">
+                                        <button class="btn-small btn-save" style="padding: 5px 10px; font-size: 0.8rem;">
+                                            <i class="bi bi-check-circle"></i> Ответить
+                                        </button>
+                                        <button class="btn-small" style="padding: 5px 10px; font-size: 0.8rem; background: #667eea; color: white; border: none; border-radius: 4px;">
+                                            <i class="bi bi-gear"></i> Взять в работу
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('') :
+                    '<div class="empty-list">Запросы поддержки по этому заказу отсутствуют</div>'
+                }
+            </div>
+        </div>
+        
+        <!-- Отчеты -->
+        <div id="tab-reports" class="tab-content">
+            <div class="related-items">
+                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        <i class="bi bi-file-text"></i> Отчеты по заказу
+                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
+                            (${order.Reports.length} отчетов)
+                        </small>
+                    </span>
+                    ${canEdit ? `
+                        <button class="btn-small btn-save" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <i class="bi bi-plus-circle"></i> Создать отчет
+                        </button>
+                    ` : ''}
+                </h4>
+                ${order.Reports.length > 0 ?
+                    order.Reports.map(r => {
+                        const reportDate = r.CreateDate ? new Date(r.CreateDate).toLocaleDateString('ru-RU', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Неизвестно';
+
+                        const authorEmail = r.AuthorEmail ?
+                            `<a href="mailto:${escapeHtml(r.AuthorEmail)}" style="color: #4CAF50; font-size: 0.85rem;">
+                                ${escapeHtml(r.AuthorEmail)}
+                            </a>` : '';
+
+                        return `
+                            <div class="related-item">
+                                <div class="item-header">
+                                    <h5 class="item-title">${escapeHtml(r.Title || 'Без названия')}</h5>
+                                </div>
+                                <div style="background: #f8fafc; border-radius: 6px; padding: 12px; margin: 10px 0; max-height: 200px; overflow-y: auto;">
+                                    <p style="color: #475569; font-size: 0.9rem; margin: 0; white-space: pre-wrap;">
+                                        ${escapeHtml(r.Content || 'Содержимое отсутствует')}
+                                    </p>
+                                </div>
+                                <div class="item-meta">
+                                    <span style="display: flex; align-items: center; gap: 4px;">
+                                        <i class="bi bi-person"></i> 
+                                        <span style="font-weight: 500;">${escapeHtml(r.AuthorName || 'Неизвестно')}</span>
+                                        ${authorEmail ? `<span style="color: #64748b;">(${authorEmail})</span>` : ''}
+                                    </span>
+                                    <span><i class="bi bi-calendar"></i> ${reportDate}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') :
+                    '<div class="empty-list">Отчеты отсутствуют</div>'
+                }
+            </div>
+        </div>
+        
+        <!-- Редактирование -->
+        <div id="tab-edit" class="tab-content">
+            ${canEdit ? `
+                <div class="edit-section">
+                    <h4><i class="bi bi-pencil-square"></i> Редактирование заказа</h4>
+                    <form id="orderEditForm">
+                        <div class="form-group">
+                            <label for="editOrderName">Название заказа:</label>
+                            <input type="text" id="editOrderName" class="form-control" 
+                                   value="${escapeHtml(order.OrderName)}" maxlength="250" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editDescription">Описание:</label>
+                            <textarea id="editDescription" class="form-control" rows="5" 
+                                      maxlength="3500" required>${escapeHtml(order.Description)}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editCost">Стоимость (₽):</label>
+                            <input type="number" id="editCost" class="form-control" 
+                                   value="${order.Cost || ''}" step="0.01" min="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editStatus">Статус:</label>
+                            <select id="editStatus" class="form-control">
+                                <option value="New" ${order.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                <option value="Processing" ${order.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                <option value="Completed" ${order.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                <option value="Cancelled" ${order.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editPriority">Приоритет:</label>
+                            <select id="editPriority" class="form-control">
+                                <option value="Low" ${order.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
+                                <option value="Medium" ${order.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
+                                <option value="High" ${order.Priority === 'High' ? 'selected' : ''}>Высокий</option>
+                            </select>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                            <button type="button" onclick="saveOrderChanges()" class="btn-save">
+                                <i class="bi bi-save"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            ` : '<div class="empty-list">У вас нет прав для редактирования этого заказа</div>'}
+        </div>
+        
+        <div class="modal-actions">
+            <button onclick="closeModal()" class="btn-cancel">
+                <i class="bi bi-x"></i> Закрыть
+            </button>
+        </div>
+    `;
+
+            document.getElementById('orderDetails').innerHTML = html;
+        }
+
+        function getStatusClass(status) {
+            if (!status) return 'status-new';
+
+            switch (status.toString()) {
+                case 'New': return 'status-new';
+                case 'Processing': return 'status-processing';
+                case 'Completed': return 'status-completed';
+                case 'Cancelled': return 'status-cancelled';
+                default: return 'status-new';
+            }
+        }
+
+        function switchTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранную вкладку
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Активировать кнопку выбранной вкладки
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.textContent.includes(tabName === 'general' ? 'Основная' :
+                    tabName === 'requests' ? 'Запросы' :
+                        tabName === 'reports' ? 'Отчеты' :
+                            tabName === 'edit' ? 'Редактировать' : '')) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        async function assignOrderToSelf(orderId) {
             if (!confirm('Вы уверены, что хотите принять этот заказ?')) return;
 
             try {
@@ -814,6 +1937,8 @@
 
                 if (response.ok && result.success) {
                     showNotification('Заказ успешно назначен на вас', 'success');
+                    // Закрываем модальное окно и обновляем данные
+                    closeModal();
                     await loadOrders();
                 } else {
                     showNotification(result.message || 'Ошибка при назначении заказа', 'error');
@@ -824,110 +1949,14 @@
             }
         }
 
-        async function viewOrderDetails(orderId, event) {
-            if (event) event.stopPropagation();
-
-            currentOrderId = orderId;
-            const order = allOrders.find(o => o.id === orderId);
-
-            if (!order) return;
-
-            document.getElementById('modalTitle').textContent = `Заказ #${order.id}`;
-
-            const isAssignedToMe = order.assignedToId === currentUser.id;
-            const canEdit = isAssignedToMe || currentUser.role === 'Admin';
-
-            document.getElementById('orderDetails').innerHTML = `
-                <div class="order-details">
-                    <div class="detail-row">
-                        <div class="detail-label">Название заказа</div>
-                        <div class="detail-value">${escapeHtml(order.orderName)}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Описание</div>
-                        <div class="detail-value" style="white-space: pre-wrap;">${escapeHtml(order.description)}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Клиент</div>
-                        <div class="detail-value">${escapeHtml(order.clientName)}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Менеджер</div>
-                        <div class="detail-value">${escapeHtml(order.managerName)}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Стоимость</div>
-                        <div class="detail-value">${order.cost ? `${order.cost.toLocaleString('ru-RU')} ₽` : 'Не указана'}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Дата создания</div>
-                        <div class="detail-value">${new Date(order.createDate).toLocaleDateString('ru-RU')}</div>
-                    </div>
-
-                    ${order.completeDate ? `
-                    <div class="detail-row">
-                        <div class="detail-label">Дата завершения</div>
-                        <div class="detail-value">${new Date(order.completeDate).toLocaleDateString('ru-RU')}</div>
-                    </div>
-                    ` : ''}
-                </div>
-
-                ${canEdit ? `
-                <div style="margin-top: 30px;">
-                    <h4><i class="bi bi-gear"></i> Управление заказом</h4>
-                    <form id="orderEditForm">
-                        <div class="form-group">
-                            <label>Статус:</label>
-                            <select id="editStatus" class="form-control">
-                                <option value="New" ${order.status === 'New' ? 'selected' : ''}>Новый</option>
-                                <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>В обработке</option>
-                                <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Завершенный</option>
-                                <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Приоритет:</label>
-                            <select id="editPriority" class="form-control">
-                                <option value="Low" ${order.priority === 'Low' ? 'selected' : ''}>Низкий</option>
-                                <option value="Medium" ${order.priority === 'Medium' ? 'selected' : ''}>Средний</option>
-                                <option value="High" ${order.priority === 'High' ? 'selected' : ''}>Высокий</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Стоимость (₽):</label>
-                            <input type="number" id="editCost" class="form-control"
-                                   value="${order.cost || ''}" step="0.01" min="0">
-                        </div>
-
-                        <div class="modal-actions">
-                            <button type="button" onclick="closeModal()" class="btn-cancel">Закрыть</button>
-                            <button type="button" onclick="saveOrderChanges()" class="btn-save">Сохранить изменения</button>
-                        </div>
-                    </form>
-                </div>
-                ` : `
-                <div class="modal-actions">
-                    <button onclick="closeModal()" class="btn-cancel">Закрыть</button>
-                </div>
-                `}
-            `;
-
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-
         async function saveOrderChanges() {
             try {
                 const token = localStorage.getItem('token');
                 const orderId = currentOrderId;
 
                 const updateData = {
+                    orderName: document.getElementById('editOrderName').value.trim(),
+                    description: document.getElementById('editDescription').value.trim(),
                     status: document.getElementById('editStatus').value,
                     priority: document.getElementById('editPriority').value,
                     cost: parseFloat(document.getElementById('editCost').value) || null
@@ -1052,6 +2081,7 @@
         }
 
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
@@ -1071,6 +2101,13 @@
         // Закрытие модального окна при клике вне его
         document.getElementById('orderModal').addEventListener('click', function (e) {
             if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Закрытие по Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.getElementById('orderModal').style.display === 'flex') {
                 closeModal();
             }
         });

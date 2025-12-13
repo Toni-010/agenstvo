@@ -83,7 +83,6 @@ namespace SupportSystem.API.Controllers
                     return NotFound(new { message = "Заказ не найден" });
                 }
 
-                // Проверяем права доступа
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
@@ -144,7 +143,6 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Пользователь не найден" });
                 }
 
-                // Валидация
                 if (string.IsNullOrWhiteSpace(orderDto.OrderName))
                 {
                     return BadRequest(new { message = "Название заказа обязательно" });
@@ -165,7 +163,6 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Описание не должно превышать 3500 символов" });
                 }
 
-                // Парсим приоритет
                 if (!Enum.TryParse<Priority>(orderDto.Priority, true, out var priority))
                 {
                     priority = Priority.Medium;
@@ -326,6 +323,141 @@ namespace SupportSystem.API.Controllers
             }
         }
 
+        // В контроллер OrdersController.cs добавим этот метод:
+
+        // Обновим метод GetOrderDetailForManager в OrdersController.cs
+
+        [HttpGet("manager/detail/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> GetOrderDetailForManager(int id)
+        {
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .FirstOrDefaultAsync(o => o.Id == id);
+
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                // Получаем только сервисные запросы, связанные с этим заказом
+                var serviceRequests = await _context.ServiceRequests
+                    .Where(sr => sr.OrderId == id)
+                    .Include(sr => sr.Client)
+                    .Select(sr => new
+                    {
+                        Id = sr.Id,
+                        ServiceType = sr.ServiceType,
+                        Description = sr.Description,
+                        Status = sr.Status.ToString(),
+                        CreateDate = sr.CreateDate,
+                        Cost = sr.Cost,
+                        ClientName = sr.Client.Name
+                    })
+                    .ToListAsync();
+
+                // Получаем только запросы поддержки, связанные с этим заказом
+                var supportRequests = await _context.SupportRequests
+                    .Where(sr => sr.RelatedOrderId == id)
+                    .Include(sr => sr.Client)
+                    .Select(sr => new
+                    {
+                        Id = sr.Id,
+                        Topic = sr.Topic,
+                        Message = sr.Message,
+                        Status = sr.Status.ToString(),
+                        CreateDate = sr.CreateDate,
+                        ClientName = sr.Client.Name,
+                        ClientEmail = sr.Client.Email,
+                        ClientPhone = sr.Client.Phone
+                    })
+                    .ToListAsync();
+
+                // Получаем отчеты, связанные с этим заказом
+                var reports = await _context.Reports
+                    .Where(r => r.OrderId == id)
+                    .Include(r => r.Author)
+                    .Select(r => new
+                    {
+                        Id = r.Id,
+                        Title = r.Title,
+                        Content = r.Content,
+                        CreateDate = r.CreateDate,
+                        AuthorName = r.Author.Name,
+                        AuthorEmail = r.Author.Email
+                    })
+                    .ToListAsync();
+
+                var orderDetail = new
+                {
+                    Id = order.Id,
+                    OrderName = order.OrderName,
+                    Description = order.Description,
+                    Cost = order.Cost,
+                    Status = order.Status.ToString(),
+                    Priority = order.Priority.ToString(),
+                    CreateDate = order.CreateDate,
+                    CompleteDate = order.CompleteDate,
+
+                    // Полные данные о клиенте
+                    Client = new
+                    {
+                        Id = order.Client.Id,
+                        Name = order.Client.Name,
+                        Email = order.Client.Email ?? "Не указан",
+                        Phone = order.Client.Phone ?? "Не указан",
+                        RegistrationDate = order.Client.RegDate
+                    },
+
+                    // Полные данные о менеджере (если назначен)
+                    Manager = order.Manager != null ? new
+                    {
+                        Id = order.Manager.Id,
+                        Name = order.Manager.Name,
+                        Email = order.Manager.Email ?? "Не указан",
+                        Phone = order.Manager.Phone ?? "Не указан",
+                        Role = order.Manager.Role.ToString()
+                    } : null,
+
+                    ServiceRequests = serviceRequests,
+                    SupportRequests = supportRequests,
+                    Reports = reports,
+
+                    Statistics = new
+                    {
+                        ServiceRequestCount = serviceRequests.Count,
+                        SupportRequestCount = supportRequests.Count,
+                        ReportCount = reports.Count,
+                        TotalTimeInDays = order.CompleteDate.HasValue ?
+                            (order.CompleteDate.Value - order.CreateDate).TotalDays : 0,
+
+                        // Дополнительная статистика
+                        HighPriorityServiceRequests = serviceRequests.Count(sr => sr.Status == "New" || sr.Status == "Processing"),
+                        ActiveSupportRequests = supportRequests.Count(sr => sr.Status == "New" || sr.Status == "Processing"),
+                        TotalCost = serviceRequests.Where(sr => sr.Cost.HasValue).Sum(sr => sr.Cost.Value)
+                    }
+                };
+
+                return Ok(new
+                {
+                    success = true,
+                    order = orderDetail
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении детальной информации о заказе {OrderId}", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении информации о заказе",
+                    error = ex.Message
+                });
+            }
+        }
+
         // PUT: api/Orders/manager/5
         [HttpPut("manager/{id}")]
         [Authorize(Roles = "Admin,Manager")]
@@ -355,7 +487,6 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Менеджер не найден" });
                 }
 
-                // Валидация и обновление полей
                 if (updateOrderDto.OrderName != null)
                 {
                     if (string.IsNullOrWhiteSpace(updateOrderDto.OrderName))
@@ -557,7 +688,7 @@ namespace SupportSystem.API.Controllers
 
         #endregion
 
-        #region Методы администратора (устаревшие, оставлены для совместимости)
+        #region Методы администратора
 
         // POST: api/Orders
         [HttpPost]
@@ -585,6 +716,37 @@ namespace SupportSystem.API.Controllers
                     error = ex.Message
                 });
             }
+        }
+
+        // PUT: api/Orders/5
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PutOrder(int id, Order order)
+        {
+            if (id != order.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(order).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // DELETE: api/Orders/5
