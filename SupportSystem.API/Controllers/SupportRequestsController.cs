@@ -611,14 +611,17 @@ namespace SupportSystem.API.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                if (supportRequest.AssignedToId != userId && userRole != "Admin")
-                {
-                    return Forbid();
-                }
-
                 if (!Enum.TryParse<RequestStatus>(statusDto.Status, true, out var newStatus))
                 {
-                    return BadRequest(new { message = "Некорректный статус" });
+                    return BadRequest(new { message = "Некорректный статус. Допустимые значения: New, Processing, Completed, Cancelled" });
+                }
+
+                // РАЗРЕШАЕМ И МЕНЕДЖЕРАМ, И АДМИНАМ ИЗМЕНЯТЬ СТАТУСЫ
+
+                // Автоматически назначаем обращение на менеджера при смене статуса на Processing
+                if (newStatus == RequestStatus.Processing && supportRequest.AssignedToId == null)
+                {
+                    supportRequest.AssignedToId = userId;
                 }
 
                 supportRequest.Status = newStatus;
@@ -629,7 +632,9 @@ namespace SupportSystem.API.Controllers
                     success = true,
                     message = "Статус запроса успешно обновлен",
                     supportRequestId = supportRequest.Id,
-                    newStatus = supportRequest.Status.ToString()
+                    newStatus = supportRequest.Status.ToString(),
+                    assignedToId = supportRequest.AssignedToId,
+                    isAssigned = supportRequest.AssignedToId != null
                 });
             }
             catch (Exception ex)
