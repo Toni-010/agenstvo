@@ -16,4 +16,13 @@ namespace SupportSystem.API.DTOs
         public int? AssignedToId { get; set; }
         public string? ManagerName { get; set; }
     }
+    public class UpdateOrderDto
+    {
+        public string? OrderName { get; set; }
+        public string? Description { get; set; }
+        public decimal? Cost { get; set; }
+        public string? Status { get; set; }
+        public string? Priority { get; set; }
+        public int? AssignedToId { get; set; }
+    }
 }

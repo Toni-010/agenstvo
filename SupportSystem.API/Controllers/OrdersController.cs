@@ -24,40 +24,109 @@ namespace SupportSystem.API.Controllers
             _logger = logger;
         }
 
+        #region Публичные методы (для всех пользователей)
+
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
         {
-            return await _context.Orders
-                .Include(o => o.Client)
-                .Include(o => o.Manager)
-                .ToListAsync();
+            try
+            {
+                var orders = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .OrderByDescending(o => o.CreateDate)
+                    .Select(o => new OrderDto
+                    {
+                        Id = o.Id,
+                        OrderName = o.OrderName,
+                        Description = o.Description,
+                        Cost = o.Cost,
+                        Status = o.Status.ToString(),
+                        Priority = o.Priority.ToString(),
+                        CreateDate = o.CreateDate,
+                        CompleteDate = o.CompleteDate,
+                        ClientId = o.ClientId,
+                        ClientName = o.Client.Name,
+                        AssignedToId = o.AssignedToId,
+                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен"
+                    })
+                    .ToListAsync();
+
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении списка заказов");
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении заказов",
+                    error = ex.Message
+                });
+            }
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<OrderDto>> GetOrder(int id)
         {
-            var order = await _context.Orders
-                .Include(o => o.Client)
-                .Include(o => o.Manager)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            if (order == null)
+            try
             {
-                return NotFound();
-            }
+                var order = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .FirstOrDefaultAsync(o => o.Id == id);
 
-            return order;
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                // Проверяем права доступа
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+                if (order.ClientId != userId && userRole != "Admin" && userRole != "Manager")
+                {
+                    return Forbid();
+                }
+
+                var orderDto = new OrderDto
+                {
+                    Id = order.Id,
+                    OrderName = order.OrderName,
+                    Description = order.Description,
+                    Cost = order.Cost,
+                    Status = order.Status.ToString(),
+                    Priority = order.Priority.ToString(),
+                    CreateDate = order.CreateDate,
+                    CompleteDate = order.CompleteDate,
+                    ClientId = order.ClientId,
+                    ClientName = order.Client.Name,
+                    AssignedToId = order.AssignedToId,
+                    ManagerName = order.Manager != null ? order.Manager.Name : "Не назначен"
+                };
+
+                return Ok(orderDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении заказа с ID {OrderId}", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении заказа",
+                    error = ex.Message
+                });
+            }
         }
 
-        // POST: api/Orders/create (для пользователя)
+        // POST: api/Orders/create
         [HttpPost("create")]
         public async Task<ActionResult<object>> CreateOrder([FromBody] CreateOrderDto orderDto)
         {
             try
             {
-                // Получаем ID текущего пользователя из токена
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(userIdClaim))
                 {
@@ -69,14 +138,13 @@ namespace SupportSystem.API.Controllers
                     return Unauthorized(new { message = "Неверный идентификатор пользователя" });
                 }
 
-                // Проверяем существование пользователя
                 var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
                 if (!userExists)
                 {
                     return BadRequest(new { message = "Пользователь не найден" });
                 }
 
-                // Валидация входных данных
+                // Валидация
                 if (string.IsNullOrWhiteSpace(orderDto.OrderName))
                 {
                     return BadRequest(new { message = "Название заказа обязательно" });
@@ -103,7 +171,6 @@ namespace SupportSystem.API.Controllers
                     priority = Priority.Medium;
                 }
 
-                // Создаем новый заказ
                 var order = new Order
                 {
                     OrderName = orderDto.OrderName.Trim(),
@@ -113,14 +180,13 @@ namespace SupportSystem.API.Controllers
                     Status = OrderStatus.New,
                     CreateDate = DateTime.Now,
                     ClientId = userId,
-                    AssignedToId = null, // Пока не назначен менеджер
-                    CompleteDate = null // Заполнится при завершении
+                    AssignedToId = null,
+                    CompleteDate = null
                 };
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
-                // Получаем данные клиента для ответа
                 var client = await _context.Users.FindAsync(userId);
 
                 return Ok(new
@@ -164,7 +230,11 @@ namespace SupportSystem.API.Controllers
             }
         }
 
-        // GET: api/Orders/my (получить заказы текущего пользователя)
+        #endregion
+
+        #region Методы для клиентов
+
+        // GET: api/Orders/my
         [HttpGet("my")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetMyOrders()
         {
@@ -211,61 +281,346 @@ namespace SupportSystem.API.Controllers
             }
         }
 
-        // POST: api/Orders (старый метод для админов/менеджеров)
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        #endregion
+
+        #region Методы для менеджеров и админов
+
+        // GET: api/Orders/manager
+        [HttpGet("manager")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetManagerOrders()
         {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-        }
-
-        // PUT: api/Orders/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(order).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var orders = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .OrderByDescending(o => o.CreateDate)
+                    .Select(o => new OrderDto
+                    {
+                        Id = o.Id,
+                        OrderName = o.OrderName,
+                        Description = o.Description,
+                        Cost = o.Cost,
+                        Status = o.Status.ToString(),
+                        Priority = o.Priority.ToString(),
+                        CreateDate = o.CreateDate,
+                        CompleteDate = o.CompleteDate,
+                        ClientId = o.ClientId,
+                        ClientName = o.Client.Name,
+                        AssignedToId = o.AssignedToId,
+                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен"
+                    })
+                    .ToListAsync();
 
-            return NoContent();
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении заказов для менеджера");
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении заказов",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // PUT: api/Orders/manager/5
+        [HttpPut("manager/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> UpdateOrderAsManager(int id, [FromBody] UpdateOrderDto updateOrderDto)
+        {
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .FirstOrDefaultAsync(o => o.Id == id);
+
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int managerId))
+                {
+                    return Unauthorized(new { message = "Менеджер не авторизован" });
+                }
+
+                var managerExists = await _context.Users.AnyAsync(u => u.Id == managerId);
+                if (!managerExists)
+                {
+                    return BadRequest(new { message = "Менеджер не найден" });
+                }
+
+                // Валидация и обновление полей
+                if (updateOrderDto.OrderName != null)
+                {
+                    if (string.IsNullOrWhiteSpace(updateOrderDto.OrderName))
+                    {
+                        return BadRequest(new { message = "Название заказа не может быть пустым" });
+                    }
+                    if (updateOrderDto.OrderName.Length > 250)
+                    {
+                        return BadRequest(new { message = "Название заказа не должно превышать 250 символов" });
+                    }
+                    order.OrderName = updateOrderDto.OrderName.Trim();
+                }
+
+                if (updateOrderDto.Description != null)
+                {
+                    if (string.IsNullOrWhiteSpace(updateOrderDto.Description))
+                    {
+                        return BadRequest(new { message = "Описание не может быть пустым" });
+                    }
+                    if (updateOrderDto.Description.Length > 3500)
+                    {
+                        return BadRequest(new { message = "Описание не должно превышать 3500 символов" });
+                    }
+                    order.Description = updateOrderDto.Description.Trim();
+                }
+
+                if (updateOrderDto.Cost.HasValue)
+                {
+                    order.Cost = updateOrderDto.Cost;
+                }
+
+                if (!string.IsNullOrEmpty(updateOrderDto.Status))
+                {
+                    if (Enum.TryParse<OrderStatus>(updateOrderDto.Status, true, out var newStatus))
+                    {
+                        order.Status = newStatus;
+
+                        if (newStatus == OrderStatus.Completed && !order.CompleteDate.HasValue)
+                        {
+                            order.CompleteDate = DateTime.Now;
+                        }
+                        else if (newStatus != OrderStatus.Completed)
+                        {
+                            order.CompleteDate = null;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(updateOrderDto.Priority))
+                {
+                    if (Enum.TryParse<Priority>(updateOrderDto.Priority, true, out var newPriority))
+                    {
+                        order.Priority = newPriority;
+                    }
+                }
+
+                if (updateOrderDto.AssignedToId.HasValue)
+                {
+                    if (updateOrderDto.AssignedToId == 0)
+                    {
+                        order.AssignedToId = null;
+                    }
+                    else
+                    {
+                        var assignedManager = await _context.Users.FindAsync(updateOrderDto.AssignedToId.Value);
+                        if (assignedManager == null)
+                        {
+                            return BadRequest(new { message = "Назначенный менеджер не найден" });
+                        }
+                        order.AssignedToId = updateOrderDto.AssignedToId.Value;
+                    }
+                }
+
+                _context.Entry(order).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                var updatedOrder = await _context.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Manager)
+                    .FirstOrDefaultAsync(o => o.Id == id);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Заказ успешно обновлен",
+                    order = new OrderDto
+                    {
+                        Id = updatedOrder.Id,
+                        OrderName = updatedOrder.OrderName,
+                        Description = updatedOrder.Description,
+                        Cost = updatedOrder.Cost,
+                        Status = updatedOrder.Status.ToString(),
+                        Priority = updatedOrder.Priority.ToString(),
+                        CreateDate = updatedOrder.CreateDate,
+                        CompleteDate = updatedOrder.CompleteDate,
+                        ClientId = updatedOrder.ClientId,
+                        ClientName = updatedOrder.Client.Name,
+                        AssignedToId = updatedOrder.AssignedToId,
+                        ManagerName = updatedOrder.Manager != null ? updatedOrder.Manager.Name : "Не назначен"
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обновлении заказа {OrderId} менеджером", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при обновлении заказа",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // PUT: api/Orders/manager/assign/5
+        [HttpPut("manager/assign/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> AssignOrderToSelf(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int managerId))
+                {
+                    return Unauthorized(new { message = "Менеджер не авторизован" });
+                }
+
+                order.AssignedToId = managerId;
+
+                if (order.Status == OrderStatus.New)
+                {
+                    order.Status = OrderStatus.Processing;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Заказ успешно назначен на вас",
+                    orderId = order.Id,
+                    assignedToId = order.AssignedToId
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при назначении заказа {OrderId} на менеджера", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при назначении заказа",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // GET: api/Orders/manager/stats
+        [HttpGet("manager/stats")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> GetOrderStats()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var today = DateTime.Today;
+
+                var stats = new
+                {
+                    TotalOrders = await _context.Orders.CountAsync(),
+                    NewOrders = await _context.Orders.CountAsync(o => o.Status == OrderStatus.New),
+                    ProcessingOrders = await _context.Orders.CountAsync(o => o.Status == OrderStatus.Processing),
+                    CompletedOrders = await _context.Orders.CountAsync(o => o.Status == OrderStatus.Completed),
+                    CancelledOrders = await _context.Orders.CountAsync(o => o.Status == OrderStatus.Cancelled),
+                    MyOrders = await _context.Orders.CountAsync(o => o.AssignedToId == userId),
+                    HighPriorityOrders = await _context.Orders.CountAsync(o => o.Priority == Priority.High),
+                    TodayOrders = await _context.Orders.CountAsync(o => o.CreateDate.Date == today)
+                };
+
+                return Ok(new
+                {
+                    success = true,
+                    stats = stats
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении статистики заказов");
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении статистики",
+                    error = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Методы администратора (устаревшие, оставлены для совместимости)
+
+        // POST: api/Orders
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Order>> PostOrder(Order order)
+        {
+            try
+            {
+                if (order == null)
+                {
+                    return BadRequest(new { message = "Заказ не может быть пустым" });
+                }
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при создании заказа администратором");
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при создании заказа",
+                    error = ex.Message
+                });
+            }
         }
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            try
             {
-                return NotFound();
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Заказ успешно удален"
+                });
             }
-
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при удалении заказа {OrderId}", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при удалении заказа",
+                    error = ex.Message
+                });
+            }
         }
+
+        #endregion
 
         private bool OrderExists(int id)
         {

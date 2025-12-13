@@ -14,7 +14,7 @@
                 <a href="index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
             </h1>
             <div class="user-info">
-                <span id="userName">Менеджер</span>
+                <span id="userName">Загрузка...</span>
                 <button onclick="logout()" class="btn-logout">
                     <i class="bi bi-box-arrow-right"></i> Выйти
                 </button>
@@ -22,89 +22,259 @@
         </header>
 
         <div class="dashboard-content">
-            <div class="role-card manager-card">
-                <div class="role-icon">
-                    <i class="bi bi-person-badge"></i>
+            <!-- Профиль менеджера -->
+            <div class="manager-profile-container">
+                <!-- Левая колонка - информация профиля -->
+                <div class="manager-profile-card">
+                    <div class="manager-profile-header">
+                        <div class="manager-profile-avatar">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <div class="manager-profile-info">
+                            <h2 id="profileName">Загрузка...</h2>
+                            <span class="manager-user-role" id="userRole">Менеджер</span>
+                        </div>
+                    </div>
+
+                    <!-- Статистика -->
+                    <div class="manager-stats">
+                        <div class="manager-stat">
+                            <div class="manager-stat-value" id="statActiveOrders">0</div>
+                            <div class="manager-stat-label">Активные заказы</div>
+                        </div>
+                        <div class="manager-stat">
+                            <div class="manager-stat-value" id="statSupportRequests">0</div>
+                            <div class="manager-stat-label">Запросы</div>
+                        </div>
+                        <div class="manager-stat">
+                            <div class="manager-stat-value" id="statInProgress">0</div>
+                            <div class="manager-stat-label">В работе</div>
+                        </div>
+                        <div class="manager-stat">
+                            <div class="manager-stat-value" id="statCompleted">0</div>
+                            <div class="manager-stat-label">Завершено</div>
+                        </div>
+                    </div>
+
+                    <!-- Уведомление -->
+                    <div class="manager-notification" id="welcomeMessage" style="display: none;">
+                        <i class="bi bi-info-circle"></i>
+                        <span id="notificationText">Добро пожаловать в панель управления!</span>
+                    </div>
                 </div>
-                <h2>Панель менеджера</h2>
-                <p class="role-description">
-                    Вы вошли в систему как <strong>менеджер</strong>. Ваши возможности:
-                </p>
-                <ul class="role-features">
-                    <li><i class="bi bi-check-circle"></i> Управление заказами клиентов</li>
-                    <li><i class="bi bi-check-circle"></i> Назначение исполнителей</li>
-                    <li><i class="bi bi-check-circle"></i> Обработка запросов поддержки</li>
-                    <li><i class="bi bi-check-circle"></i> Создание отчетов</li>
-                    <li><i class="bi bi-check-circle"></i> Мониторинг выполнения услуг</li>
-                    <li><i class="bi bi-check-circle"></i> Управление командой</li>
-                </ul>
+
+                <!-- Правая колонка - данные профиля -->
+                <div class="profile-card">
+                    <h3 style="color: #1b5e20; margin-bottom: 20px;">
+                        <i class="bi bi-person-gear"></i> Данные профиля
+                    </h3>
+
+                    <!-- Личные данные -->
+                    <div class="profile-data">
+                        <table class="manager-data-table">
+                            <tr>
+                                <th>Имя:</th>
+                                <td>
+                                    <span id="displayName" class="manager-data-value"></span>
+                                    <button onclick="editField('name')" class="manager-edit-btn">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div id="editNameForm" class="edit-form">
+                                        <div class="form-row">
+                                            <label>Имя:</label>
+                                            <input type="text" id="editName" placeholder="Ваше имя">
+                                        </div>
+                                        <div class="error-text" id="nameError"></div>
+                                        <div class="form-actions">
+                                            <button onclick="saveField('name')" class="btn-small btn-save" id="saveNameBtn">
+                                                Сохранить
+                                            </button>
+                                            <button onclick="cancelEdit('name')" class="btn-small btn-cancel">
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Email:</th>
+                                <td>
+                                    <span id="displayEmail" class="manager-data-value"></span>
+                                    <button onclick="editField('email')" class="manager-edit-btn">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div id="editEmailForm" class="edit-form">
+                                        <div class="form-row">
+                                            <label>Email:</label>
+                                            <input type="email" id="editEmail" placeholder="example@mail.com">
+                                        </div>
+                                        <div class="error-text" id="emailError"></div>
+                                        <div class="form-actions">
+                                            <button onclick="saveField('email')" class="btn-small btn-save" id="saveEmailBtn">
+                                                Сохранить
+                                            </button>
+                                            <button onclick="cancelEdit('email')" class="btn-small btn-cancel">
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Телефон:</th>
+                                <td>
+                                    <span id="displayPhone" class="manager-data-value"></span>
+                                    <button onclick="editField('phone')" class="manager-edit-btn">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div id="editPhoneForm" class="edit-form">
+                                        <div class="form-row">
+                                            <label>Телефон:</label>
+                                            <input type="tel" id="editPhone" placeholder="+7 (999) 123-45-67">
+                                        </div>
+                                        <div class="error-text" id="phoneError"></div>
+                                        <div class="form-actions">
+                                            <button onclick="saveField('phone')" class="btn-small btn-save" id="savePhoneBtn">
+                                                Сохранить
+                                            </button>
+                                            <button onclick="cancelEdit('phone')" class="btn-small btn-cancel">
+                                                Отмена
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Дата регистрации:</th>
+                                <td>
+                                    <span id="displayRegDate" class="manager-data-value"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Смена пароля -->
+                    <div class="manager-password-section">
+                        <h3><i class="bi bi-shield-lock"></i> Смена пароля</h3>
+                        <div class="password-form">
+                            <div class="form-row">
+                                <label>Старый пароль:</label>
+                                <input type="password" id="oldPassword" placeholder="Введите старый пароль">
+                            </div>
+                            <div class="form-row">
+                                <label>Новый пароль:</label>
+                                <input type="password" id="newPassword" placeholder="Введите новый пароль">
+                            </div>
+                            <div class="form-row">
+                                <label>Повторите пароль:</label>
+                                <input type="password" id="confirmPassword" placeholder="Повторите новый пароль">
+                            </div>
+                            <div class="error-text" id="passwordError"></div>
+                            <button onclick="changePassword()" class="manager-change-password-btn" id="changePasswordBtn">
+                                <i class="bi bi-key"></i> Сменить пароль
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e3f2fd;">
-                        <i class="bi bi-list-task" style="color: #2196F3;"></i>
-                    </div>
-                    <h3>Активные заказы</h3>
-                    <div class="stat-value">24</div>
-                    <small>+3 за сегодня</small>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #f3e5f5;">
-                        <i class="bi bi-headset" style="color: #9C27B0;"></i>
-                    </div>
-                    <h3>Запросы поддержки</h3>
-                    <div class="stat-value">12</div>
-                    <small>4 требуют ответа</small>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e8f5e9;">
-                        <i class="bi bi-clock-history" style="color: #4CAF50;"></i>
-                    </div>
-                    <h3>В работе</h3>
-                    <div class="stat-value">8</div>
-                    <small>2 с высоким приоритетом</small>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fff3e0;">
-                        <i class="bi bi-check-circle" style="color: #FF9800;"></i>
-                    </div>
-                    <h3>Завершено</h3>
-                    <div class="stat-value">156</div>
-                    <small>за этот месяц</small>
-                </div>
-            </div>
-
-            <div class="manager-controls">
-                <h3>Управление</h3>
-                <div class="controls-grid">
-                    <button class="control-button" onclick="manageOrders()">
+            <!-- Быстрые действия менеджера -->
+            <div class="manager-control-panel">
+                <h3 style="color: #1b5e20; margin-bottom: 20px;">
+                    <i class="bi bi-speedometer2"></i> Управление
+                </h3>
+                <div class="manager-control-grid">
+                    <a href="orders-management.html" class="manager-control-btn">
                         <i class="bi bi-clipboard-data"></i>
-                        Заказы
-                    </button>
-                    <button class="control-button" onclick="manageSupport()">
+                        Управление заказами
+                        <small>Просмотр и управление</small>
+                    </a>
+
+                    <a href="support-management.html" class="manager-control-btn">
                         <i class="bi bi-headset"></i>
-                        Поддержка
-                    </button>
-                    <button class="control-button" onclick="manageTeam()">
+                        Поддержка клиентов
+                        <small>Обработка запросов</small>
+                    </a>
+
+                    <button class="manager-control-btn" onclick="viewTeam()">
                         <i class="bi bi-people"></i>
                         Команда
+                        <small>Управление сотрудниками</small>
                     </button>
-                    <button class="control-button" onclick="generateReports()">
+
+                    <button class="manager-control-btn" onclick="generateReports()">
                         <i class="bi bi-graph-up"></i>
                         Отчеты
+                        <small>Аналитика и статистика</small>
                     </button>
-                    <button class="control-button" onclick="assignTasks()">
+
+                    <button class="manager-control-btn" onclick="assignTasks()">
                         <i class="bi bi-person-plus"></i>
                         Назначения
+                        <small>Распределение задач</small>
                     </button>
-                    <button class="control-button" onclick="viewAnalytics()">
+
+                    <button class="manager-control-btn" onclick="viewAnalytics()">
                         <i class="bi bi-bar-chart"></i>
                         Аналитика
+                        <small>Статистика системы</small>
                     </button>
+
+                    <button class="manager-control-btn" onclick="manageUsers()">
+                        <i class="bi bi-person-badge"></i>
+                        Пользователи
+                        <small>Управление аккаунтами</small>
+                    </button>
+
+                    <button class="manager-control-btn" onclick="systemSettings()">
+                        <i class="bi bi-gear"></i>
+                        Настройки
+                        <small>Конфигурация системы</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Последняя активность -->
+            <div class="recent-activity" style="margin-top: 30px;">
+                <h3 style="color: #1b5e20;">
+                    <i class="bi bi-clock-history"></i> Последняя активность
+                </h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="bi bi-check-circle-fill" style="color: #4CAF50;"></i>
+                        <span>Заказ #125 завершен</span>
+                        <small>Сегодня, 10:30</small>
+                    </div>
+                    <div class="activity-item">
+                        <i class="bi bi-headset" style="color: #2196F3;"></i>
+                        <span>Новый запрос в поддержку от клиента Иванов</span>
+                        <small>Сегодня, 09:15</small>
+                    </div>
+                    <div class="activity-item">
+                        <i class="bi bi-person-plus" style="color: #FF9800;"></i>
+                        <span>Назначен исполнитель для заказа #127</span>
+                        <small>Вчера, 16:45</small>
+                    </div>
+                    <div class="activity-item">
+                        <i class="bi bi-file-text" style="color: #9C27B0;"></i>
+                        <span>Создан отчет за неделю</span>
+                        <small>Вчера, 14:20</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -114,34 +284,48 @@
         </footer>
     </div>
 
+    <!-- Уведомление -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
     <script>
         const API_URL = 'https://localhost:7100';
+        let currentUser = null;
+        let editingField = null;
 
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('Manager dashboard loaded');
-
-            checkAuth();
-            loadUserData();
+            initializeManagerDashboard();
         });
+
+        async function initializeManagerDashboard() {
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                await loadManagerProfile();
+                loadManagerStats();
+                showWelcomeMessage();
+            }
+        }
 
         async function checkAuth() {
             const token = localStorage.getItem('token');
             const userJson = localStorage.getItem('user');
 
             if (!token || !userJson) {
-                window.location.href = 'login.html';
+                showNotification('Требуется авторизация', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return false;
             }
 
             try {
-                const user = JSON.parse(userJson);
+                currentUser = JSON.parse(userJson);
 
-                if (user.role !== 'Manager' && user.role !== 'Admin') {
-                    redirectByRole(user.role);
+                // Проверяем, что пользователь имеет роль Manager или Admin
+                if (currentUser.role !== 'Manager' && currentUser.role !== 'Admin') {
+                    redirectByRole(currentUser.role);
                     return false;
                 }
 
-                const response = await fetch(`${API_URL}/api/Users`, {
+                // Проверяем токен
+                const response = await fetch(`${API_URL}/api/Auth/check`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -149,74 +333,383 @@
 
                 if (!response.ok) {
                     localStorage.clear();
-                    window.location.href = 'login.html';
+                    showNotification('Сессия истекла', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
                     return false;
                 }
 
                 return true;
-
             } catch (error) {
+                console.error('Auth check error:', error);
                 localStorage.clear();
-                window.location.href = 'login.html';
+                showNotification('Ошибка авторизации', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return false;
             }
         }
 
-        function loadUserData() {
-            const userJson = localStorage.getItem('user');
-            if (userJson) {
-                const user = JSON.parse(userJson);
-                const userNameElement = document.getElementById('userName');
-                if (userNameElement) {
-                    userNameElement.textContent = user.name || user.email;
+        async function loadManagerProfile() {
+            try {
+                const token = localStorage.getItem('token');
+
+                // Используем endpoint для получения текущего пользователя
+                const response = await fetch(`${API_URL}/api/Users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    updateManagerProfileDisplay(userData);
+                } else {
+                    // Если endpoint /me не работает, пробуем получить по ID
+                    await loadManagerById();
+                }
+            } catch (error) {
+                console.error('Error loading manager profile:', error);
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+        }
+
+        async function loadManagerById() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/Users/${currentUser.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    updateManagerProfileDisplay(userData);
+                } else {
+                    showNotification('Ошибка загрузки профиля', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading manager by ID:', error);
+                showNotification('Ошибка загрузки профиля', 'error');
+            }
+        }
+
+        function updateManagerProfileDisplay(user) {
+            // Обновляем имя в шапке
+            document.getElementById('userName').textContent = user.name || user.email || 'Менеджер';
+            document.getElementById('profileName').textContent = user.name || user.email || 'Менеджер';
+
+            // Обновляем роль
+            const roleElement = document.getElementById('userRole');
+            if (user.role === 'Admin') {
+                roleElement.textContent = 'Администратор';
+                roleElement.style.background = '#ffebee';
+                roleElement.style.color = '#d32f2f';
+                roleElement.style.borderColor = '#ffcdd2';
+            } else {
+                roleElement.textContent = 'Менеджер';
+                roleElement.style.background = '#e8f5e9';
+                roleElement.style.color = '#388E3C';
+                roleElement.style.borderColor = '#a5d6a7';
+            }
+
+            // Обновляем данные в таблице
+            document.getElementById('displayName').textContent = user.name || 'Не указано';
+            document.getElementById('displayEmail').textContent = user.email || 'Не указано';
+            document.getElementById('displayPhone').textContent = user.phone || 'Не указано';
+
+            // Дата регистрации
+            if (user.regDate) {
+                const regDate = new Date(user.regDate);
+                document.getElementById('displayRegDate').textContent =
+                    regDate.toLocaleDateString('ru-RU', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+            } else {
+                document.getElementById('displayRegDate').textContent = 'Неизвестно';
+            }
+        }
+
+        function loadManagerStats() {
+            // Загружаем статистику менеджера
+            // В реальном приложении здесь должен быть запрос к API
+            document.getElementById('statActiveOrders').textContent = '24';
+            document.getElementById('statSupportRequests').textContent = '12';
+            document.getElementById('statInProgress').textContent = '8';
+            document.getElementById('statCompleted').textContent = '156';
+        }
+
+        function showWelcomeMessage() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const notificationText = document.getElementById('notificationText');
+
+            if (currentUser && currentUser.name) {
+                notificationText.textContent = `Добро пожаловать, ${currentUser.name}! У вас 4 новых задачи на сегодня.`;
+            } else {
+                notificationText.textContent = 'Добро пожаловать в панель управления менеджера!';
+            }
+
+            welcomeMessage.style.display = 'flex';
+
+            // Автоматически скрыть через 10 секунд
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+            }, 10000);
+        }
+
+        // Функции редактирования профиля (аналогичны user-dashboard.html)
+        function editField(field) {
+            if (editingField && editingField !== field) {
+                cancelEdit(editingField);
+            }
+
+            editingField = field;
+            const form = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`);
+            const errorElement = document.getElementById(`${field}Error`);
+
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            const currentValue = document.getElementById(`display${field.charAt(0).toUpperCase() + field.slice(1)}`).textContent;
+            const input = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}`);
+
+            input.value = currentValue === 'Не указано' ? '' : currentValue;
+
+            form.classList.add('active');
+            input.focus();
+        }
+
+        function cancelEdit(field) {
+            editingField = null;
+            const form = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}Form`);
+            form.classList.remove('active');
+
+            const saveBtn = document.getElementById(`save${field.charAt(0).toUpperCase() + field.slice(1)}Btn`);
+            if (saveBtn) {
+                saveBtn.innerHTML = 'Сохранить';
+                saveBtn.disabled = false;
+            }
+        }
+
+        async function saveField(field) {
+            const input = document.getElementById(`edit${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            const saveBtn = document.getElementById(`save${field.charAt(0).toUpperCase() + field.slice(1)}Btn`);
+            const errorElement = document.getElementById(`${field}Error`);
+            const value = input.value.trim();
+
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            if (!value && field !== 'phone') {
+                showError(field, 'Поле не может быть пустым');
+                return;
+            }
+
+            if (field === 'email' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showError(field, 'Введите корректный email');
+                    return;
                 }
             }
+
+            saveBtn.innerHTML = '<span class="loading-spinner"></span> Сохранение...';
+            saveBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const updateData = {
+                    name: field === 'name' ? value : currentUser.name,
+                    email: field === 'email' ? value : currentUser.email,
+                    phone: field === 'phone' ? value : currentUser.phone
+                };
+
+                const response = await fetch(`${API_URL}/api/Users/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    if (result.user) {
+                        updateManagerProfileDisplay(result.user);
+
+                        const storedUser = JSON.parse(localStorage.getItem('user'));
+                        if (result.user.name) storedUser.name = result.user.name;
+                        if (result.user.email) storedUser.email = result.user.email;
+                        if (result.user.phone) storedUser.phone = result.user.phone;
+                        localStorage.setItem('user', JSON.stringify(storedUser));
+
+                        currentUser = { ...currentUser, ...result.user };
+                    }
+
+                    cancelEdit(field);
+                    showNotification(result.message || 'Данные успешно обновлены', 'success');
+                } else {
+                    showError(field, result.message || 'Ошибка обновления данных');
+                }
+            } catch (error) {
+                console.error(`Error saving ${field}:`, error);
+                showError(field, 'Ошибка соединения с сервером');
+            } finally {
+                saveBtn.innerHTML = 'Сохранить';
+                saveBtn.disabled = false;
+            }
+        }
+
+        function showError(field, message) {
+            const errorElement = document.getElementById(`${field}Error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        async function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const changeBtn = document.getElementById('changePasswordBtn');
+            const errorElement = document.getElementById('passwordError');
+
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                showPasswordError('Заполните все поля');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showPasswordError('Новые пароли не совпадают');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showPasswordError('Пароль должен быть не менее 6 символов');
+                return;
+            }
+
+            changeBtn.innerHTML = '<span class="loading-spinner"></span> Смена пароля...';
+            changeBtn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/Auth/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        oldPassword,
+                        newPassword
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Пароль успешно изменен', 'success');
+                    document.getElementById('oldPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showPasswordError(result.message || 'Ошибка смены пароля');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showPasswordError('Ошибка соединения с сервером');
+            } finally {
+                changeBtn.innerHTML = '<i class="bi bi-key"></i> Сменить пароль';
+                changeBtn.disabled = false;
+            }
+        }
+
+        function showPasswordError(message) {
+            const errorElement = document.getElementById('passwordError');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, type === 'error' ? 5000 : 3000);
+
+            notification.onclick = () => {
+                notification.style.display = 'none';
+            };
         }
 
         function redirectByRole(role) {
-            switch (role) {
-                case 'Admin':
-                    window.location.href = 'admin-dashboard.html';
-                    break;
-                case 'Manager':
-                    window.location.href = 'manager-dashboard.html';
-                    break;
-                case 'User':
-                    window.location.href = 'user-dashboard.html';
-                    break;
-                default:
-                    window.location.href = 'login.html';
-            }
+            const dashboards = {
+                'Admin': 'admin-dashboard.html',
+                'Manager': 'manager-dashboard.html',
+                'User': 'user-dashboard.html'
+            };
+            window.location.href = dashboards[role] || 'login.html';
         }
 
         window.logout = function () {
-            localStorage.clear();
-            window.location.href = 'login.html';
+            if (confirm('Вы уверены, что хотите выйти из системы?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
         };
 
-        window.manageOrders = function () {
-            alert('Управление заказами\n(функция в разработке)');
-        };
-
-        window.manageSupport = function () {
-            alert('Управление поддержкой\n(функция в разработке)');
-        };
-
-        window.manageTeam = function () {
-            alert('Управление командой\n(функция в разработке)');
+        // Функции управления
+        window.viewTeam = function () {
+            showNotification('Управление командой в разработке', 'info');
         };
 
         window.generateReports = function () {
-            alert('Генерация отчетов\n(функция в разработке)');
+            showNotification('Генерация отчетов в разработке', 'info');
         };
 
         window.assignTasks = function () {
-            alert('Назначение задач\n(функция в разработке)');
+            showNotification('Назначение задач в разработке', 'info');
         };
 
         window.viewAnalytics = function () {
-            alert('Просмотр аналитики\n(функция в разработке)');
+            showNotification('Аналитика в разработке', 'info');
         };
+
+        window.manageUsers = function () {
+            showNotification('Управление пользователями в разработке', 'info');
+        };
+
+        window.systemSettings = function () {
+            showNotification('Настройки системы в разработке', 'info');
+        };
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && editingField) {
+                cancelEdit(editingField);
+            }
+        });
     </script>
 </body>
 </html>

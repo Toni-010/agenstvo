@@ -67,7 +67,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.Data.Models.Order, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.OrderDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -119,7 +119,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "SupportSystem.API.Data.Models.Order",
+        "Type": "SupportSystem.API.DTOs.OrderDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -128,27 +128,6 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
-    "Method": "PutOrder",
-    "RelativePath": "api/Orders/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "order",
-        "Type": "SupportSystem.API.Data.Models.Order",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "SupportSystem.API.Controllers.OrdersController",
@@ -184,6 +163,73 @@
   },
   {
     "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "GetManagerOrders",
+    "RelativePath": "api/Orders/manager",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.OrderDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "UpdateOrderAsManager",
+    "RelativePath": "api/Orders/manager/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateOrderDto",
+        "Type": "SupportSystem.API.DTOs.UpdateOrderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "AssignOrderToSelf",
+    "RelativePath": "api/Orders/manager/assign/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
+    "Method": "GetOrderStats",
+    "RelativePath": "api/Orders/manager/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.OrdersController",
     "Method": "GetMyOrders",
     "RelativePath": "api/Orders/my",
     "HttpMethod": "GET",
@@ -193,6 +239,108 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.OrderDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "GetSupportRequests",
+    "RelativePath": "api/SupportRequests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.SupportRequestDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "GetSupportRequest",
+    "RelativePath": "api/SupportRequests/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "SupportSystem.API.DTOs.SupportRequestDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "CreateSupportRequest",
+    "RelativePath": "api/SupportRequests/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supportRequestDto",
+        "Type": "SupportSystem.API.DTOs.CreateSupportRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "GetMySupportRequests",
+    "RelativePath": "api/SupportRequests/my",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.SupportRequestDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "GetMyOrdersForDropdown",
+    "RelativePath": "api/SupportRequests/my-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SupportSystem.API.DTOs.OrderDropdownDto, SupportSystem.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
