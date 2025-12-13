@@ -693,12 +693,7 @@ namespace SupportSystem.API.Controllers
         public string Status { get; set; } = string.Empty;
     }
 
-    public class CreateReportDto
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public bool CompleteRequest { get; set; } = false;
-    }
+
 
     public class SupportRequestDetailDto
     {

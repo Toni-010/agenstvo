@@ -302,6 +302,38 @@
     ]
   },
   {
+    "ContainingType": "SupportSystem.API.Controllers.ReportsController",
+    "Method": "CreateReport",
+    "RelativePath": "api/Reports/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportDto",
+        "Type": "SupportSystem.API.DTOs.CreateReportDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.ReportsController",
+    "Method": "GetReportsBySupportRequest",
+    "RelativePath": "api/Reports/support-request/{supportRequestId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "supportRequestId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
     "Method": "GetSupportRequests",
     "RelativePath": "api/SupportRequests",
@@ -430,7 +462,7 @@
       },
       {
         "Name": "reportDto",
-        "Type": "SupportSystem.API.Controllers.CreateReportDto",
+        "Type": "SupportSystem.API.DTOs.CreateReportDto",
         "IsRequired": true
       }
     ],
