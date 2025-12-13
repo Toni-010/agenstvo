@@ -3,6 +3,7 @@ wwwroot\about.html
 wwwroot\admin-dashboard.html
 wwwroot\create-order.html
 wwwroot\css\app.css
+wwwroot\css\style.css
 wwwroot\css\support.css
 wwwroot\favicon.png
 wwwroot\index.html
@@ -10,7 +11,7 @@ wwwroot\js\auth.js
 wwwroot\login.html
 wwwroot\manager-dashboard.html
 wwwroot\register.html
+wwwroot\support-management.html
 wwwroot\support.html
 wwwroot\user-dashboard.html
-wwwroot\css\style.css
 wwwroot\orders-management.html

@@ -49,8 +49,13 @@ namespace SupportSystem.API.Controllers
                         CompleteDate = o.CompleteDate,
                         ClientId = o.ClientId,
                         ClientName = o.Client.Name,
+                        ClientEmail = o.Client.Email ?? "Не указан",
+                        ClientPhone = o.Client.Phone ?? "Не указан",
                         AssignedToId = o.AssignedToId,
-                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен"
+                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен",
+                        ManagerEmail = o.Manager != null ? o.Manager.Email ?? "Не указан" : null,
+                        ManagerPhone = o.Manager != null ? o.Manager.Phone ?? "Не указан" : null,
+                        ManagerRole = o.Manager != null ? o.Manager.Role.ToString() : null
                     })
                     .ToListAsync();
 
@@ -104,7 +109,12 @@ namespace SupportSystem.API.Controllers
                     ClientId = order.ClientId,
                     ClientName = order.Client.Name,
                     AssignedToId = order.AssignedToId,
-                    ManagerName = order.Manager != null ? order.Manager.Name : "Не назначен"
+                    ManagerName = order.Manager != null ? order.Manager.Name : "Не назначен",
+                    ClientEmail = order.Client.Email ?? "Не указан",
+                    ClientPhone = order.Client.Phone ?? "Не указан",
+                    ManagerEmail = order.Manager != null ? order.Manager.Email ?? "Не указан" : null,
+                    ManagerPhone = order.Manager != null ? order.Manager.Phone ?? "Не указан" : null,
+                    ManagerRole = order.Manager != null ? order.Manager.Role.ToString() : null
                 };
 
                 return Ok(orderDto);
@@ -201,8 +211,14 @@ namespace SupportSystem.API.Controllers
                         CreateDate = order.CreateDate,
                         ClientId = order.ClientId,
                         ClientName = client?.Name ?? "Неизвестный клиент",
+                        ClientEmail = client?.Email ?? "Не указан",      // ← добавьте
+                        ClientPhone = client?.Phone ?? "Не указан",
                         AssignedToId = order.AssignedToId,
-                        CompleteDate = order.CompleteDate
+                        CompleteDate = order.CompleteDate,
+                        ManagerName = string.Empty,
+                        ManagerEmail = string.Empty,
+                        ManagerPhone = string.Empty,
+                        ManagerRole = string.Empty
                     },
                     message = "Заказ успешно создан!"
                 });
@@ -260,8 +276,13 @@ namespace SupportSystem.API.Controllers
                         CompleteDate = o.CompleteDate,
                         ClientId = o.ClientId,
                         ClientName = o.Client.Name,
+                        ClientEmail = o.Client.Email ?? "Не указан",
+                        ClientPhone = o.Client.Phone ?? "Не указан",
                         AssignedToId = o.AssignedToId,
-                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен"
+                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен",
+                        ManagerEmail = o.Manager != null ? o.Manager.Email ?? "Не указан" : null,
+                        ManagerPhone = o.Manager != null ? o.Manager.Phone ?? "Не указан" : null,
+                        ManagerRole = o.Manager != null ? o.Manager.Role.ToString() : null
                     })
                     .ToListAsync();
 
@@ -305,8 +326,13 @@ namespace SupportSystem.API.Controllers
                         CompleteDate = o.CompleteDate,
                         ClientId = o.ClientId,
                         ClientName = o.Client.Name,
+                        ClientEmail = o.Client.Email ?? "Не указан",
+                        ClientPhone = o.Client.Phone ?? "Не указан",
                         AssignedToId = o.AssignedToId,
-                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен"
+                        ManagerName = o.Manager != null ? o.Manager.Name : "Не назначен",
+                        ManagerEmail = o.Manager != null ? o.Manager.Email ?? "Не указан" : null,
+                        ManagerPhone = o.Manager != null ? o.Manager.Phone ?? "Не указан" : null,
+                        ManagerRole = o.Manager != null ? o.Manager.Role.ToString() : null
                     })
                     .ToListAsync();
 
@@ -584,8 +610,13 @@ namespace SupportSystem.API.Controllers
                         CompleteDate = updatedOrder.CompleteDate,
                         ClientId = updatedOrder.ClientId,
                         ClientName = updatedOrder.Client.Name,
+                        ClientEmail = updatedOrder.Client.Email ?? "Не указан",      // ← добавьте
+                        ClientPhone = updatedOrder.Client.Phone ?? "Не указан",      // ← добавьте
                         AssignedToId = updatedOrder.AssignedToId,
-                        ManagerName = updatedOrder.Manager != null ? updatedOrder.Manager.Name : "Не назначен"
+                        ManagerName = updatedOrder.Manager != null ? updatedOrder.Manager.Name : "Не назначен",
+                        ManagerEmail = updatedOrder.Manager != null ? updatedOrder.Manager.Email ?? "Не указан" : null,
+                        ManagerPhone = updatedOrder.Manager != null ? updatedOrder.Manager.Phone ?? "Не указан" : null,
+                        ManagerRole = updatedOrder.Manager != null ? updatedOrder.Manager.Role.ToString() : null
                     }
                 });
             }
@@ -749,6 +780,66 @@ namespace SupportSystem.API.Controllers
             return NoContent();
         }
 
+
+        // PUT: api/Orders/manager/unassign/5 - отказаться от заказа (отвязать менеджера)
+        [HttpPut("manager/unassign/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> UnassignOrderToSelf(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int managerId))
+                {
+                    return Unauthorized(new { message = "Менеджер не авторизован" });
+                }
+
+                // Проверяем, что заказ назначен именно на текущего менеджера
+                if (order.AssignedToId != managerId)
+                {
+                    return BadRequest(new { message = "Этот заказ не назначен на вас" });
+                }
+
+                // Проверяем, что статус позволяет отказаться
+                if (order.Status == OrderStatus.Completed || order.Status == OrderStatus.Cancelled)
+                {
+                    return BadRequest(new { message = "Нельзя отказаться от завершенного или отмененного заказа" });
+                }
+
+                // Отвязываем менеджера и возвращаем статус в "Новый"
+                order.AssignedToId = null;
+                order.Status = OrderStatus.New;
+                order.CompleteDate = null; // Сбрасываем дату завершения
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Вы успешно отказались от заказа. Заказ возвращен в статус 'Новый'.",
+                    orderId = order.Id,
+                    assignedToId = order.AssignedToId,
+                    status = order.Status.ToString()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при отказе от заказа {OrderId} менеджером", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при отказе от заказа",
+                    error = ex.Message
+                });
+            }
+        }
+
+
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
@@ -788,5 +879,8 @@ namespace SupportSystem.API.Controllers
         {
             return _context.Orders.Any(e => e.Id == id);
         }
+
+
     }
+
 }

@@ -15,6 +15,13 @@ namespace SupportSystem.API.DTOs
         public string ClientName { get; set; } = string.Empty;
         public int? AssignedToId { get; set; }
         public string? ManagerName { get; set; }
+
+        public string ClientEmail { get; set; } = string.Empty;
+        public string ClientPhone { get; set; } = string.Empty;
+
+        public string? ManagerEmail { get; set; }
+        public string? ManagerPhone { get; set; }
+        public string? ManagerRole { get; set; }
     }
     public class UpdateOrderDto
     {

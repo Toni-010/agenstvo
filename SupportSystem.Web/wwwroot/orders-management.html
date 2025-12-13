@@ -225,8 +225,7 @@
         }
 
         .search-box {
-            flex: 1;
-            min-width: 300px;
+            flex: 0 1 250px; /* Уменьшили ширину */
             position: relative;
         }
 
@@ -330,7 +329,7 @@
             background: white;
             border-radius: 12px;
             width: 90%;
-            max-width: 900px;
+            max-width: 800px; /* Уменьшили максимальную ширину */
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
@@ -639,32 +638,21 @@
                 background: #545b62;
             }
 
-        /* Статистика в модальном окне */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+        .btn-unassign {
+            background: #ff9800;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .stat-box {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-            .stat-box .value {
-                font-size: 1.8rem;
-                font-weight: 700;
-                color: #4CAF50;
-                margin: 5px 0;
-            }
-
-            .stat-box .label {
-                color: #64748b;
-                font-size: 0.85rem;
+            .btn-unassign:hover {
+                background: #e68900;
+                transform: translateY(-2px);
             }
 
         /* Пустая колонка */
@@ -700,6 +688,7 @@
             }
 
             .search-box {
+                flex: 1;
                 min-width: auto;
             }
 
@@ -737,7 +726,7 @@
                 flex-direction: column;
             }
 
-            .btn-save, .btn-cancel {
+            .btn-save, .btn-cancel, .btn-unassign {
                 width: 100%;
             }
         }
@@ -762,6 +751,16 @@
         .modal-content {
             animation: fadeIn 0.2s ease forwards;
         }
+
+        /* Новые стили для кнопки отказа */
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background: #d32f2f;
+            }
     </style>
 </head>
 <body class="dashboard-page">
@@ -799,7 +798,7 @@
                 <div class="filters-row">
                     <div class="search-box">
                         <i class="bi bi-search"></i>
-                        <input type="text" id="searchInput" placeholder="Поиск по названию или описанию..."
+                        <input type="text" id="searchInput" placeholder="Поиск по названию..."
                                onkeyup="searchOrders()">
                     </div>
                     <div class="filter-controls">
@@ -918,6 +917,7 @@
         let currentUser = null;
         let allOrders = [];
         let currentOrderId = null;
+        let currentOrderData = null;
 
         document.addEventListener('DOMContentLoaded', function () {
             initializeOrdersPage();
@@ -995,9 +995,7 @@
             allOrders.forEach(order => {
                 if (statusFilter && order.status !== statusFilter) return;
                 if (priorityFilter && order.priority !== priorityFilter) return;
-                if (searchText &&
-                    !order.orderName.toLowerCase().includes(searchText) &&
-                    !order.description.toLowerCase().includes(searchText)) return;
+                if (searchText && !order.orderName.toLowerCase().includes(searchText)) return;
 
                 const orderElement = createOrderCard(order);
 
@@ -1075,41 +1073,41 @@
             const isAssignedToMe = order.assignedToId === currentUser.id;
 
             card.innerHTML = `
-                    <div class="order-header">
-                        <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
-                        <span class="order-id">#${order.id}</span>
-                    </div>
-                    <div class="order-priority ${priorityClass}">${priorityText}</div>
-                    <div class="order-info">
-                        <div class="order-client">
-                            <i class="bi bi-person"></i>
-                            ${escapeHtml(order.clientName)}
+                        <div class="order-header">
+                            <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
+                            <span class="order-id">#${order.id}</span>
                         </div>
-                        <div class="order-date">
-                            <i class="bi bi-calendar"></i>
-                            ${formattedDate}
+                        <div class="order-priority ${priorityClass}">${priorityText}</div>
+                        <div class="order-info">
+                            <div class="order-client">
+                                <i class="bi bi-person"></i>
+                                ${escapeHtml(order.clientName)}
+                            </div>
+                            <div class="order-date">
+                                <i class="bi bi-calendar"></i>
+                                ${formattedDate}
+                            </div>
+                            <div class="order-cost">
+                                <i class="bi bi-cash"></i>
+                                ${cost}
+                            </div>
                         </div>
-                        <div class="order-cost">
-                            <i class="bi bi-cash"></i>
-                            ${cost}
-                        </div>
-                    </div>
-                    <div class="order-actions">
-                        ${!isAssignedToMe && order.status === 'New' ? `
-                            <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
-                                <i class="bi bi-person-check"></i> Принять
+                        <div class="order-actions">
+                            ${!isAssignedToMe && order.status === 'New' ? `
+                                <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
+                                    <i class="bi bi-person-check"></i> Принять
+                                </button>
+                            ` : ''}
+                            <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
+                                <i class="bi bi-eye"></i> Просмотр
                             </button>
-                        ` : ''}
-                        <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
-                            <i class="bi bi-eye"></i> Просмотр
-                        </button>
-                        ${isAssignedToMe && order.status === 'Processing' ? `
-                            <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
-                                <i class="bi bi-check-circle"></i> Завершить
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
+                            ${isAssignedToMe && order.status === 'Processing' ? `
+                                <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
+                                    <i class="bi bi-check-circle"></i> Завершить
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
 
             return card;
         }
@@ -1131,15 +1129,14 @@
                 // Показываем загрузку
                 document.getElementById('modalTitle').textContent = 'Загрузка...';
                 document.getElementById('orderDetails').innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-                <div class="loading-spinner" style="margin: 0 auto;"></div>
-                <p style="color: #64748b; margin-top: 15px;">Загрузка информации о заказе...</p>
-            </div>
-        `;
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                                <p style="color: #64748b; margin-top: 15px;">Загрузка информации о заказе...</p>
+                            </div>
+                        `;
 
                 document.getElementById('orderModal').style.display = 'flex';
 
-                // Пробуем получить данные через обычный endpoint
                 const response = await fetch(`${API_URL}/api/Orders/${orderId}`, {
                     method: 'GET',
                     headers: {
@@ -1148,8 +1145,6 @@
                     }
                 });
 
-                console.log('Response status:', response.status);
-
                 if (!response.ok) {
                     if (response.status === 401) {
                         showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
@@ -1157,212 +1152,86 @@
                         setTimeout(() => window.location.href = 'login.html', 2000);
                         return;
                     }
-
-                    const errorText = await response.text();
-                    console.error('API Error:', errorText);
-                    throw new Error(`HTTP ${response.status}: ${errorText.substring(0, 100)}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
 
                 const order = await response.json();
-                console.log('Order data from API:', order);
-
-                // Преобразуем данные в нужный формат
-                const formattedOrder = formatOrderData(order);
-                renderOrderDetails(formattedOrder);
+                currentOrderData = order;
+                renderOrderDetails(order);
 
             } catch (error) {
                 console.error('Error loading order details:', error);
-
                 document.getElementById('orderDetails').innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
-                <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали заказа</h4>
-                <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
-                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 15px; margin: 20px 0;">
-                    <p style="color: #92400e; font-size: 0.85rem; margin: 0;">
-                        <i class="bi bi-lightbulb"></i> Советы по устранению:
-                    </p>
-                    <ul style="text-align: left; color: #92400e; font-size: 0.85rem; margin: 10px 0 0 20px;">
-                        <li>Убедитесь, что вы вошли в систему</li>
-                        <li>Проверьте подключение к интернету</li>
-                        <li>Обновите страницу и попробуйте снова</li>
-                    </ul>
-                </div>
-                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                    <button onclick="closeModal()" class="btn-cancel">
-                        <i class="bi bi-x"></i> Закрыть
-                    </button>
-                    <button onclick="viewOrderDetails(${orderId})" class="btn-save">
-                        <i class="bi bi-arrow-clockwise"></i> Повторить попытку
-                    </button>
-                </div>
-            </div>
-        `;
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
+                                <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали заказа</h4>
+                                <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
+                                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                                    <button onclick="closeModal()" class="btn-cancel">
+                                        <i class="bi bi-x"></i> Закрыть
+                                    </button>
+                                    <button onclick="viewOrderDetails(${orderId})" class="btn-save">
+                                        <i class="bi bi-arrow-clockwise"></i> Повторить попытку
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                const style = document.createElement('style');
+                style.textContent = `
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        `;
+                document.head.appendChild(style);
             }
         }
 
-        // Функция для преобразования данных заказа в нужный формат
-        function formatOrderData(orderData) {
-            console.log('Formatting order data:', orderData);
+        function renderOrderDetails(order) {
+            currentOrderData = order;
 
-            // Проверяем, что данные есть
-            if (!orderData) {
-                return createEmptyOrder();
-            }
+            const normalizedOrder = {
+                Id: order.id || order.Id || 0,
+                OrderName: order.orderName || order.OrderName || 'Без названия',
+                Description: order.description || order.Description || 'Нет описания',
+                Status: order.status || order.Status || 'New',
+                Priority: order.priority || order.Priority || 'Medium',
+                CreateDate: order.createDate || order.CreateDate || new Date().toISOString(),
+                CompleteDate: order.completeDate || order.CompleteDate || null,
+                Cost: order.cost || order.Cost || null,
+                AssignedToId: order.assignedToId || order.AssignedToId || null,
 
-            // Определяем структуру данных (в зависимости от того, какой endpoint вернул)
-            let order = {};
-
-            if (orderData.id) {
-                // Стандартная структура из /api/Orders/{id}
-                order = {
-                    Id: orderData.id,
-                    OrderName: orderData.orderName || orderData.OrderName || '',
-                    Description: orderData.description || orderData.Description || '',
-                    Cost: orderData.cost || orderData.Cost || null,
-                    Status: orderData.status || orderData.Status || 'New',
-                    Priority: orderData.priority || orderData.Priority || 'Medium',
-                    CreateDate: orderData.createDate || orderData.CreateDate || new Date().toISOString(),
-                    CompleteDate: orderData.completeDate || orderData.CompleteDate || null,
-                    Client: {
-                        Id: orderData.clientId || orderData.ClientId || 0,
-                        Name: orderData.clientName || orderData.ClientName || 'Неизвестный клиент',
-                        Email: orderData.clientEmail || '',
-                        Phone: orderData.clientPhone || ''
-                    },
-                    Manager: (orderData.assignedToId || orderData.AssignedToId) ? {
-                        Id: orderData.assignedToId || orderData.AssignedToId,
-                        Name: orderData.managerName || orderData.ManagerName || 'Неизвестный менеджер',
-                        Email: '',
-                        Phone: ''
-                    } : null,
-                    ServiceRequests: [],
-                    SupportRequests: [],
-                    Reports: [],
-                    Statistics: {
-                        ServiceRequestCount: 0,
-                        SupportRequestCount: 0,
-                        ReportCount: 0,
-                        TotalTimeInDays: 0
-                    }
-                };
-
-                // Рассчитываем дни в работе
-                if (order.CompleteDate) {
-                    const createDate = new Date(order.CreateDate);
-                    const completeDate = new Date(order.CompleteDate);
-                    order.Statistics.TotalTimeInDays = (completeDate - createDate) / (1000 * 60 * 60 * 24);
-                }
-
-            } else if (orderData.order && orderData.order.Id) {
-                // Структура из /api/Orders/manager/detail/{id}
-                order = {
-                    Id: orderData.order.Id,
-                    OrderName: orderData.order.OrderName,
-                    Description: orderData.order.Description,
-                    Cost: orderData.order.Cost,
-                    Status: orderData.order.Status,
-                    Priority: orderData.order.Priority,
-                    CreateDate: orderData.order.CreateDate,
-                    CompleteDate: orderData.order.CompleteDate,
-                    Client: orderData.order.Client || {
-                        Id: 0,
-                        Name: 'Неизвестный клиент',
-                        Email: '',
-                        Phone: ''
-                    },
-                    Manager: orderData.order.Manager,
-                    ServiceRequests: orderData.order.ServiceRequests || [],
-                    SupportRequests: orderData.order.SupportRequests || [],
-                    Reports: orderData.order.Reports || [],
-                    Statistics: orderData.order.Statistics || {
-                        ServiceRequestCount: 0,
-                        SupportRequestCount: 0,
-                        ReportCount: 0,
-                        TotalTimeInDays: 0
-                    }
-                };
-            }
-
-            return order;
-        }
-
-        function createEmptyOrder() {
-            return {
-                Id: 0,
-                OrderName: 'Заказ не найден',
-                Description: 'Информация о заказе отсутствует',
-                Cost: null,
-                Status: 'New',
-                Priority: 'Medium',
-                CreateDate: new Date().toISOString(),
-                CompleteDate: null,
                 Client: {
-                    Id: 0,
-                    Name: 'Неизвестный клиент',
-                    Email: '',
-                    Phone: ''
+                    Name: order.clientName || order.ClientName || 'Неизвестный клиент',
+                    Email: order.clientEmail || order.ClientEmail || 'Не указан',
+                    Phone: order.clientPhone || order.ClientPhone || 'Не указан'
                 },
-                Manager: null,
-                ServiceRequests: [],
-                SupportRequests: [],
-                Reports: [],
-                Statistics: {
-                    ServiceRequestCount: 0,
-                    SupportRequestCount: 0,
-                    ReportCount: 0,
-                    TotalTimeInDays: 0
-                }
-            };
-        }
 
-        function renderOrderDetails(orderData) {
-            // Проверяем и нормализуем данные
-            const order = orderData || createEmptyOrder();
-
-            // Убедимся, что все поля существуют
-            order.Id = order.Id || 0;
-            order.OrderName = order.OrderName || 'Без названия';
-            order.Description = order.Description || 'Нет описания';
-            order.Status = order.Status || 'New';
-            order.Priority = order.Priority || 'Medium';
-            order.CreateDate = order.CreateDate || new Date().toISOString();
-            order.Cost = order.Cost || null;
-
-            // Нормализуем вложенные объекты
-            order.Client = order.Client || {
-                Id: 0,
-                Name: 'Неизвестный клиент',
-                Email: 'Не указан',
-                Phone: 'Не указан',
-                RegistrationDate: null
+                Manager: (order.assignedToId || order.AssignedToId) ? {
+                    Id: order.assignedToId || order.AssignedToId,
+                    Name: order.managerName || order.ManagerName || 'Неизвестный менеджер',
+                    Email: order.managerEmail || order.ManagerEmail || 'Не указан',
+                    Role: order.managerRole || order.ManagerRole || 'Менеджер'
+                } : null
             };
 
-            order.Manager = order.Manager || null;
-
-            // Нормализуем массивы
-            order.ServiceRequests = Array.isArray(order.ServiceRequests) ? order.ServiceRequests : [];
-            order.SupportRequests = Array.isArray(order.SupportRequests) ? order.SupportRequests : [];
-            order.Reports = Array.isArray(order.Reports) ? order.Reports : [];
-
-            // Нормализуем статистику
-            order.Statistics = order.Statistics || {
-                ServiceRequestCount: order.ServiceRequests.length,
-                SupportRequestCount: order.SupportRequests.length,
-                ReportCount: order.Reports.length,
-                TotalTimeInDays: 0,
-                HighPriorityServiceRequests: 0,
-                ActiveSupportRequests: 0,
-                TotalCost: 0
-            };
-
-            const isAssignedToMe = order.Manager && order.Manager.Id === currentUser.id;
+            const isAssignedToMe = normalizedOrder.Manager && normalizedOrder.Manager.Id === currentUser.id;
             const canEdit = isAssignedToMe || currentUser.role === 'Admin';
 
-            document.getElementById('modalTitle').textContent = `Заказ #${order.Id}: ${escapeHtml(order.OrderName)}`;
+            // Используем AssignedToId для проверки
+            const canAssignOrder = (currentUser.role === 'Manager' || currentUser.role === 'Admin')
+                && !normalizedOrder.AssignedToId
+                && normalizedOrder.Status === 'New';
+
+            const canUnassign = (currentUser.role === 'Manager' || currentUser.role === 'Admin')
+                && isAssignedToMe
+                && normalizedOrder.Status === 'Processing';
+
+            document.getElementById('modalTitle').textContent = `Заказ #${normalizedOrder.Id}: ${escapeHtml(normalizedOrder.OrderName)}`;
 
             // Форматируем даты
-            const createDate = new Date(order.CreateDate);
+            const createDate = new Date(normalizedOrder.CreateDate);
             const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
@@ -1371,8 +1240,8 @@
                 minute: '2-digit'
             });
 
-            const completeDate = order.CompleteDate ?
-                new Date(order.CompleteDate).toLocaleDateString('ru-RU', {
+            const completeDate = normalizedOrder.CompleteDate ?
+                new Date(normalizedOrder.CompleteDate).toLocaleDateString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -1380,20 +1249,12 @@
                     minute: '2-digit'
                 }) : 'Не завершен';
 
-            // Форматируем дату регистрации клиента
-            const clientRegDate = order.Client.RegistrationDate ?
-                new Date(order.Client.RegistrationDate).toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }) : 'Неизвестно';
-
-            const cost = order.Cost ? `${order.Cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
+            const cost = normalizedOrder.Cost ? `${normalizedOrder.Cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
 
             // Определяем стили статуса
             let statusClass = '';
             let statusIcon = '';
-            switch (order.Status) {
+            switch (normalizedOrder.Status) {
                 case 'New':
                     statusClass = 'status-new';
                     statusIcon = 'bi-plus-circle';
@@ -1418,466 +1279,233 @@
             // Определяем стили приоритета
             let priorityClass = 'priority-medium';
             let priorityText = 'Средний';
-            if (order.Priority === 'High') {
+            if (normalizedOrder.Priority === 'High') {
                 priorityClass = 'priority-high';
                 priorityText = 'Высокий';
-            } else if (order.Priority === 'Low') {
+            } else if (normalizedOrder.Priority === 'Low') {
                 priorityClass = 'priority-low';
                 priorityText = 'Низкий';
             }
 
             // Информация о клиенте
             const clientInfo = `
-        <div class="detail-item">
-            <div class="detail-label">Имя клиента:</div>
-            <div class="detail-value">${escapeHtml(order.Client.Name)}</div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Email клиента:</div>
-            <div class="detail-value">
-                ${order.Client.Email && order.Client.Email !== 'Не указан' ?
-                    `<a href="mailto:${escapeHtml(order.Client.Email)}" style="color: #4CAF50;">
-                        ${escapeHtml(order.Client.Email)}
-                    </a>` :
+                        <div class="detail-item">
+                            <div class="detail-label">Имя клиента:</div>
+                            <div class="detail-value">${escapeHtml(normalizedOrder.Client.Name)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email клиента:</div>
+                            <div class="detail-value">
+                                ${normalizedOrder.Client.Email && normalizedOrder.Client.Email !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(normalizedOrder.Client.Email)}" style="color: #4CAF50;">
+                                        ${escapeHtml(normalizedOrder.Client.Email)}
+                                    </a>` :
                     '<span style="color: #94a3b8;">Не указан</span>'
                 }
-            </div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Телефон клиента:</div>
-            <div class="detail-value">
-                ${order.Client.Phone && order.Client.Phone !== 'Не указан' ?
-                    `<a href="tel:${escapeHtml(order.Client.Phone)}" style="color: #4CAF50;">
-                        ${escapeHtml(order.Client.Phone)}
-                    </a>` :
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Телефон клиента:</div>
+                            <div class="detail-value">
+                                ${normalizedOrder.Client.Phone && normalizedOrder.Client.Phone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(normalizedOrder.Client.Phone)}" style="color: #4CAF50;">
+                                        ${escapeHtml(normalizedOrder.Client.Phone)}
+                                    </a>` :
                     '<span style="color: #94a3b8;">Не указан</span>'
                 }
-            </div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Дата регистрации:</div>
-            <div class="detail-value">${clientRegDate}</div>
-        </div>
-    `;
+                            </div>
+                        </div>
+                    `;
 
-            // Информация о менеджере
-            const managerInfo = order.Manager ? `
-        <div class="detail-item">
-            <div class="detail-label">Имя менеджера:</div>
-            <div class="detail-value">${escapeHtml(order.Manager.Name)}</div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Роль менеджера:</div>
-            <div class="detail-value">
-                <span class="manager-user-role" style="display: inline-block; margin-left: 0;">
-                    ${escapeHtml(order.Manager.Role || 'Менеджер')}
-                </span>
-            </div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Email менеджера:</div>
-            <div class="detail-value">
-                ${order.Manager.Email && order.Manager.Email !== 'Не указан' ?
-                    `<a href="mailto:${escapeHtml(order.Manager.Email)}" style="color: #4CAF50;">
-                        ${escapeHtml(order.Manager.Email)}
-                    </a>` :
+            // Информация о менеджере (без телефона)
+            const managerInfo = normalizedOrder.Manager ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Имя менеджера:</div>
+                            <div class="detail-value">${escapeHtml(normalizedOrder.Manager.Name)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email менеджера:</div>
+                            <div class="detail-value">
+                                ${normalizedOrder.Manager.Email && normalizedOrder.Manager.Email !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(normalizedOrder.Manager.Email)}" style="color: #4CAF50;">
+                                        ${escapeHtml(normalizedOrder.Manager.Email)}
+                                    </a>` :
                     '<span style="color: #94a3b8;">Не указан</span>'
                 }
-            </div>
-        </div>
-        <div class="detail-item">
-            <div class="detail-label">Телефон менеджера:</div>
-            <div class="detail-value">
-                ${order.Manager.Phone && order.Manager.Phone !== 'Не указан' ?
-                    `<a href="tel:${escapeHtml(order.Manager.Phone)}" style="color: #4CAF50;">
-                        ${escapeHtml(order.Manager.Phone)}
-                    </a>` :
-                    '<span style="color: #94a3b8;">Не указан</span>'
-                }
-            </div>
-        </div>
-    ` : `
-        <div class="detail-item">
-            <div class="detail-label">Менеджер:</div>
-            <div class="detail-value">
-                <span style="color: #94a3b8; font-style: italic;">
-                    <i class="bi bi-person-x"></i> Не назначен
-                </span>
-            </div>
-        </div>
-        ${canEdit ? `
-            <div class="detail-item" style="margin-top: 10px;">
-                <button onclick="assignOrderToSelf(${order.Id})" class="btn-assign" style="padding: 6px 12px; font-size: 0.85rem;">
-                    <i class="bi bi-person-check"></i> Принять этот заказ
-                </button>
-            </div>
-        ` : ''}
-    `;
+                            </div>
+                        </div>
+                        ${canUnassign ? `
+                            <div class="detail-item" style="margin-top: 10px;">
+                                <button onclick="unassignOrder(${normalizedOrder.Id})"
+                                        class="btn-danger"
+                                        style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                    <i class="bi bi-person-dash"></i> Отказаться от заказа
+                                </button>
+                            </div>
+                        ` : ''}
+                    ` : `
+                        <div class="detail-item">
+                            <div class="detail-label">Менеджер:</div>
+                            <div class="detail-value">
+                                <span style="color: #94a3b8; font-style: italic;">
+                                    <i class="bi bi-person-x"></i> Не назначен
+                                </span>
+                            </div>
+                        </div>
+                        ${canAssignOrder ? `
+                            <div class="detail-item" style="margin-top: 10px;">
+                                <button onclick="assignOrderToSelf(${normalizedOrder.Id})"
+                                        class="btn-assign"
+                                        style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                    <i class="bi bi-person-check"></i> Принять этот заказ
+                                </button>
+                            </div>
+                        ` : ''}
+                    `;
 
             // Генерируем HTML
             const html = `
-        <!-- Вкладки -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('general')">
-                <i class="bi bi-info-circle"></i> Основная информация
-            </button>
-            <button class="tab" onclick="switchTab('service-requests')">
-                <i class="bi bi-tools"></i> Сервисные запросы (${order.ServiceRequests.length})
-            </button>
-            <button class="tab" onclick="switchTab('support-requests')">
-                <i class="bi bi-headset"></i> Поддержка (${order.SupportRequests.length})
-            </button>
-            <button class="tab" onclick="switchTab('reports')">
-                <i class="bi bi-file-text"></i> Отчеты (${order.Reports.length})
-            </button>
-            ${canEdit ? `
-                <button class="tab" onclick="switchTab('edit')">
-                    <i class="bi bi-pencil"></i> Редактировать
-                </button>
-            ` : ''}
-        </div>
-        
-        <!-- Основная информация -->
-        <div id="tab-general" class="tab-content active">
-            <div class="order-detail-grid">
-                <div class="detail-section">
-                    <h4><i class="bi bi-card-checklist"></i> Информация о заказе</h4>
-                    <div class="detail-item">
-                        <div class="detail-label">Название:</div>
-                        <div class="detail-value">${escapeHtml(order.OrderName)}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Статус:</div>
-                        <div class="detail-value">
-                            <span class="status-badge ${statusClass}">
-                                <i class="bi ${statusIcon}"></i> ${order.Status}
-                            </span>
+                        <!-- Вкладки -->
+                        <div class="tabs">
+                            <button class="tab active" onclick="switchTab('general')">
+                                <i class="bi bi-info-circle"></i> Основная информация
+                            </button>
+                            ${canEdit ? `
+                                <button class="tab" onclick="switchTab('edit')">
+                                    <i class="bi bi-pencil"></i> Редактировать
+                                </button>
+                            ` : ''}
                         </div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Приоритет:</div>
-                        <div class="detail-value">
-                            <span class="order-priority ${priorityClass}">${priorityText}</span>
-                        </div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Стоимость заказа:</div>
-                        <div class="detail-value">${cost}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Дата создания:</div>
-                        <div class="detail-value">${formattedCreateDate}</div>
-                    </div>
-                    ${order.CompleteDate ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Дата завершения:</div>
-                            <div class="detail-value">${completeDate}</div>
-                        </div>
-                    ` : ''}
-                </div>
-                
-                <div class="detail-section">
-                    <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
-                    ${clientInfo}
-                </div>
-                
-                <div class="detail-section">
-                    <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
-                    ${managerInfo}
-                </div>
-            </div>
-            
-            <div class="detail-section">
-                <h4><i class="bi bi-card-text"></i> Описание заказа</h4>
-                <div class="detail-value description">${escapeHtml(order.Description)}</div>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="value">${order.Statistics.ServiceRequestCount}</div>
-                    <div class="label">Сервисных запросов</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value">${order.Statistics.SupportRequestCount}</div>
-                    <div class="label">Запросов поддержки</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value">${order.Statistics.ReportCount}</div>
-                    <div class="label">Отчетов</div>
-                </div>
-                <div class="stat-box">
-                    <div class="value">${Math.round(order.Statistics.TotalTimeInDays)}</div>
-                    <div class="label">Дней в работе</div>
-                </div>
-                ${order.Statistics.TotalCost > 0 ? `
-                    <div class="stat-box">
-                        <div class="value">${order.Statistics.TotalCost.toLocaleString('ru-RU')}</div>
-                        <div class="label">Общая стоимость услуг</div>
-                    </div>
-                ` : ''}
-            </div>
-        </div>
-        
-        <!-- Сервисные запросы -->
-        <div id="tab-service-requests" class="tab-content">
-            <div class="related-items">
-                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        <i class="bi bi-tools"></i> Сервисные запросы по заказу
-                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
-                            (${order.ServiceRequests.length} запросов)
-                        </small>
-                    </span>
-                    ${canEdit ? `
-                        <button class="btn-small btn-save" style="padding: 6px 12px; font-size: 0.85rem;">
-                            <i class="bi bi-plus-circle"></i> Добавить запрос
-                        </button>
-                    ` : ''}
-                </h4>
-                ${order.ServiceRequests.length > 0 ?
-                    order.ServiceRequests.map(sr => {
-                        const srStatus = sr.Status || 'New';
-                        const srStatusClass = getStatusClass(srStatus);
-                        const srDate = sr.CreateDate ? new Date(sr.CreateDate).toLocaleDateString('ru-RU', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) : 'Неизвестно';
 
-                        return `
-                            <div class="related-item" style="border-left: 4px solid ${srStatus === 'Completed' ? '#4CAF50' : srStatus === 'Processing' ? '#ff9800' : '#667eea'};">
-                                <div class="item-header">
-                                    <h5 class="item-title">${escapeHtml(sr.ServiceType || 'Сервисный запрос')}</h5>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span class="item-status status-badge ${srStatusClass}">
-                                            ${srStatus}
-                                        </span>
-                                        <span style="color: #4CAF50; font-weight: 600;">
-                                            ${sr.Cost ? `${sr.Cost.toLocaleString('ru-RU')} ₽` : 'Бесплатно'}
-                                        </span>
+                        <!-- Основная информация -->
+                        <div id="tab-general" class="tab-content active">
+                            <div class="order-detail-grid">
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-card-checklist"></i> Информация о заказе</h4>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Название:</div>
+                                        <div class="detail-value">${escapeHtml(normalizedOrder.OrderName)}</div>
                                     </div>
-                                </div>
-                                <p style="color: #475569; font-size: 0.9rem; margin: 10px 0;">
-                                    ${escapeHtml(sr.Description || 'Нет описания')}
-                                </p>
-                                <div class="item-meta">
-                                    <span><i class="bi bi-calendar"></i> ${srDate}</span>
-                                    <span><i class="bi bi-person"></i> ${escapeHtml(sr.ClientName || 'Неизвестно')}</span>
-                                </div>
-                            </div>
-                        `;
-                    }).join('') :
-                    '<div class="empty-list">Сервисные запросы отсутствуют</div>'
-                }
-            </div>
-        </div>
-        
-        <!-- Запросы поддержки -->
-        <div id="tab-support-requests" class="tab-content">
-            <div class="related-items">
-                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        <i class="bi bi-headset"></i> Запросы поддержки по заказу
-                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
-                            (${order.SupportRequests.length} запросов)
-                        </small>
-                    </span>
-                </h4>
-                ${order.SupportRequests.length > 0 ?
-                    order.SupportRequests.map(sr => {
-                        const srStatus = sr.Status || 'New';
-                        const srStatusClass = getStatusClass(srStatus);
-                        const srDate = sr.CreateDate ? new Date(sr.CreateDate).toLocaleDateString('ru-RU', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) : 'Неизвестно';
-
-                        // Форматируем email и телефон клиента
-                        const clientEmail = sr.ClientEmail && sr.ClientEmail !== 'Не указан' ?
-                            `<a href="mailto:${escapeHtml(sr.ClientEmail)}" style="color: #4CAF50; font-size: 0.85rem;">
-                                ${escapeHtml(sr.ClientEmail)}
-                            </a>` :
-                            '<span style="color: #94a3b8;">Не указан</span>';
-
-                        const clientPhone = sr.ClientPhone && sr.ClientPhone !== 'Не указан' ?
-                            `<a href="tel:${escapeHtml(sr.ClientPhone)}" style="color: #4CAF50; font-size: 0.85rem;">
-                                ${escapeHtml(sr.ClientPhone)}
-                            </a>` :
-                            '<span style="color: #94a3b8;">Не указан</span>';
-
-                        return `
-                            <div class="related-item" style="border-left: 4px solid ${srStatus === 'Completed' ? '#4CAF50' : srStatus === 'Processing' ? '#ff9800' : '#667eea'};">
-                                <div class="item-header">
-                                    <h5 class="item-title">${escapeHtml(sr.Topic || 'Запрос поддержки')}</h5>
-                                    <span class="item-status status-badge ${srStatusClass}">
-                                        ${srStatus}
-                                    </span>
-                                </div>
-                                <div style="background: #f8fafc; border-radius: 6px; padding: 12px; margin: 10px 0;">
-                                    <p style="color: #475569; font-size: 0.9rem; margin: 0; white-space: pre-wrap;">
-                                        ${escapeHtml(sr.Message || 'Сообщение отсутствует')}
-                                    </p>
-                                </div>
-                                <div class="item-meta">
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
-                                        <div>
-                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Клиент:</div>
-                                            <div style="font-weight: 500; color: #334155;">${escapeHtml(sr.ClientName || 'Неизвестно')}</div>
-                                        </div>
-                                        <div>
-                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Дата:</div>
-                                            <div style="font-weight: 500; color: #334155;">${srDate}</div>
-                                        </div>
-                                        <div>
-                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Email:</div>
-                                            <div>${clientEmail}</div>
-                                        </div>
-                                        <div>
-                                            <div style="color: #64748b; font-size: 0.8rem; margin-bottom: 2px;">Телефон:</div>
-                                            <div>${clientPhone}</div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Статус:</div>
+                                        <div class="detail-value">
+                                            <span class="status-badge ${statusClass}">
+                                                <i class="bi ${statusIcon}"></i> ${normalizedOrder.Status}
+                                            </span>
                                         </div>
                                     </div>
-                                </div>
-                                ${canEdit && srStatus !== 'Completed' ? `
-                                    <div style="margin-top: 15px; display: flex; gap: 8px;">
-                                        <button class="btn-small btn-save" style="padding: 5px 10px; font-size: 0.8rem;">
-                                            <i class="bi bi-check-circle"></i> Ответить
-                                        </button>
-                                        <button class="btn-small" style="padding: 5px 10px; font-size: 0.8rem; background: #667eea; color: white; border: none; border-radius: 4px;">
-                                            <i class="bi bi-gear"></i> Взять в работу
-                                        </button>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Приоритет:</div>
+                                        <div class="detail-value">
+                                            <span class="order-priority ${priorityClass}">${priorityText}</span>
+                                        </div>
                                     </div>
-                                ` : ''}
-                            </div>
-                        `;
-                    }).join('') :
-                    '<div class="empty-list">Запросы поддержки по этому заказу отсутствуют</div>'
-                }
-            </div>
-        </div>
-        
-        <!-- Отчеты -->
-        <div id="tab-reports" class="tab-content">
-            <div class="related-items">
-                <h4 style="color: #334155; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        <i class="bi bi-file-text"></i> Отчеты по заказу
-                        <small style="color: #64748b; font-weight: normal; margin-left: 8px;">
-                            (${order.Reports.length} отчетов)
-                        </small>
-                    </span>
-                    ${canEdit ? `
-                        <button class="btn-small btn-save" style="padding: 6px 12px; font-size: 0.85rem;">
-                            <i class="bi bi-plus-circle"></i> Создать отчет
-                        </button>
-                    ` : ''}
-                </h4>
-                ${order.Reports.length > 0 ?
-                    order.Reports.map(r => {
-                        const reportDate = r.CreateDate ? new Date(r.CreateDate).toLocaleDateString('ru-RU', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) : 'Неизвестно';
-
-                        const authorEmail = r.AuthorEmail ?
-                            `<a href="mailto:${escapeHtml(r.AuthorEmail)}" style="color: #4CAF50; font-size: 0.85rem;">
-                                ${escapeHtml(r.AuthorEmail)}
-                            </a>` : '';
-
-                        return `
-                            <div class="related-item">
-                                <div class="item-header">
-                                    <h5 class="item-title">${escapeHtml(r.Title || 'Без названия')}</h5>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Стоимость заказа:</div>
+                                        <div class="detail-value">${cost}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Дата создания:</div>
+                                        <div class="detail-value">${formattedCreateDate}</div>
+                                    </div>
+                                    ${normalizedOrder.CompleteDate ? `
+                                        <div class="detail-item">
+                                            <div class="detail-label">Дата завершения:</div>
+                                            <div class="detail-value">${completeDate}</div>
+                                        </div>
+                                    ` : ''}
                                 </div>
-                                <div style="background: #f8fafc; border-radius: 6px; padding: 12px; margin: 10px 0; max-height: 200px; overflow-y: auto;">
-                                    <p style="color: #475569; font-size: 0.9rem; margin: 0; white-space: pre-wrap;">
-                                        ${escapeHtml(r.Content || 'Содержимое отсутствует')}
-                                    </p>
+
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
+                                    ${clientInfo}
                                 </div>
-                                <div class="item-meta">
-                                    <span style="display: flex; align-items: center; gap: 4px;">
-                                        <i class="bi bi-person"></i> 
-                                        <span style="font-weight: 500;">${escapeHtml(r.AuthorName || 'Неизвестно')}</span>
-                                        ${authorEmail ? `<span style="color: #64748b;">(${authorEmail})</span>` : ''}
-                                    </span>
-                                    <span><i class="bi bi-calendar"></i> ${reportDate}</span>
+
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
+                                    ${managerInfo}
                                 </div>
                             </div>
-                        `;
-                    }).join('') :
-                    '<div class="empty-list">Отчеты отсутствуют</div>'
-                }
-            </div>
-        </div>
-        
-        <!-- Редактирование -->
-        <div id="tab-edit" class="tab-content">
-            ${canEdit ? `
-                <div class="edit-section">
-                    <h4><i class="bi bi-pencil-square"></i> Редактирование заказа</h4>
-                    <form id="orderEditForm">
-                        <div class="form-group">
-                            <label for="editOrderName">Название заказа:</label>
-                            <input type="text" id="editOrderName" class="form-control" 
-                                   value="${escapeHtml(order.OrderName)}" maxlength="250" required>
+
+                            <div class="detail-section">
+                                <h4><i class="bi bi-card-text"></i> Описание заказа</h4>
+                                <div class="detail-value description">${escapeHtml(normalizedOrder.Description)}</div>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="editDescription">Описание:</label>
-                            <textarea id="editDescription" class="form-control" rows="5" 
-                                      maxlength="3500" required>${escapeHtml(order.Description)}</textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editCost">Стоимость (₽):</label>
-                            <input type="number" id="editCost" class="form-control" 
-                                   value="${order.Cost || ''}" step="0.01" min="0">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editStatus">Статус:</label>
-                            <select id="editStatus" class="form-control">
-                                <option value="New" ${order.Status === 'New' ? 'selected' : ''}>Новый</option>
-                                <option value="Processing" ${order.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
-                                <option value="Completed" ${order.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
-                                <option value="Cancelled" ${order.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="editPriority">Приоритет:</label>
-                            <select id="editPriority" class="form-control">
-                                <option value="Low" ${order.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
-                                <option value="Medium" ${order.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
-                                <option value="High" ${order.Priority === 'High' ? 'selected' : ''}>Высокий</option>
-                            </select>
-                        </div>
-                        
+
+                        <!-- Редактирование -->
+                        ${canEdit ? `
+                            <div id="tab-edit" class="tab-content">
+                                <div class="edit-section">
+                                    <h4><i class="bi bi-pencil-square"></i> Редактирование заказа</h4>
+                                    <form id="orderEditForm">
+                                        <div class="form-group">
+                                            <label for="editOrderName">Название заказа:</label>
+                                            <input type="text" id="editOrderName" class="form-control"
+                                                   value="${escapeHtml(normalizedOrder.OrderName)}" maxlength="250" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="editDescription">Описание:</label>
+                                            <textarea id="editDescription" class="form-control" rows="5"
+                                                      maxlength="3500" required>${escapeHtml(normalizedOrder.Description)}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="editCost">Стоимость (₽):</label>
+                                            <input type="number" id="editCost" class="form-control"
+                                                   value="${normalizedOrder.Cost || ''}" step="0.01" min="0">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="editStatus">Статус:</label>
+                                            <select id="editStatus" class="form-control">
+                                                <option value="New" ${normalizedOrder.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                                <option value="Processing" ${normalizedOrder.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                                <option value="Completed" ${normalizedOrder.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                                <option value="Cancelled" ${normalizedOrder.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="editPriority">Приоритет:</label>
+                                            <select id="editPriority" class="form-control">
+                                                <option value="Low" ${normalizedOrder.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
+                                                <option value="Medium" ${normalizedOrder.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
+                                                <option value="High" ${normalizedOrder.Priority === 'High' ? 'selected' : ''}>Высокий</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="modal-actions">
+                                            ${canUnassign ? `
+                                                <button type="button" onclick="unassignOrder(${normalizedOrder.Id})" class="btn-danger">
+                                                    <i class="bi bi-person-dash"></i> Отказаться от заказа
+                                                </button>
+                                            ` : ''}
+                                            <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                            <button type="button" onclick="saveOrderChanges()" class="btn-save">
+                                                <i class="bi bi-save"></i> Сохранить изменения
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        ` : ''}
+
                         <div class="modal-actions">
-                            <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
-                            <button type="button" onclick="saveOrderChanges()" class="btn-save">
-                                <i class="bi bi-save"></i> Сохранить изменения
+                            ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
+                                <button onclick="completeOrder(${normalizedOrder.Id})"
+                                        class="btn-complete"
+                                        style="padding: 10px 20px; margin-right: auto;">
+                                    <i class="bi bi-check-circle"></i> Завершить заказ
+                                </button>
+                            ` : ''}
+
+                            <button onclick="closeModal()" class="btn-cancel">
+                                <i class="bi bi-x"></i> Закрыть
                             </button>
                         </div>
-                    </form>
-                </div>
-            ` : '<div class="empty-list">У вас нет прав для редактирования этого заказа</div>'}
-        </div>
-        
-        <div class="modal-actions">
-            <button onclick="closeModal()" class="btn-cancel">
-                <i class="bi bi-x"></i> Закрыть
-            </button>
-        </div>
-    `;
+                    `;
 
             document.getElementById('orderDetails').innerHTML = html;
         }
@@ -1895,25 +1523,19 @@
         }
 
         function switchTab(tabName) {
-            // Скрыть все вкладки
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
 
-            // Убрать активный класс со всех кнопок вкладок
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
 
-            // Показать выбранную вкладку
             document.getElementById(`tab-${tabName}`).classList.add('active');
 
-            // Активировать кнопку выбранной вкладки
             document.querySelectorAll('.tab').forEach(tab => {
                 if (tab.textContent.includes(tabName === 'general' ? 'Основная' :
-                    tabName === 'requests' ? 'Запросы' :
-                        tabName === 'reports' ? 'Отчеты' :
-                            tabName === 'edit' ? 'Редактировать' : '')) {
+                    tabName === 'edit' ? 'Редактировать' : '')) {
                     tab.classList.add('active');
                 }
             });
@@ -1937,7 +1559,6 @@
 
                 if (response.ok && result.success) {
                     showNotification('Заказ успешно назначен на вас', 'success');
-                    // Закрываем модальное окно и обновляем данные
                     closeModal();
                     await loadOrders();
                 } else {
@@ -1945,6 +1566,35 @@
                 }
             } catch (error) {
                 console.error('Error assigning order:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function unassignOrder(orderId) {
+            if (!confirm('Вы уверены, что хотите отказаться от этого заказа? Заказ вернется в статус "Новый".')) return;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_URL}/api/Orders/manager/unassign/${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Вы успешно отказались от заказа', 'success');
+                    closeModal();
+                    await loadOrders();
+                } else {
+                    showNotification(result.message || 'Ошибка при отказе от заказа', 'error');
+                }
+            } catch (error) {
+                console.error('Error unassigning order:', error);
                 showNotification('Ошибка соединения с сервером', 'error');
             }
         }
@@ -1987,7 +1637,7 @@
         }
 
         async function completeOrder(orderId, event) {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
 
             if (!confirm('Вы уверены, что хотите завершить этот заказ?')) return;
 
@@ -2024,6 +1674,7 @@
         function closeModal() {
             document.getElementById('orderModal').style.display = 'none';
             currentOrderId = null;
+            currentOrderData = null;
         }
 
         function updateStats() {
@@ -2098,14 +1749,12 @@
             window.location.href = 'manager-dashboard.html';
         };
 
-        // Закрытие модального окна при клике вне его
         document.getElementById('orderModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeModal();
             }
         });
 
-        // Закрытие по Escape
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && document.getElementById('orderModal').style.display === 'flex') {
                 closeModal();
