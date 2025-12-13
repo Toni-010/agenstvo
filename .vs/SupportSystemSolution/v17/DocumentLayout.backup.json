@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\orders-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\data\\models\\report.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\data\\models\\report.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\dtos\\createreportdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -60,14 +60,14 @@
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\orders-management.html",
               "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\orders-management.html*",
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\orders-management.html*",
-              "ViewState": "AgIAAOgHAAAAAAAAAAAowCgIAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAABQJAAAAAAAAAAAkwHIJAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2025-12-13T19:51:15.842Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Report.cs",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Data\\Models\\Report.cs",
               "RelativeDocumentMoniker": "SupportSystem.API\\Data\\Models\\Report.cs",
@@ -75,12 +75,11 @@
               "RelativeToolTip": "SupportSystem.API\\Data\\Models\\Report.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T19:44:32.751Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T19:44:32.751Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "OrdersController.cs",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\OrdersController.cs",
               "RelativeDocumentMoniker": "SupportSystem.API\\Controllers\\OrdersController.cs",
@@ -101,12 +100,11 @@
               "RelativeToolTip": "SupportSystem.API\\DTOs\\CreateReportDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T19:41:07.09Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T19:41:07.09Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ReportsController.cs",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\ReportsController.cs",
               "RelativeDocumentMoniker": "SupportSystem.API\\Controllers\\ReportsController.cs",
@@ -114,8 +112,7 @@
               "RelativeToolTip": "SupportSystem.API\\Controllers\\ReportsController.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAYwLQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T19:40:07.606Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T19:40:07.606Z"
             },
             {
               "$type": "Document",
@@ -127,8 +124,7 @@
               "RelativeToolTip": "SupportSystem.API\\DTOs\\SupportRequestDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T17:24:23.419Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T17:24:23.419Z"
             },
             {
               "$type": "Document",
@@ -140,8 +136,7 @@
               "RelativeToolTip": "SupportSystem.API\\DTOs\\OrderDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-13T15:16:56.316Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T15:16:56.316Z"
             },
             {
               "$type": "Document",
@@ -153,8 +148,7 @@
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\css\\style.css",
               "ViewState": "AgIAAIwFAAAAAAAAAAAqwKgFAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-12-13T15:02:20.128Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-13T15:02:20.128Z"
             }
           ]
         }
