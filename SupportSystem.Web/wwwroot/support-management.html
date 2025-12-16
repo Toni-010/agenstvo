@@ -1382,7 +1382,7 @@
                 <div class="request-info">
                     <div class="request-client">
                         <i class="bi bi-person"></i>
-                        ${escapeHtml(request.clientName)}
+                        ${escapeHtml(request.clientName || 'Неизвестный клиент')}
                     </div>
                     <div class="request-date">
                         <i class="bi bi-calendar"></i>
@@ -1439,7 +1439,8 @@
 
                 document.getElementById('requestModal').style.display = 'flex';
 
-                const response = await fetch(`${API_URL}/api/SupportRequests/${requestId}`, {
+                // Загружаем данные обращения
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/detail/${requestId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1454,54 +1455,85 @@
                         setTimeout(() => window.location.href = 'login.html', 2000);
                         return;
                     }
+                    if (response.status === 404) {
+                        showNotification('Обращение не найдено', 'error');
+                        closeModal();
+                        return;
+                    }
+                    if (response.status === 403) {
+                        showNotification('У вас нет доступа к этому обращению', 'error');
+                        closeModal();
+                        return;
+                    }
                     throw new Error(`HTTP ${response.status}`);
                 }
 
-                const request = await response.json();
-                currentRequestData = request;
+                const result = await response.json();
+                const request = result.supportRequest || result;
 
-                // Загружаем связанный заказ если есть
-                let relatedOrder = null;
-                if (request.relatedOrderId) {
-                    try {
-                        const orderResponse = await fetch(`${API_URL}/api/Orders/${request.relatedOrderId}`, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        if (orderResponse.ok) {
-                            relatedOrder = await orderResponse.json();
-                        }
-                    } catch (orderError) {
-                        console.warn('Не удалось загрузить связанный заказ:', orderError);
-                    }
-                }
-
-                // Загружаем ответы на это обращение
-                let responses = [];
+                // Загружаем отчеты (ответы)
+                let reports = [];
                 try {
-                    const responsesResponse = await fetch(`${API_URL}/api/SupportResponses/request/${requestId}`, {
+                    const reportsResponse = await fetch(`${API_URL}/api/Reports/support-request/${requestId}`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
 
-                    if (responsesResponse.ok) {
-                        responses = await responsesResponse.json();
+                    if (reportsResponse.ok) {
+                        reports = await reportsResponse.json();
                     }
-                } catch (responsesError) {
-                    console.warn('Не удалось загрузить ответы:', responsesError);
+                } catch (reportsError) {
+                    console.warn('Не удалось загрузить отчеты:', reportsError);
                 }
 
-                // Объединяем все данные
-                const requestWithAdditionalData = {
-                    ...request,
-                    RelatedOrder: relatedOrder,
-                    Responses: responses
+                // Нормализуем данные
+                const requestData = {
+                    Id: request.id || request.Id || 0,
+                    Topic: request.topic || request.Topic || 'Без темы',
+                    Message: request.message || request.Message || 'Нет сообщения',
+                    Status: request.status || request.Status || 'New',
+                    Priority: request.priority || request.Priority || 'Medium',
+                    CreateDate: request.createDate || request.CreateDate || new Date().toISOString(),
+
+                    // Данные клиента
+                    ClientId: request.clientId || request.ClientId ||
+                        (request.client && request.client.id) ||
+                        (request.Client && request.Client.id) || 0,
+                    ClientName: request.clientName || request.ClientName ||
+                        (request.client && request.client.name) ||
+                        (request.Client && request.Client.name) || 'Неизвестный клиент',
+                    ClientEmail: request.clientEmail || request.ClientEmail ||
+                        (request.client && request.client.email) ||
+                        (request.Client && request.Client.email) || 'Не указан',
+                    ClientPhone: request.clientPhone || request.ClientPhone ||
+                        (request.client && request.client.phone) ||
+                        (request.Client && request.Client.phone) || 'Не указан',
+
+                    // Данные менеджера
+                    AssignedToId: request.assignedToId || request.AssignedToId ||
+                        (request.manager && request.manager.id) ||
+                        (request.Manager && request.Manager.id) || null,
+                    ManagerName: request.managerName || request.ManagerName ||
+                        (request.manager && request.manager.name) ||
+                        (request.Manager && request.Manager.name) || null,
+                    ManagerEmail: request.managerEmail || request.ManagerEmail ||
+                        (request.manager && request.manager.email) ||
+                        (request.Manager && request.Manager.email) || null,
+
+                    // Связанный заказ
+                    RelatedOrderId: request.relatedOrderId || request.RelatedOrderId || null,
+                    RelatedOrder: request.RelatedOrder || null,
+
+                    // Отчеты
+                    Reports: reports,
+
+                    // Дополнительные данные
+                    CompleteDate: request.completeDate || request.CompleteDate || null
                 };
 
-                renderRequestDetails(requestWithAdditionalData);
+                currentRequestData = requestData;
+                renderRequestDetails(requestData);
 
             } catch (error) {
                 console.error('Error loading request details:', error);
@@ -1520,49 +1552,20 @@
                         </div>
                     </div>
                 `;
-
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `;
-                document.head.appendChild(style);
             }
         }
 
         function renderRequestDetails(request) {
-            currentRequestData = request;
-
-            // Нормализуем данные из API
-            const normalizedRequest = {
-                Id: request.id || request.Id || 0,
-                Topic: request.topic || request.Topic || 'Без темы',
-                Message: request.message || request.Message || 'Нет сообщения',
-                Status: request.status || request.Status || 'New',
-                Priority: request.priority || request.Priority || 'Medium',
-                CreateDate: request.createDate || request.CreateDate || new Date().toISOString(),
-                ClientName: request.clientName || request.ClientName || 'Неизвестный клиент',
-                ClientEmail: request.clientEmail || request.ClientEmail || 'Не указан',
-                ClientPhone: request.clientPhone || request.ClientPhone || 'Не указан',
-                AssignedToId: request.assignedToId || request.AssignedToId || null,
-                ManagerName: request.managerName || request.ManagerName || null,
-                RelatedOrderId: request.relatedOrderId || request.RelatedOrderId || null,
-                RelatedOrder: request.RelatedOrder || null,
-                Responses: request.Responses || []
-            };
-
-            const isAssignedToMe = normalizedRequest.AssignedToId === currentUser.id;
+            const isAssignedToMe = request.AssignedToId === currentUser.id;
             const canEdit = isAssignedToMe || currentUser.role === 'Admin';
             const showResponseTab = (isAssignedToMe || currentUser.role === 'Admin') &&
-                normalizedRequest.Status !== 'Completed' &&
-                normalizedRequest.Status !== 'Cancelled';
+                request.Status !== 'Completed' &&
+                request.Status !== 'Cancelled';
 
-            document.getElementById('modalTitle').textContent = `Обращение #${normalizedRequest.Id}: ${escapeHtml(normalizedRequest.Topic)}`;
+            document.getElementById('modalTitle').textContent = `Обращение #${request.Id}: ${escapeHtml(request.Topic)}`;
 
             // Форматируем даты
-            const createDate = new Date(normalizedRequest.CreateDate);
+            const createDate = new Date(request.CreateDate);
             const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
@@ -1571,38 +1574,53 @@
                 minute: '2-digit'
             });
 
+            const completeDate = request.CompleteDate ?
+                new Date(request.CompleteDate).toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : null;
+
             // Определяем стили статуса
             let statusClass = '';
             let statusIcon = '';
-            switch (normalizedRequest.Status) {
+            let statusText = '';
+            switch (request.Status) {
                 case 'New':
                     statusClass = 'status-new';
                     statusIcon = 'bi-plus-circle';
+                    statusText = 'Новый';
                     break;
                 case 'Processing':
                     statusClass = 'status-processing';
                     statusIcon = 'bi-gear';
+                    statusText = 'В обработке';
                     break;
                 case 'Completed':
                     statusClass = 'status-completed';
                     statusIcon = 'bi-check-circle';
+                    statusText = 'Завершен';
                     break;
                 case 'Cancelled':
                     statusClass = 'status-cancelled';
                     statusIcon = 'bi-x-circle';
+                    statusText = 'Отменен';
                     break;
                 default:
                     statusClass = 'status-new';
                     statusIcon = 'bi-question-circle';
+                    statusText = request.Status;
             }
 
             // Определяем стили приоритета
             let priorityClass = 'priority-medium';
             let priorityText = 'Средний';
-            if (normalizedRequest.Priority === 'High') {
+            if (request.Priority === 'High') {
                 priorityClass = 'priority-high';
                 priorityText = 'Высокий';
-            } else if (normalizedRequest.Priority === 'Low') {
+            } else if (request.Priority === 'Low') {
                 priorityClass = 'priority-low';
                 priorityText = 'Низкий';
             }
@@ -1617,18 +1635,17 @@
                     ${showResponseTab ? `
                         <button class="tab" onclick="switchTab('response')">
                             <i class="bi bi-chat-dots"></i> Ответить
-                            ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ?
-                                `<span style="margin-left: 8px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                                    ${normalizedRequest.Responses.length}
-                                </span>` : ''
-                            }
+                            ${request.Reports && request.Reports.length > 0 ?
+                        `<span style="margin-left: 8px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                    ${request.Reports.length}
+                                </span>` : ''}
                         </button>
                     ` : ''}
-                    ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                    ${request.Reports && request.Reports.length > 0 ? `
                         <button class="tab" onclick="switchTab('history')">
                             <i class="bi bi-clock-history"></i> История ответов
                             <span style="margin-left: 8px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                                ${normalizedRequest.Responses.length}
+                                ${request.Reports.length}
                             </span>
                         </button>
                     ` : ''}
@@ -1646,13 +1663,13 @@
                             <h4><i class="bi bi-chat-text"></i> Информация об обращении</h4>
                             <div class="detail-item">
                                 <div class="detail-label">Тема:</div>
-                                <div class="detail-value">${escapeHtml(normalizedRequest.Topic)}</div>
+                                <div class="detail-value">${escapeHtml(request.Topic)}</div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Статус:</div>
                                 <div class="detail-value">
                                     <span class="status-badge ${statusClass}">
-                                        <i class="bi ${statusIcon}"></i> ${getStatusText(normalizedRequest.Status)}
+                                        <i class="bi ${statusIcon}"></i> ${statusText}
                                     </span>
                                 </div>
                             </div>
@@ -1666,12 +1683,18 @@
                                 <div class="detail-label">Дата создания:</div>
                                 <div class="detail-value">${formattedCreateDate}</div>
                             </div>
-                            ${normalizedRequest.RelatedOrderId ? `
+                            ${completeDate ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Дата завершения:</div>
+                                    <div class="detail-value">${completeDate}</div>
+                                </div>
+                            ` : ''}
+                            ${request.RelatedOrderId ? `
                                 <div class="detail-item">
                                     <div class="detail-label">Связанный заказ:</div>
                                     <div class="detail-value">
-                                        <span style="color: #4CAF50; font-weight: 600;">
-                                            <i class="bi bi-link"></i> Заказ #${normalizedRequest.RelatedOrderId}
+                                        <span style="color: #4CAF50; font-weight: 600; cursor: pointer;" onclick="viewRelatedOrder(${request.RelatedOrderId})">
+                                            <i class="bi bi-link"></i> Заказ #${request.RelatedOrderId}
                                         </span>
                                     </div>
                                 </div>
@@ -1682,42 +1705,43 @@
                             <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
                             <div class="detail-item">
                                 <div class="detail-label">Имя клиента:</div>
-                                <div class="detail-value">${escapeHtml(normalizedRequest.ClientName)}</div>
+                                <div class="detail-value">${escapeHtml(request.ClientName)}</div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Email клиента:</div>
                                 <div class="detail-value">
-                                    ${normalizedRequest.ClientEmail && normalizedRequest.ClientEmail !== 'Не указан' ?
-                                        `<a href="mailto:${escapeHtml(normalizedRequest.ClientEmail)}" style="color: #2196F3;">
-                                            ${escapeHtml(normalizedRequest.ClientEmail)}
+                                    ${request.ClientEmail && request.ClientEmail !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(request.ClientEmail)}" style="color: #2196F3;">
+                                            ${escapeHtml(request.ClientEmail)}
                                         </a>` :
-                                        '<span style="color: #94a3b8;">Не указан</span>'
-                                    }
+                    '<span style="color: #94a3b8;">Не указан</span>'}
                                 </div>
                             </div>
                             <div class="detail-item">
                                 <div class="detail-label">Телефон клиента:</div>
                                 <div class="detail-value">
-                                    ${normalizedRequest.ClientPhone && normalizedRequest.ClientPhone !== 'Не указан' ?
-                                        `<a href="tel:${escapeHtml(normalizedRequest.ClientPhone)}" style="color: #2196F3;">
-                                            ${escapeHtml(normalizedRequest.ClientPhone)}
+                                    ${request.ClientPhone && request.ClientPhone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(request.ClientPhone)}" style="color: #2196F3;">
+                                            ${escapeHtml(request.ClientPhone)}
                                         </a>` :
-                                        '<span style="color: #94a3b8;">Не указан</span>'
-                                    }
+                    '<span style="color: #94a3b8;">Не указан</span>'}
                                 </div>
                             </div>
                         </div>
 
                         <div class="detail-section">
                             <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
-                            ${normalizedRequest.AssignedToId ? `
+                            ${request.AssignedToId ? `
                                 <div class="detail-item">
                                     <div class="detail-label">Ответственный менеджер:</div>
-                                    <div class="detail-value">${escapeHtml(normalizedRequest.ManagerName || 'Неизвестный менеджер')}</div>
+                                    <div class="detail-value">
+                                        ${escapeHtml(request.ManagerName || 'Неизвестный менеджер')}
+                                        ${request.ManagerEmail ? `<br/><small style="color: #64748b;">${escapeHtml(request.ManagerEmail)}</small>` : ''}
+                                    </div>
                                 </div>
-                                ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
+                                ${isAssignedToMe && request.Status === 'Processing' ? `
                                     <div class="detail-item" style="margin-top: 10px;">
-                                        <button onclick="unassignRequest(${normalizedRequest.Id})"
+                                        <button onclick="unassignRequest(${request.Id})"
                                                 class="btn-danger"
                                                 style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
                                             <i class="bi bi-person-dash"></i> Отказаться от обращения
@@ -1733,9 +1757,9 @@
                                         </span>
                                     </div>
                                 </div>
-                                ${normalizedRequest.Status === 'New' ? `
+                                ${request.Status === 'New' ? `
                                     <div class="detail-item" style="margin-top: 10px;">
-                                        <button onclick="assignRequestToSelf(${normalizedRequest.Id})"
+                                        <button onclick="assignRequestToSelf(${request.Id})"
                                                 class="btn-assign-to-self">
                                             <i class="bi bi-person-check"></i> Принять это обращение
                                         </button>
@@ -1747,27 +1771,8 @@
 
                     <div class="detail-section">
                         <h4><i class="bi bi-chat-left-text"></i> Сообщение клиента</h4>
-                        <div class="detail-value message">${escapeHtml(normalizedRequest.Message)}</div>
+                        <div class="detail-value message">${escapeHtml(request.Message)}</div>
                     </div>
-
-                    ${normalizedRequest.RelatedOrder ? `
-                        <div class="detail-section">
-                            <h4><i class="bi bi-link-45deg"></i> Связанный заказ</h4>
-                            <div class="related-order-item" onclick="viewRelatedOrder(${normalizedRequest.RelatedOrderId})">
-                                <div class="related-order-header">
-                                    <h5 class="related-order-title">
-                                        <i class="bi bi-cart"></i> ${escapeHtml(normalizedRequest.RelatedOrder.orderName || normalizedRequest.RelatedOrder.OrderName)}
-                                    </h5>
-                                    <span class="related-order-status">
-                                        ${normalizedRequest.RelatedOrder.status || normalizedRequest.RelatedOrder.Status}
-                                    </span>
-                                </div>
-                                <div class="related-order-info">
-                                    ${escapeHtml(normalizedRequest.RelatedOrder.description || normalizedRequest.RelatedOrder.Description || '').substring(0, 200)}${(normalizedRequest.RelatedOrder.description || normalizedRequest.RelatedOrder.Description || '').length > 200 ? '...' : ''}
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
 
                 <!-- Вкладка для ответов -->
@@ -1776,6 +1781,11 @@
                         <div class="response-section">
                             <h4><i class="bi bi-chat-dots"></i> Отправить ответ</h4>
                             <div class="response-form">
+                                <div class="form-group">
+                                    <label for="responseTitle">Заголовок ответа:</label>
+                                    <input type="text" id="responseTitle" class="form-control"
+                                           placeholder="Введите заголовок ответа" value="Ответ на обращение #${request.Id}" maxlength="250" required>
+                                </div>
                                 <div class="form-group">
                                     <label for="responseContent">Ваш ответ:</label>
                                     <textarea id="responseContent" class="form-control" rows="6"
@@ -1792,7 +1802,7 @@
                                 </div>
 
                                 <div class="status-controls">
-                                    <button class="status-control-btn status-processing ${normalizedRequest.Status === 'Processing' ? 'active' : ''}"
+                                    <button class="status-control-btn status-processing ${request.Status === 'Processing' ? 'active' : ''}"
                                             onclick="selectStatus('Processing')">
                                         <i class="bi bi-gear"></i> В обработке
                                     </button>
@@ -1812,11 +1822,11 @@
                         </div>
 
                         <!-- История ответов -->
-                        ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                        ${request.Reports && request.Reports.length > 0 ? `
                             <div class="response-section">
                                 <h4><i class="bi bi-clock-history"></i> История ответов</h4>
                                 <div class="responses-list">
-                                    ${normalizedRequest.Responses.map((response, index) => `
+                                    ${request.Reports.map((response, index) => `
                                         <div class="response-item">
                                             <div class="response-header">
                                                 <span class="response-author">
@@ -1824,17 +1834,17 @@
                                                 </span>
                                                 <span class="response-date">
                                                     ${response.createDate || response.CreateDate ?
-                                                        new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
-                                                            year: 'numeric',
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit'
-                                                        }) : 'Дата не указана'}
+                            new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) : 'Дата не указана'}
                                                 </span>
                                             </div>
                                             <div class="response-content">
-                                                ${escapeHtml(response.content || response.Content)}
+                                                ${escapeHtml(response.content || response.Content || response.title || response.Title || 'Нет содержания')}
                                             </div>
                                         </div>
                                     `).join('')}
@@ -1853,7 +1863,7 @@
                 ` : ''}
 
                 <!-- История ответов (отдельная вкладка) -->
-                ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                ${request.Reports && request.Reports.length > 0 ? `
                     <div id="tab-history" class="tab-content">
                         <div class="response-section">
                             <h4><i class="bi bi-clock-history"></i> Полная история ответов</h4>
@@ -1861,7 +1871,7 @@
                                 Все ответы на это обращение в хронологическом порядке.
                             </p>
                             <div class="responses-list">
-                                ${normalizedRequest.Responses.map((response, index) => `
+                                ${request.Reports.map((response, index) => `
                                     <div class="response-item">
                                         <div class="response-header">
                                             <span class="response-author">
@@ -1869,17 +1879,17 @@
                                             </span>
                                             <span class="response-date">
                                                 ${response.createDate || response.CreateDate ?
-                                                    new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit'
-                                                    }) : 'Дата не указана'}
+                                    new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }) : 'Дата не указана'}
                                             </span>
                                         </div>
                                         <div class="response-content">
-                                            ${escapeHtml(response.content || response.Content)}
+                                            ${escapeHtml(response.content || response.Content || response.title || response.Title || 'Нет содержания')}
                                         </div>
                                     </div>
                                 `).join('')}
@@ -1897,37 +1907,37 @@
                                 <div class="form-group">
                                     <label for="editTopic">Тема обращения:</label>
                                     <input type="text" id="editTopic" class="form-control"
-                                           value="${escapeHtml(normalizedRequest.Topic)}" maxlength="200" required>
+                                           value="${escapeHtml(request.Topic)}" maxlength="200" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="editMessage">Сообщение:</label>
                                     <textarea id="editMessage" class="form-control" rows="6"
-                                              maxlength="2000" required>${escapeHtml(normalizedRequest.Message)}</textarea>
+                                              maxlength="2000" required>${escapeHtml(request.Message)}</textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="editStatus">Статус:</label>
                                     <select id="editStatus" class="form-control">
-                                        <option value="New" ${normalizedRequest.Status === 'New' ? 'selected' : ''}>Новый</option>
-                                        <option value="Processing" ${normalizedRequest.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
-                                        <option value="Completed" ${normalizedRequest.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
-                                        <option value="Cancelled" ${normalizedRequest.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                                        <option value="New" ${request.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                        <option value="Processing" ${request.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                        <option value="Completed" ${request.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                        <option value="Cancelled" ${request.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="editPriority">Приоритет:</label>
                                     <select id="editPriority" class="form-control">
-                                        <option value="Low" ${normalizedRequest.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
-                                        <option value="Medium" ${normalizedRequest.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
-                                        <option value="High" ${normalizedRequest.Priority === 'High' ? 'selected' : ''}>Высокий</option>
+                                        <option value="Low" ${request.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
+                                        <option value="Medium" ${request.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
+                                        <option value="High" ${request.Priority === 'High' ? 'selected' : ''}>Высокий</option>
                                     </select>
                                 </div>
 
                                 <div class="modal-actions">
-                                    ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
-                                        <button type="button" onclick="unassignRequest(${normalizedRequest.Id})" class="btn-danger">
+                                    ${isAssignedToMe && request.Status === 'Processing' ? `
+                                        <button type="button" onclick="unassignRequest(${request.Id})" class="btn-danger">
                                             <i class="bi bi-person-dash"></i> Отказаться от обращения
                                         </button>
                                     ` : ''}
@@ -1943,8 +1953,8 @@
 
                 <!-- Кнопки действий -->
                 <div class="modal-actions">
-                    ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
-                        <button onclick="completeRequest(${normalizedRequest.Id})"
+                    ${isAssignedToMe && request.Status === 'Processing' ? `
+                        <button onclick="completeRequest(${request.Id})"
                                 class="btn-complete"
                                 style="padding: 10px 20px; margin-right: auto;">
                             <i class="bi bi-check-circle"></i> Завершить обращение
@@ -1961,17 +1971,7 @@
 
             // Инициализируем выбранный статус
             if (showResponseTab) {
-                document.querySelector(`.status-control-btn.status-${normalizedRequest.Status.toLowerCase()}`)?.classList.add('active');
-            }
-        }
-
-        function getStatusText(status) {
-            switch (status) {
-                case 'New': return 'Новый';
-                case 'Processing': return 'В обработке';
-                case 'Completed': return 'Завершен';
-                case 'Cancelled': return 'Отменен';
-                default: return status;
+                document.querySelector(`.status-control-btn.status-${request.Status.toLowerCase()}`)?.classList.add('active');
             }
         }
 
@@ -1989,9 +1989,9 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 if (tab.textContent.includes(
                     tabName === 'general' ? 'Основная' :
-                    tabName === 'response' ? 'Ответить' :
-                    tabName === 'history' ? 'История' :
-                    tabName === 'edit' ? 'Редактировать' : ''
+                        tabName === 'response' ? 'Ответить' :
+                            tabName === 'history' ? 'История' :
+                                tabName === 'edit' ? 'Редактировать' : ''
                 )) {
                     tab.classList.add('active');
                 }
@@ -2081,6 +2081,12 @@
                     priority: document.getElementById('editPriority').value
                 };
 
+                // Проверка обязательных полей
+                if (!updateData.topic || !updateData.message) {
+                    showNotification('Заполните все обязательные поля', 'warning');
+                    return;
+                }
+
                 const response = await fetch(`${API_URL}/api/SupportRequests/manager/${requestId}`, {
                     method: 'PUT',
                     headers: {
@@ -2117,7 +2123,7 @@
                     status: 'Completed'
                 };
 
-                const response = await fetch(`${API_URL}/api/SupportRequests/manager/${requestId}`, {
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/status/${requestId}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -2144,17 +2150,18 @@
         async function submitResponse() {
             try {
                 const token = localStorage.getItem('token');
+                const title = document.getElementById('responseTitle').value.trim();
                 const content = document.getElementById('responseContent').value.trim();
                 const completeRequestCheckbox = document.getElementById('completeRequestCheckbox');
                 const completeAfterResponse = completeRequestCheckbox ? completeRequestCheckbox.checked : false;
 
-                if (!content) {
-                    showNotification('Введите текст ответа', 'warning');
+                if (!title || !content) {
+                    showNotification('Введите заголовок и текст ответа', 'warning');
                     return;
                 }
 
                 // Получаем выбранный статус
-                let newStatus = 'Processing';
+                let newStatus = currentRequestData.Status;
                 const activeStatusBtn = document.querySelector('.status-control-btn.active');
                 if (activeStatusBtn) {
                     const status = activeStatusBtn.getAttribute('class').match(/status-(\w+)/);
@@ -2163,25 +2170,22 @@
                     }
                 }
 
-                // Если выбрано завершение после ответа, устанавливаем статус "Завершено"
-                if (completeAfterResponse) {
-                    newStatus = 'Completed';
-                }
-
-                // Отправляем ответ
-                const responseData = {
+                // Создаем отчет (ответ)
+                const reportData = {
+                    title: title,
                     content: content,
                     supportRequestId: currentRequestId,
-                    authorId: currentUser.id
+                    authorId: currentUser.id,
+                    completeRequest: completeAfterResponse || newStatus === 'Completed'
                 };
 
-                const response = await fetch(`${API_URL}/api/SupportResponses`, {
+                const response = await fetch(`${API_URL}/api/Reports/create`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(responseData)
+                    body: JSON.stringify(reportData)
                 });
 
                 const result = await response.json();
@@ -2189,16 +2193,22 @@
                 if (response.ok && result.success) {
                     showNotification('Ответ успешно отправлен', 'success');
 
-                    // Обновляем статус обращения если нужно
-                    if (newStatus !== currentRequestData.status) {
+                    // Если нужно завершить обращение
+                    if (completeAfterResponse || newStatus === 'Completed') {
+                        await updateRequestStatus('Completed');
+                    } else if (newStatus !== currentRequestData.Status) {
                         await updateRequestStatus(newStatus);
                     }
 
                     // Обновляем данные
                     await viewRequestDetails(currentRequestId);
 
-                    // Очищаем форму
+                    // Обновляем общий список
+                    await loadRequests();
+
+                    // Очищаем форму если она еще существует
                     if (document.getElementById('responseContent')) {
+                        document.getElementById('responseTitle').value = `Ответ на обращение #${currentRequestId}`;
                         document.getElementById('responseContent').value = '';
                     }
                     if (completeRequestCheckbox) {
@@ -2221,7 +2231,7 @@
                     status: newStatus
                 };
 
-                const response = await fetch(`${API_URL}/api/SupportRequests/manager/${currentRequestId}`, {
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/status/${currentRequestId}`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -2241,7 +2251,6 @@
         }
 
         function viewRelatedOrder(orderId) {
-            // Открываем заказ в новой вкладке или вызываем функцию просмотра заказа
             window.open(`orders-management.html?order=${orderId}`, '_blank');
         }
 
@@ -2261,16 +2270,16 @@
                 request.priority === 'High'
             ).length;
 
-            // Расчет среднего времени ответа (упрощенный)
+            // Расчет среднего времени ответа
             const completedRequests = allRequests.filter(request =>
-                request.status === 'Completed' && request.createDate && request.completeDate
+                request.status === 'Completed' && request.createDate
             );
 
             let totalResponseTime = 0;
             if (completedRequests.length > 0) {
                 completedRequests.forEach(request => {
                     const createDate = new Date(request.createDate);
-                    const completeDate = new Date(request.completeDate);
+                    const completeDate = request.completeDate ? new Date(request.completeDate) : new Date();
                     const diffHours = (completeDate - createDate) / (1000 * 60 * 60);
                     totalResponseTime += diffHours;
                 });

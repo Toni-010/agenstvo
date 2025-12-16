@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\orders-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\orders-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\support.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,7 +38,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "orders-management.html",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\orders-management.html",
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\orders-management.html",
@@ -46,12 +46,11 @@
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\orders-management.html",
               "ViewState": "AgIAAKAKAAAAAAAAAAAowLUKAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-16T17:11:38.947Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T17:11:38.947Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "support.html",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support.html",
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support.html",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support.html",
               "ViewState": "AgIAANMCAAAAAAAAAAAowPwCAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-16T16:56:41.21Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T16:56:41.21Z"
             },
             {
               "$type": "Document",
@@ -68,22 +66,22 @@
               "Title": "support-management.html",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html",
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support-management.html*",
-              "ViewState": "AgIAAPgIAAAAAAAAAAAowDQJAAAHAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html",
+              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support-management.html",
+              "ViewState": "AgIAABEJAAAAAAAAAAAAwDsJAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2025-12-16T16:56:09.135Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "manager-dashboard.html",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\manager-dashboard.html",
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\manager-dashboard.html",
               "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\manager-dashboard.html",
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\manager-dashboard.html",
-              "ViewState": "AgIAABwBAAAAAAAAAAAowO8DAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAowNMAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2025-12-16T16:27:06.489Z",
               "EditorCaption": ""
