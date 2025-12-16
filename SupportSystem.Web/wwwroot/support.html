@@ -282,7 +282,7 @@
                             const option = document.createElement('option');
                             option.value = order.id;
 
-                            // Форматируем дату
+                            // Форматируем дату (только дата без времени)
                             const date = new Date(order.createDate);
                             const dateStr = date.toLocaleDateString('ru-RU', {
                                 day: '2-digit',
@@ -339,26 +339,26 @@
                     displaySupportRequests(requests);
                 } else {
                     requestsList.innerHTML = `
+                                <div class="empty-requests">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <p>Не удалось загрузить историю запросов</p>
+                                    <button onclick="loadSupportRequests()" class="btn-secondary" style="margin-top: 15px;">
+                                        <i class="bi bi-arrow-clockwise"></i> Повторить
+                                    </button>
+                                </div>
+                            `;
+                }
+            } catch (error) {
+                console.error('Error loading support requests:', error);
+                requestsList.innerHTML = `
                             <div class="empty-requests">
                                 <i class="bi bi-exclamation-triangle"></i>
-                                <p>Не удалось загрузить историю запросов</p>
+                                <p>Ошибка загрузки истории запросов</p>
                                 <button onclick="loadSupportRequests()" class="btn-secondary" style="margin-top: 15px;">
                                     <i class="bi bi-arrow-clockwise"></i> Повторить
                                 </button>
                             </div>
                         `;
-                }
-            } catch (error) {
-                console.error('Error loading support requests:', error);
-                requestsList.innerHTML = `
-                        <div class="empty-requests">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            <p>Ошибка загрузки истории запросов</p>
-                            <button onclick="loadSupportRequests()" class="btn-secondary" style="margin-top: 15px;">
-                                <i class="bi bi-arrow-clockwise"></i> Повторить
-                            </button>
-                        </div>
-                    `;
             } finally {
                 if (loadingElement) {
                     loadingElement.style.display = 'none';
@@ -371,14 +371,14 @@
 
             if (!requests || requests.length === 0) {
                 requestsList.innerHTML = `
-                        <div class="empty-requests">
-                            <i class="bi bi-inbox"></i>
-                            <p>У вас пока нет запросов в поддержку</p>
-                            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
-                                Создайте первый запрос, используя форму слева
-                            </p>
-                        </div>
-                    `;
+                            <div class="empty-requests">
+                                <i class="bi bi-inbox"></i>
+                                <p>У вас пока нет запросов в поддержку</p>
+                                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 5px;">
+                                    Создайте первый запрос, используя форму слева
+                                </p>
+                            </div>
+                        `;
                 return;
             }
 
@@ -387,14 +387,12 @@
                 const statusColor = getStatusColor(request.status);
                 const statusText = getStatusText(request.status);
 
-                // Форматируем дату
+                // Форматируем дату (только дата без времени)
                 const date = new Date(request.createDate);
                 const dateStr = date.toLocaleDateString('ru-RU', {
                     day: '2-digit',
                     month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    year: 'numeric'
                 });
 
                 // Обрезаем длинную тему
@@ -404,33 +402,33 @@
                 }
 
                 return `
-                        <div class="request-item" onclick="showRequestDetails(${request.id})">
-                            <div class="request-content">
-                                <div class="request-icon" style="color: ${statusColor};">
-                                    <i class="bi ${statusIcon}"></i>
-                                </div>
-                                <div class="request-info">
-                                    <div class="request-title">${topic}</div>
-                                    <div class="request-meta">
-                                        ${request.orderName ?
+                            <div class="request-item" onclick="showRequestDetails(${request.id})">
+                                <div class="request-content">
+                                    <div class="request-icon" style="color: ${statusColor};">
+                                        <i class="bi ${statusIcon}"></i>
+                                    </div>
+                                    <div class="request-info">
+                                        <div class="request-title">${topic}</div>
+                                        <div class="request-meta">
+                                            ${request.orderName ?
                         `<span class="request-order">
-                                                <i class="bi bi-box"></i> ${request.orderName}
-                                            </span>`
+                                                    <i class="bi bi-box"></i> ${request.orderName}
+                                                </span>`
                         : ''
                     }
-                                        <span class="request-date">
-                                            <i class="bi bi-calendar"></i> ${dateStr}
+                                            <span class="request-date">
+                                                <i class="bi bi-calendar"></i> ${dateStr}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="request-status">
+                                        <span class="status-badge status-${request.status.toLowerCase()}">
+                                            ${statusText}
                                         </span>
                                     </div>
                                 </div>
-                                <div class="request-status">
-                                    <span class="status-badge status-${request.status.toLowerCase()}">
-                                        ${statusText}
-                                    </span>
-                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             }).join('');
 
             requestsList.innerHTML = requestsHtml;
@@ -495,70 +493,68 @@
             const statusText = getStatusText(request.status);
             const statusColor = getStatusColor(request.status);
 
-            // Форматируем дату
+            // Форматируем дату (только дата без времени)
             const date = new Date(request.createDate);
             const dateStr = date.toLocaleDateString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                year: 'numeric'
             });
 
             title.textContent = `Запрос #${request.id}: ${request.topic}`;
 
             content.innerHTML = `
-                    <div class="details-grid">
-                        <div class="request-detail">
-                            <div class="detail-label">Статус</div>
-                            <div class="detail-value">
-                                <span class="status-badge" style="background: ${statusColor + '20'}; color: ${statusColor}; border-color: ${statusColor + '40'};">
-                                    ${statusText}
-                                </span>
+                        <div class="details-grid">
+                            <div class="request-detail">
+                                <div class="detail-label">Статус</div>
+                                <div class="detail-value">
+                                    <span class="status-badge" style="background: ${statusColor + '20'}; color: ${statusColor}; border-color: ${statusColor + '40'};">
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="request-detail">
+                                <div class="detail-label">Дата создания</div>
+                                <div class="detail-value">${dateStr}</div>
                             </div>
                         </div>
 
                         <div class="request-detail">
-                            <div class="detail-label">Дата создания</div>
-                            <div class="detail-value">${dateStr}</div>
+                            <div class="detail-label">Тема</div>
+                            <div class="detail-value">${request.topic}</div>
                         </div>
-                    </div>
 
-                    <div class="request-detail">
-                        <div class="detail-label">Тема</div>
-                        <div class="detail-value">${request.topic}</div>
-                    </div>
-
-                    <div class="request-detail">
-                        <div class="detail-label">Сообщение</div>
-                        <div class="detail-value message-content">${request.message}</div>
-                    </div>
-
-                    ${request.orderName ? `
                         <div class="request-detail">
-                            <div class="detail-label">Связанный заказ</div>
-                            <div class="detail-value">
-                                <strong>#${request.relatedOrderId}</strong> - ${request.orderName}
-                            </div>
+                            <div class="detail-label">Сообщение</div>
+                            <div class="detail-value message-content">${request.message}</div>
                         </div>
-                    ` : ''}
 
-                    ${request.managerName && request.managerName !== 'Не назначен' ? `
-                        <div class="request-detail">
-                            <div class="detail-label">Ответственный менеджер</div>
-                            <div class="detail-value">
-                                <i class="bi bi-person" style="color: #667eea; margin-right: 8px;"></i>
-                                ${request.managerName}
+                        ${request.orderName ? `
+                            <div class="request-detail">
+                                <div class="detail-label">Связанный заказ</div>
+                                <div class="detail-value">
+                                    <strong>#${request.relatedOrderId}</strong> - ${request.orderName}
+                                </div>
                             </div>
-                        </div>
-                    ` : ''}
+                        ` : ''}
 
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
-                        <button onclick="closeModal()" class="btn-secondary">
-                            <i class="bi bi-x-lg"></i> Закрыть
-                        </button>
-                    </div>
-                `;
+                        ${request.managerName && request.managerName !== 'Не назначен' ? `
+                            <div class="request-detail">
+                                <div class="detail-label">Ответственный менеджер</div>
+                                <div class="detail-value">
+                                    <i class="bi bi-person" style="color: #667eea; margin-right: 8px;"></i>
+                                    ${request.managerName}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
+                            <button onclick="closeModal()" class="btn-secondary">
+                                <i class="bi bi-x-lg"></i> Закрыть
+                            </button>
+                        </div>
+                    `;
 
             modal.style.display = 'flex';
         }

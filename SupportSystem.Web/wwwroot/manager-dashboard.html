@@ -38,21 +38,25 @@
 
                     <!-- Статистика -->
                     <div class="manager-stats">
-                        <div class="manager-stat">
+                        <div class="manager-stat" onclick="window.location.href='orders-management.html'">
                             <div class="manager-stat-value" id="statActiveOrders">0</div>
                             <div class="manager-stat-label">Активные заказы</div>
+                            <small id="statNewOrders">0 новых</small>
                         </div>
-                        <div class="manager-stat">
+                        <div class="manager-stat" onclick="window.location.href='support-management.html'">
                             <div class="manager-stat-value" id="statSupportRequests">0</div>
-                            <div class="manager-stat-label">Запросы</div>
+                            <div class="manager-stat-label">Запросы поддержки</div>
+                            <small id="statNewSupportRequests">0 новых</small>
                         </div>
-                        <div class="manager-stat">
+                        <div class="manager-stat" onclick="window.location.href='orders-management.html'">
                             <div class="manager-stat-value" id="statInProgress">0</div>
                             <div class="manager-stat-label">В работе</div>
+                            <small>мои заказы</small>
                         </div>
-                        <div class="manager-stat">
+                        <div class="manager-stat" onclick="window.location.href='orders-management.html'">
                             <div class="manager-stat-value" id="statCompleted">0</div>
-                            <div class="manager-stat-label">Завершено</div>
+                            <div class="manager-stat-label">Пришло заказов</div>
+                            <small>за сегодня</small>
                         </div>
                     </div>
 
@@ -217,63 +221,28 @@
                         <small>Управление сотрудниками</small>
                     </button>
 
-                    <button class="manager-control-btn" onclick="generateReports()">
-                        <i class="bi bi-graph-up"></i>
-                        Отчеты
-                        <small>Аналитика и статистика</small>
-                    </button>
-
-                    <button class="manager-control-btn" onclick="assignTasks()">
-                        <i class="bi bi-person-plus"></i>
-                        Назначения
-                        <small>Распределение задач</small>
-                    </button>
-
-                    <button class="manager-control-btn" onclick="viewAnalytics()">
-                        <i class="bi bi-bar-chart"></i>
-                        Аналитика
-                        <small>Статистика системы</small>
-                    </button>
-
                     <button class="manager-control-btn" onclick="manageUsers()">
                         <i class="bi bi-person-badge"></i>
                         Пользователи
                         <small>Управление аккаунтами</small>
-                    </button>
-
-                    <button class="manager-control-btn" onclick="systemSettings()">
-                        <i class="bi bi-gear"></i>
-                        Настройки
-                        <small>Конфигурация системы</small>
                     </button>
                 </div>
             </div>
 
             <!-- Последняя активность -->
             <div class="recent-activity" style="margin-top: 30px;">
-                <h3 style="color: #1b5e20;">
-                    <i class="bi bi-clock-history"></i> Последняя активность
-                </h3>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <i class="bi bi-check-circle-fill" style="color: #4CAF50;"></i>
-                        <span>Заказ #125 завершен</span>
-                        <small>Сегодня, 10:30</small>
-                    </div>
-                    <div class="activity-item">
-                        <i class="bi bi-headset" style="color: #2196F3;"></i>
-                        <span>Новый запрос в поддержку от клиента Иванов</span>
-                        <small>Сегодня, 09:15</small>
-                    </div>
-                    <div class="activity-item">
-                        <i class="bi bi-person-plus" style="color: #FF9800;"></i>
-                        <span>Назначен исполнитель для заказа #127</span>
-                        <small>Вчера, 16:45</small>
-                    </div>
-                    <div class="activity-item">
-                        <i class="bi bi-file-text" style="color: #9C27B0;"></i>
-                        <span>Создан отчет за неделю</span>
-                        <small>Вчера, 14:20</small>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: #1b5e20; margin: 0;">
+                        <i class="bi bi-clock-history"></i> Последняя активность
+                    </h3>
+                    <button onclick="refreshActivity()" class="btn-refresh">
+                        <i class="bi bi-arrow-clockwise"></i> Обновить
+                    </button>
+                </div>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-loading">
+                        <div class="loading-spinner"></div>
+                        <span>Загрузка активности...</span>
                     </div>
                 </div>
             </div>
@@ -291,6 +260,8 @@
         const API_URL = 'https://localhost:7100';
         let currentUser = null;
         let editingField = null;
+        let allOrders = [];
+        let allSupportRequests = [];
 
         document.addEventListener('DOMContentLoaded', function () {
             initializeManagerDashboard();
@@ -300,7 +271,10 @@
             const isAuthenticated = await checkAuth();
             if (isAuthenticated) {
                 await loadManagerProfile();
-                loadManagerStats();
+                await loadOrders(); // Загружаем заказы
+                await loadSupportRequests(); // Загружаем запросы поддержки
+                await loadManagerStats(); // Теперь статистика посчитается правильно
+                await loadRecentActivity(); // Активность тоже обновится
                 showWelcomeMessage();
             }
         }
@@ -393,6 +367,50 @@
             }
         }
 
+        async function loadOrders() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/Orders/manager`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    allOrders = await response.json();
+                    return allOrders;
+                } else {
+                    console.error('Failed to load orders:', response.status);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                return [];
+            }
+        }
+
+        async function loadSupportRequests() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    allSupportRequests = await response.json();
+                    return allSupportRequests;
+                } else {
+                    console.error('Failed to load support requests:', response.status);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error loading support requests:', error);
+                return [];
+            }
+        }
+
         function updateManagerProfileDisplay(user) {
             // Обновляем имя в шапке
             document.getElementById('userName').textContent = user.name || user.email || 'Менеджер';
@@ -431,13 +449,206 @@
             }
         }
 
-        function loadManagerStats() {
-            // Загружаем статистику менеджера
-            // В реальном приложении здесь должен быть запрос к API
-            document.getElementById('statActiveOrders').textContent = '24';
-            document.getElementById('statSupportRequests').textContent = '12';
-            document.getElementById('statInProgress').textContent = '8';
-            document.getElementById('statCompleted').textContent = '156';
+        async function loadManagerStats() {
+            try {
+                // Используем загруженные данные для расчета статистики
+                if (!allOrders || allOrders.length === 0) {
+                    await loadOrders();
+                }
+
+                if (!allSupportRequests || allSupportRequests.length === 0) {
+                    await loadSupportRequests();
+                }
+
+                // Расчет статистики заказов
+                const today = new Date().toLocaleDateString('ru-RU');
+                const todayOrders = allOrders.filter(order =>
+                    new Date(order.createDate || order.CreateDate).toLocaleDateString('ru-RU') === today
+                ).length;
+
+                const myOrders = allOrders.filter(order =>
+                    order.assignedToId === currentUser.id
+                ).length;
+
+                const activeOrders = allOrders.filter(order =>
+                    order.status !== 'Completed' && order.status !== 'Cancelled'
+                ).length;
+
+                const newOrders = allOrders.filter(order =>
+                    order.status === 'New'
+                ).length;
+
+                // Расчет статистики запросов поддержки
+                const newSupportRequests = allSupportRequests.filter(req =>
+                    req.status === 'New'
+                ).length;
+
+                // Обновляем статистику заказов
+                document.getElementById('statActiveOrders').textContent = activeOrders;
+                document.getElementById('statNewOrders').textContent = newOrders + ' новых';
+                document.getElementById('statInProgress').textContent = myOrders;
+                document.getElementById('statCompleted').textContent = todayOrders;
+
+                // Обновляем статистику запросов поддержки
+                document.getElementById('statSupportRequests').textContent = allSupportRequests.length;
+                document.getElementById('statNewSupportRequests').textContent = newSupportRequests + ' новых';
+
+            } catch (error) {
+                console.error('Error loading manager stats:', error);
+                // Оставляем значения по умолчанию
+                document.getElementById('statActiveOrders').textContent = '0';
+                document.getElementById('statNewOrders').textContent = '0 новых';
+                document.getElementById('statSupportRequests').textContent = '0';
+                document.getElementById('statNewSupportRequests').textContent = '0 новых';
+                document.getElementById('statInProgress').textContent = '0';
+                document.getElementById('statCompleted').textContent = '0';
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const token = localStorage.getItem('token');
+                const activityList = document.getElementById('activityList');
+
+                // Показываем индикатор загрузки
+                activityList.innerHTML = `
+                    <div class="activity-loading">
+                        <div class="loading-spinner"></div>
+                        <span>Загрузка активности...</span>
+                    </div>
+                `;
+
+                // Получаем новые заказы
+                const ordersResponse = await fetch(`${API_URL}/api/Orders/manager`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                // Получаем новые запросы поддержки
+                const supportResponse = await fetch(`${API_URL}/api/SupportRequests/manager`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                let orders = [];
+                let supportRequests = [];
+
+                if (ordersResponse.ok) {
+                    orders = await ordersResponse.json();
+                    // Фильтруем только новые заказы
+                    orders = orders.filter(order => {
+                        const status = order.status || order.Status;
+                        return status === 'New';
+                    }).slice(0, 5);
+                }
+
+                if (supportResponse.ok) {
+                    supportRequests = await supportResponse.json();
+                    // Фильтруем только новые запросы поддержки
+                    supportRequests = supportRequests.filter(req => {
+                        const status = req.status || req.Status;
+                        return status === 'New';
+                    }).slice(0, 5);
+                }
+
+                // Собираем всю активность
+                let activities = [];
+
+                // Добавляем новые заказы
+                orders.forEach(order => {
+                    activities.push({
+                        type: 'order',
+                        id: order.id || order.Id,
+                        title: `${order.orderName || order.OrderName}`,
+                        client: order.clientName || order.ClientName || 'Неизвестный клиент',
+                        date: new Date(order.createDate || order.CreateDate),
+                        status: 'Новый заказ'
+                    });
+                });
+
+                // Добавляем новые запросы поддержки
+                supportRequests.forEach(req => {
+                    activities.push({
+                        type: 'support',
+                        id: req.id || req.Id,
+                        title: `${req.topic || req.Topic}`,
+                        client: req.clientName || req.ClientName || 'Неизвестный клиент',
+                        date: new Date(req.createDate || req.CreateDate),
+                        status: 'Новый запрос'
+                    });
+                });
+
+                // Сортируем по дате (новые сверху)
+                activities.sort((a, b) => b.date - a.date);
+                activities = activities.slice(0, 5);
+
+                // Отображаем активность
+                if (activities.length === 0) {
+                    activityList.innerHTML = `
+                        <div class="activity-empty">
+                            <i class="bi bi-inbox"></i>
+                            <span>Нет новой активности</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                activities.forEach(activity => {
+                    const icon = activity.type === 'order'
+                        ? '<i class="bi bi-cart-plus" style="color: #4CAF50;"></i>'
+                        : '<i class="bi bi-headset" style="color: #2196F3;"></i>';
+
+                    // Форматируем заголовок
+                    const title = activity.title.length > 30
+                        ? activity.title.substring(0, 30) + '...'
+                        : activity.title;
+
+                    html += `
+                        <div class="activity-item" onclick="viewActivityDetail('${activity.type}', ${activity.id})">
+                            ${icon}
+                            <div class="activity-content">
+                                <div class="activity-title">${title}</div>
+                                <div class="activity-details">
+                                    <span class="activity-client">${activity.client}</span>
+                                    <span class="activity-status">${activity.status}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                activityList.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+                const activityList = document.getElementById('activityList');
+                activityList.innerHTML = `
+                    <div class="activity-error">
+                        <i class="bi bi-exclamation-triangle" style="color: #f44336;"></i>
+                        <span>Ошибка загрузки активности</span>
+                    </div>
+                `;
+            }
+        }
+
+        function viewActivityDetail(type, id) {
+            if (type === 'order') {
+                window.location.href = `orders-management.html?order=${id}`;
+            } else if (type === 'support') {
+                window.location.href = `support-management.html?request=${id}`;
+            }
+        }
+
+        async function refreshActivity() {
+            // Перезагружаем все данные
+            await loadOrders();
+            await loadSupportRequests();
+            await loadManagerStats();
+            await loadRecentActivity();
+            showNotification('Данные обновлены', 'success');
         }
 
         function showWelcomeMessage() {
@@ -445,7 +656,16 @@
             const notificationText = document.getElementById('notificationText');
 
             if (currentUser && currentUser.name) {
-                notificationText.textContent = `Добро пожаловать, ${currentUser.name}! У вас 4 новых задачи на сегодня.`;
+                notificationText.textContent = `Добро пожаловать, ${currentUser.name}!`;
+
+                // Добавляем информацию о новых задачах
+                const newOrders = allOrders.filter(order => order.status === 'New').length;
+                const newSupport = allSupportRequests.filter(req => req.status === 'New').length;
+                const totalNewTasks = newOrders + newSupport;
+
+                if (totalNewTasks > 0) {
+                    notificationText.textContent += ` У вас ${totalNewTasks} новых задач`;
+                }
             } else {
                 notificationText.textContent = 'Добро пожаловать в панель управления менеджера!';
             }
@@ -458,7 +678,7 @@
             }, 10000);
         }
 
-        // Функции редактирования профиля (аналогичны user-dashboard.html)
+        // Функции редактирования профиля
         function editField(field) {
             if (editingField && editingField !== field) {
                 cancelEdit(editingField);
@@ -685,24 +905,8 @@
             showNotification('Управление командой в разработке', 'info');
         };
 
-        window.generateReports = function () {
-            showNotification('Генерация отчетов в разработке', 'info');
-        };
-
-        window.assignTasks = function () {
-            showNotification('Назначение задач в разработке', 'info');
-        };
-
-        window.viewAnalytics = function () {
-            showNotification('Аналитика в разработке', 'info');
-        };
-
         window.manageUsers = function () {
             showNotification('Управление пользователями в разработке', 'info');
-        };
-
-        window.systemSettings = function () {
-            showNotification('Настройки системы в разработке', 'info');
         };
 
         document.addEventListener('keydown', function (e) {
@@ -710,6 +914,97 @@
                 cancelEdit(editingField);
             }
         });
+
+        // Добавляем CSS для новых элементов
+        const style = document.createElement('style');
+        style.textContent = `
+            .activity-loading, .activity-empty, .activity-error {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 20px;
+                text-align: center;
+                color: #666;
+            }
+
+            .activity-loading span, .activity-empty span, .activity-error span {
+                margin-top: 10px;
+            }
+
+            .activity-item {
+                display: flex;
+                align-items: flex-start;
+                padding: 12px 15px;
+                background: white;
+                border-radius: 8px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .activity-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+
+            .activity-item i {
+                font-size: 20px;
+                margin-right: 12px;
+                margin-top: 2px;
+            }
+
+            .activity-content {
+                flex: 1;
+            }
+
+            .activity-title {
+                font-weight: 500;
+                color: #333;
+                margin-bottom: 4px;
+                font-size: 14px;
+            }
+
+            .activity-details {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                font-size: 12px;
+                color: #666;
+            }
+
+            .activity-client {
+                background: #e3f2fd;
+                padding: 2px 8px;
+                border-radius: 12px;
+            }
+
+            .activity-status {
+                background: #e8f5e9;
+                padding: 2px 8px;
+                border-radius: 12px;
+            }
+
+            .btn-refresh {
+                background: #4CAF50;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                transition: background 0.2s;
+            }
+
+            .btn-refresh:hover {
+                background: #45a049;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

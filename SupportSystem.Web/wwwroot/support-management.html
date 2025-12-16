@@ -1,10 +1,2357 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление поддержкой - Support System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* Стили для доски обращений */
+        .requests-kanban {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            min-height: 500px;
+        }
 
+        .kanban-column {
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-header {
+            padding: 15px;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .column-header h3 {
+                margin: 0;
+                font-size: 1.1rem;
+                color: #495057;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .column-count {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .column-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Карточка обращения */
+        .request-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .request-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                border-color: #2196F3;
+            }
+
+            .request-card.new {
+                border-left: 4px solid #667eea;
+            }
+
+            .request-card.processing {
+                border-left: 4px solid #ff9800;
+            }
+
+            .request-card.completed {
+                border-left: 4px solid #4CAF50;
+            }
+
+            .request-card.cancelled {
+                border-left: 4px solid #f44336;
+            }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .request-title {
+            font-weight: 600;
+            color: #212529;
+            font-size: 1rem;
+            margin: 0;
+            flex: 1;
+        }
+
+        .request-id {
+            color: #6c757d;
+            font-size: 0.8rem;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .request-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .priority-low {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .request-info {
+            margin-top: 10px;
+        }
+
+        .request-client {
+            color: #495057;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .request-date {
+            color: #6c757d;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .request-topic {
+            color: #2196F3;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .request-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .request-action-btn {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-assign {
+            background: #2196F3;
+            color: white;
+        }
+
+            .btn-assign:hover {
+                background: #1976d2;
+            }
+
+        .btn-edit {
+            background: #ff9800;
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background: #f57c00;
+            }
+
+        .btn-complete {
+            background: #4CAF50;
+            color: white;
+        }
+
+            .btn-complete:hover {
+                background: #388e3c;
+            }
+
+        /* Фильтры и поиск */
+        .filters-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            flex: 0 1 250px;
+            position: relative;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 10px 15px 10px 40px;
+                border: 2px solid #dee2e6;
+                border-radius: 8px;
+                font-size: 0.95rem;
+            }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+            .filter-controls select {
+                padding: 8px 12px;
+                border: 2px solid #dee2e6;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                min-width: 150px;
+            }
+
+        .btn-refresh {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-refresh:hover {
+                background: #388e3c;
+            }
+
+        /* Статистика */
+        .requests-stats {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2196F3;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px 12px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .modal-header h3 {
+                margin: 0;
+                color: #1e293b;
+                font-size: 1.3rem;
+                font-weight: 600;
+            }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+            .modal-close:hover {
+                background: #e2e8f0;
+                color: #475569;
+            }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Детали обращения */
+        .request-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .detail-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+            .detail-section h4 {
+                color: #334155;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #2196F3;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+            .detail-value.message {
+                white-space: pre-wrap;
+                background: white;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                margin-top: 8px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+        /* Статусы */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffe0b2;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-cancelled {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+            .tab:hover {
+                color: #2196F3;
+            }
+
+            .tab.active {
+                color: #2196F3;
+                border-bottom-color: #2196F3;
+                background: #e3f2fd;
+            }
+
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        /* Связанные элементы */
+        .related-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .related-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+            .related-item:hover {
+                border-color: #2196F3;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .item-status {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .item-content {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            border-left: 3px solid #2196F3;
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Форма редактирования */
+        .edit-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                color: #475057;
+                font-weight: 500;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #2196F3;
+                box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+            }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-save {
+            background: #2196F3;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .btn-save:hover {
+                background: #1976d2;
+                transform: translateY(-2px);
+            }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+            .btn-cancel:hover {
+                background: #545b62;
+            }
+
+        /* Пустая колонка */
+        .empty-column {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: 40px 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            margin: 10px;
+        }
+
+        /* Связанные заказы */
+        .related-orders-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .related-order-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+            .related-order-item:hover {
+                border-color: #4CAF50;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        .related-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .related-order-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 1rem;
+            margin: 0;
+            flex: 1;
+        }
+
+        .related-order-status {
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .related-order-info {
+            color: #475057;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #4CAF50;
+            margin-top: 10px;
+        }
+
+        /* Новые стили для кнопки назначения */
+        .btn-assign-to-self {
+            background: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-assign-to-self:hover {
+                background: #1976d2;
+                transform: translateY(-2px);
+            }
+
+        /* Стили для ответов на обращение */
+        .response-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .responses-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .response-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .response-author {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+
+        .response-date {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .response-content {
+            color: #475057;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        /* Форма отправки ответа */
+        .response-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-title {
+            color: #334155;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .form-check input[type="checkbox"] {
+                margin-right: 8px;
+                width: 18px;
+                height: 18px;
+            }
+
+        .no-responses {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+        }
+
+            .no-responses i {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                display: block;
+            }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .requests-kanban {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .request-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .requests-kanban {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                flex: 1;
+                min-width: auto;
+            }
+
+            .filter-controls {
+                flex-wrap: wrap;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                min-width: 100px;
+            }
+
+            .request-actions {
+                flex-direction: column;
+            }
+
+            .request-action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .btn-save, .btn-cancel, .btn-send {
+                width: 100%;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .request-card {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .modal-content {
+            animation: fadeIn 0.2s ease forwards;
+        }
+
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+            word-wrap: break-word;
+        }
+
+            .notification.success {
+                background: #4CAF50;
+                border-left: 4px solid #388e3c;
+            }
+
+            .notification.error {
+                background: #f44336;
+                border-left: 4px solid #d32f2f;
+            }
+
+            .notification.info {
+                background: #2196F3;
+                border-left: 4px solid #1976d2;
+            }
+
+            .notification.warning {
+                background: #ff9800;
+                border-left: 4px solid #f57c00;
+            }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Стили для управления статусами */
+        .status-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .status-control-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #475057;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .status-control-btn:hover {
+                background: #f1f5f9;
+                transform: translateY(-1px);
+            }
+
+            .status-control-btn.active {
+                background: #2196F3;
+                color: white;
+                border-color: #2196F3;
+            }
+
+            .status-control-btn.status-new {
+                border-color: #bbdefb;
+                background: #e3f2fd;
+                color: #1565c0;
+            }
+
+                .status-control-btn.status-new.active {
+                    background: #1565c0;
+                    color: white;
+                }
+
+            .status-control-btn.status-processing {
+                border-color: #ffe0b2;
+                background: #fff3e0;
+                color: #e65100;
+            }
+
+                .status-control-btn.status-processing.active {
+                    background: #e65100;
+                    color: white;
+                }
+
+            .status-control-btn.status-completed {
+                border-color: #c8e6c9;
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+                .status-control-btn.status-completed.active {
+                    background: #2e7d32;
+                    color: white;
+                }
+
+            .status-control-btn.status-cancelled {
+                border-color: #ffcdd2;
+                background: #ffebee;
+                color: #c62828;
+            }
+
+                .status-control-btn.status-cancelled.active {
+                    background: #c62828;
+                    color: white;
+                }
+    </style>
+</head>
+<body class="dashboard-page">
+    <div class="container">
+        <header class="dashboard-header">
+            <h1 class="dashboard-title">
+                <a href="index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
+            </h1>
+            <div class="user-info">
+                <span id="userName">Загрузка...</span>
+                <div>
+                    <button onclick="goBack()" class="btn-secondary" style="margin-right: 10px;">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </button>
+                    <button onclick="logout()" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i> Выйти
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- Заголовок страницы -->
+            <div class="page-header">
+                <h1>
+                    <i class="bi bi-headset"></i> Управление поддержкой
+                </h1>
+                <p class="page-subtitle">
+                    Просмотр и управление обращениями клиентов в поддержку
+                </p>
+            </div>
+
+            <!-- Фильтры и поиск -->
+            <div class="form-container" style="margin-bottom: 20px;">
+                <div class="filters-row">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="searchInput" placeholder="Поиск по теме или сообщению..."
+                               onkeyup="searchRequests()">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="statusFilter" onchange="filterRequests()">
+                            <option value="">Все статусы</option>
+                            <option value="New">Новые</option>
+                            <option value="Processing">В обработке</option>
+                            <option value="Completed">Завершенные</option>
+                            <option value="Cancelled">Отмененные</option>
+                        </select>
+                        <select id="priorityFilter" onchange="filterRequests()">
+                            <option value="">Все приоритеты</option>
+                            <option value="Low">Низкий</option>
+                            <option value="Medium">Средний</option>
+                            <option value="High">Высокий</option>
+                        </select>
+                        <button onclick="loadRequests()" class="btn-refresh">
+                            <i class="bi bi-arrow-clockwise"></i> Обновить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Доска обращений (Kanban) -->
+            <div class="requests-kanban">
+                <div class="kanban-column" id="newRequestsColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-plus-circle"></i> Новые</h3>
+                        <span class="column-count" id="newCount">0</span>
+                    </div>
+                    <div class="column-content" id="newRequestsList">
+                        <!-- Новые обращения будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="processingRequestsColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-gear"></i> В обработке</h3>
+                        <span class="column-count" id="processingCount">0</span>
+                    </div>
+                    <div class="column-content" id="processingRequestsList">
+                        <!-- Обращения в обработке будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="completedRequestsColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-check-circle"></i> Завершенные</h3>
+                        <span class="column-count" id="completedCount">0</span>
+                    </div>
+                    <div class="column-content" id="completedRequestsList">
+                        <!-- Завершенные обращения будут здесь -->
+                    </div>
+                </div>
+
+                <div class="kanban-column" id="cancelledRequestsColumn">
+                    <div class="column-header">
+                        <h3><i class="bi bi-x-circle"></i> Отмененные</h3>
+                        <span class="column-count" id="cancelledCount">0</span>
+                    </div>
+                    <div class="column-content" id="cancelledRequestsList">
+                        <!-- Отмененные обращения будут здесь -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="requests-stats" style="margin-top: 30px;">
+                <h3><i class="bi bi-graph-up"></i> Статистика обращений</h3>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Всего обращений:</div>
+                        <div class="stat-value" id="totalRequests">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Новые сегодня:</div>
+                        <div class="stat-value" id="todayRequests">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Высокий приоритет:</div>
+                        <div class="stat-value" id="highPriority">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Среднее время ответа:</div>
+                        <div class="stat-value" id="avgResponseTime">0ч</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <p>© 2024 Support System. Управление поддержкой</p>
+        </footer>
+    </div>
+
+    <!-- Модальное окно просмотра обращения -->
+    <div id="requestModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Загрузка...</h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="requestDetails">
+                    <!-- Детали обращения будут здесь -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <script>
+        const API_URL = 'https://localhost:7100';
+        let currentUser = null;
+        let allRequests = [];
+        let currentRequestId = null;
+        let currentRequestData = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeSupportPage();
+        });
+
+        async function initializeSupportPage() {
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                await loadRequests();
+                updateStats();
+            }
+        }
+
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            const userJson = localStorage.getItem('user');
+
+            if (!token || !userJson) {
+                showNotification('Требуется авторизация', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return false;
+            }
+
+            try {
+                currentUser = JSON.parse(userJson);
+                document.getElementById('userName').textContent = currentUser.name;
+
+                if (currentUser.role !== 'Manager' && currentUser.role !== 'Admin') {
+                    redirectByRole(currentUser.role);
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                localStorage.clear();
+                showNotification('Ошибка авторизации', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return false;
+            }
+        }
+
+        async function loadRequests() {
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    allRequests = await response.json();
+                    renderRequests();
+                    updateStats();
+                    showNotification(`Загружено ${allRequests.length} обращений`, 'success');
+                } else {
+                    showNotification('Ошибка загрузки обращений', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        function renderRequests() {
+            clearColumns();
+
+            const counts = { new: 0, processing: 0, completed: 0, cancelled: 0 };
+
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+
+            allRequests.forEach(request => {
+                if (statusFilter && request.status !== statusFilter) return;
+                if (priorityFilter && request.priority !== priorityFilter) return;
+                if (searchText &&
+                    !request.topic.toLowerCase().includes(searchText) &&
+                    !request.message.toLowerCase().includes(searchText)) return;
+
+                const requestElement = createRequestCard(request);
+
+                switch (request.status) {
+                    case 'New':
+                        document.getElementById('newRequestsList').appendChild(requestElement);
+                        counts.new++;
+                        break;
+                    case 'Processing':
+                        document.getElementById('processingRequestsList').appendChild(requestElement);
+                        counts.processing++;
+                        break;
+                    case 'Completed':
+                        document.getElementById('completedRequestsList').appendChild(requestElement);
+                        counts.completed++;
+                        break;
+                    case 'Cancelled':
+                        document.getElementById('cancelledRequestsList').appendChild(requestElement);
+                        counts.cancelled++;
+                        break;
+                }
+            });
+
+            document.getElementById('newCount').textContent = counts.new;
+            document.getElementById('processingCount').textContent = counts.processing;
+            document.getElementById('completedCount').textContent = counts.completed;
+            document.getElementById('cancelledCount').textContent = counts.cancelled;
+
+            showEmptyMessages(counts);
+        }
+
+        function clearColumns() {
+            const columns = ['newRequestsList', 'processingRequestsList', 'completedRequestsList', 'cancelledRequestsList'];
+            columns.forEach(columnId => {
+                document.getElementById(columnId).innerHTML = '';
+            });
+        }
+
+        function showEmptyMessages(counts) {
+            const messages = {
+                newRequestsList: 'Нет новых обращений',
+                processingRequestsList: 'Нет обращений в обработке',
+                completedRequestsList: 'Нет завершенных обращений',
+                cancelledRequestsList: 'Нет отмененных обращений'
+            };
+
+            for (const [columnId, message] of Object.entries(messages)) {
+                const column = document.getElementById(columnId);
+                const countKey = columnId.replace('RequestsList', '');
+
+                if (counts[countKey] === 0) {
+                    column.innerHTML = `<div class="empty-column">${message}</div>`;
+                }
+            }
+        }
+
+        function createRequestCard(request) {
+            const card = document.createElement('div');
+            card.className = `request-card ${request.status.toLowerCase()}`;
+            card.setAttribute('data-id', request.id);
+
+            let priorityClass = 'priority-medium';
+            let priorityText = 'Средний';
+            if (request.priority === 'High') {
+                priorityClass = 'priority-high';
+                priorityText = 'Высокий';
+            } else if (request.priority === 'Low') {
+                priorityClass = 'priority-low';
+                priorityText = 'Низкий';
+            }
+
+            const createDate = new Date(request.createDate);
+            const formattedDate = createDate.toLocaleDateString('ru-RU');
+            const isAssignedToMe = request.assignedToId === currentUser.id;
+            const hasRelatedOrder = request.relatedOrderId > 0;
+
+            card.innerHTML = `
+                <div class="request-header">
+                    <h4 class="request-title">${escapeHtml(request.topic)}</h4>
+                    <span class="request-id">#${request.id}</span>
+                </div>
+                <div class="request-priority ${priorityClass}">${priorityText}</div>
+                <div class="request-info">
+                    <div class="request-client">
+                        <i class="bi bi-person"></i>
+                        ${escapeHtml(request.clientName)}
+                    </div>
+                    <div class="request-date">
+                        <i class="bi bi-calendar"></i>
+                        ${formattedDate}
+                    </div>
+                    ${hasRelatedOrder ? `
+                        <div class="request-topic">
+                            <i class="bi bi-link"></i> Привязан к заказу #${request.relatedOrderId}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="request-actions">
+                    <button class="request-action-btn btn-edit" onclick="viewRequestDetails(${request.id}, event)">
+                        <i class="bi bi-eye"></i> Просмотр
+                    </button>
+                    ${!isAssignedToMe && request.status === 'New' ? `
+                        <button class="request-action-btn btn-assign" onclick="assignRequestToSelf(${request.id}, event)">
+                            <i class="bi bi-person-check"></i> Принять
+                        </button>
+                    ` : ''}
+                    ${isAssignedToMe && request.status === 'Processing' ? `
+                        <button class="request-action-btn btn-complete" onclick="completeRequest(${request.id}, event)">
+                            <i class="bi bi-check-circle"></i> Завершить
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function viewRequestDetails(requestId, event) {
+            if (event) event.stopPropagation();
+
+            currentRequestId = requestId;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    showNotification('Требуется авторизация', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 1500);
+                    return;
+                }
+
+                // Показываем загрузку
+                document.getElementById('modalTitle').textContent = 'Загрузка...';
+                document.getElementById('requestDetails').innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #2196F3; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                        <p style="color: #64748b; margin-top: 15px;">Загрузка информации об обращении...</p>
+                    </div>
+                `;
+
+                document.getElementById('requestModal').style.display = 'flex';
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/${requestId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
+                        localStorage.clear();
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                        return;
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const request = await response.json();
+                currentRequestData = request;
+
+                // Загружаем связанный заказ если есть
+                let relatedOrder = null;
+                if (request.relatedOrderId) {
+                    try {
+                        const orderResponse = await fetch(`${API_URL}/api/Orders/${request.relatedOrderId}`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        if (orderResponse.ok) {
+                            relatedOrder = await orderResponse.json();
+                        }
+                    } catch (orderError) {
+                        console.warn('Не удалось загрузить связанный заказ:', orderError);
+                    }
+                }
+
+                // Загружаем ответы на это обращение
+                let responses = [];
+                try {
+                    const responsesResponse = await fetch(`${API_URL}/api/SupportResponses/request/${requestId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (responsesResponse.ok) {
+                        responses = await responsesResponse.json();
+                    }
+                } catch (responsesError) {
+                    console.warn('Не удалось загрузить ответы:', responsesError);
+                }
+
+                // Объединяем все данные
+                const requestWithAdditionalData = {
+                    ...request,
+                    RelatedOrder: relatedOrder,
+                    Responses: responses
+                };
+
+                renderRequestDetails(requestWithAdditionalData);
+
+            } catch (error) {
+                console.error('Error loading request details:', error);
+                document.getElementById('requestDetails').innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
+                        <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали обращения</h4>
+                        <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
+                        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                            <button onclick="closeModal()" class="btn-cancel">
+                                <i class="bi bi-x"></i> Закрыть
+                            </button>
+                            <button onclick="viewRequestDetails(${requestId})" class="btn-save">
+                                <i class="bi bi-arrow-clockwise"></i> Повторить попытку
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function renderRequestDetails(request) {
+            currentRequestData = request;
+
+            // Нормализуем данные из API
+            const normalizedRequest = {
+                Id: request.id || request.Id || 0,
+                Topic: request.topic || request.Topic || 'Без темы',
+                Message: request.message || request.Message || 'Нет сообщения',
+                Status: request.status || request.Status || 'New',
+                Priority: request.priority || request.Priority || 'Medium',
+                CreateDate: request.createDate || request.CreateDate || new Date().toISOString(),
+                ClientName: request.clientName || request.ClientName || 'Неизвестный клиент',
+                ClientEmail: request.clientEmail || request.ClientEmail || 'Не указан',
+                ClientPhone: request.clientPhone || request.ClientPhone || 'Не указан',
+                AssignedToId: request.assignedToId || request.AssignedToId || null,
+                ManagerName: request.managerName || request.ManagerName || null,
+                RelatedOrderId: request.relatedOrderId || request.RelatedOrderId || null,
+                RelatedOrder: request.RelatedOrder || null,
+                Responses: request.Responses || []
+            };
+
+            const isAssignedToMe = normalizedRequest.AssignedToId === currentUser.id;
+            const canEdit = isAssignedToMe || currentUser.role === 'Admin';
+            const showResponseTab = (isAssignedToMe || currentUser.role === 'Admin') &&
+                normalizedRequest.Status !== 'Completed' &&
+                normalizedRequest.Status !== 'Cancelled';
+
+            document.getElementById('modalTitle').textContent = `Обращение #${normalizedRequest.Id}: ${escapeHtml(normalizedRequest.Topic)}`;
+
+            // Форматируем даты
+            const createDate = new Date(normalizedRequest.CreateDate);
+            const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Определяем стили статуса
+            let statusClass = '';
+            let statusIcon = '';
+            switch (normalizedRequest.Status) {
+                case 'New':
+                    statusClass = 'status-new';
+                    statusIcon = 'bi-plus-circle';
+                    break;
+                case 'Processing':
+                    statusClass = 'status-processing';
+                    statusIcon = 'bi-gear';
+                    break;
+                case 'Completed':
+                    statusClass = 'status-completed';
+                    statusIcon = 'bi-check-circle';
+                    break;
+                case 'Cancelled':
+                    statusClass = 'status-cancelled';
+                    statusIcon = 'bi-x-circle';
+                    break;
+                default:
+                    statusClass = 'status-new';
+                    statusIcon = 'bi-question-circle';
+            }
+
+            // Определяем стили приоритета
+            let priorityClass = 'priority-medium';
+            let priorityText = 'Средний';
+            if (normalizedRequest.Priority === 'High') {
+                priorityClass = 'priority-high';
+                priorityText = 'Высокий';
+            } else if (normalizedRequest.Priority === 'Low') {
+                priorityClass = 'priority-low';
+                priorityText = 'Низкий';
+            }
+
+            // Генерируем HTML
+            const html = `
+                <!-- Вкладки -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('general')">
+                        <i class="bi bi-info-circle"></i> Основная информация
+                    </button>
+                    ${showResponseTab ? `
+                        <button class="tab" onclick="switchTab('response')">
+                            <i class="bi bi-chat-dots"></i> Ответить
+                            ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ?
+                                `<span style="margin-left: 8px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                    ${normalizedRequest.Responses.length}
+                                </span>` : ''
+                            }
+                        </button>
+                    ` : ''}
+                    ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                        <button class="tab" onclick="switchTab('history')">
+                            <i class="bi bi-clock-history"></i> История ответов
+                            <span style="margin-left: 8px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                ${normalizedRequest.Responses.length}
+                            </span>
+                        </button>
+                    ` : ''}
+                    ${canEdit ? `
+                        <button class="tab" onclick="switchTab('edit')">
+                            <i class="bi bi-pencil"></i> Редактировать
+                        </button>
+                    ` : ''}
+                </div>
+
+                <!-- Основная информация -->
+                <div id="tab-general" class="tab-content active">
+                    <div class="request-detail-grid">
+                        <div class="detail-section">
+                            <h4><i class="bi bi-chat-text"></i> Информация об обращении</h4>
+                            <div class="detail-item">
+                                <div class="detail-label">Тема:</div>
+                                <div class="detail-value">${escapeHtml(normalizedRequest.Topic)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Статус:</div>
+                                <div class="detail-value">
+                                    <span class="status-badge ${statusClass}">
+                                        <i class="bi ${statusIcon}"></i> ${getStatusText(normalizedRequest.Status)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Приоритет:</div>
+                                <div class="detail-value">
+                                    <span class="request-priority ${priorityClass}">${priorityText}</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Дата создания:</div>
+                                <div class="detail-value">${formattedCreateDate}</div>
+                            </div>
+                            ${normalizedRequest.RelatedOrderId ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Связанный заказ:</div>
+                                    <div class="detail-value">
+                                        <span style="color: #4CAF50; font-weight: 600;">
+                                            <i class="bi bi-link"></i> Заказ #${normalizedRequest.RelatedOrderId}
+                                        </span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="detail-section">
+                            <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
+                            <div class="detail-item">
+                                <div class="detail-label">Имя клиента:</div>
+                                <div class="detail-value">${escapeHtml(normalizedRequest.ClientName)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Email клиента:</div>
+                                <div class="detail-value">
+                                    ${normalizedRequest.ClientEmail && normalizedRequest.ClientEmail !== 'Не указан' ?
+                                        `<a href="mailto:${escapeHtml(normalizedRequest.ClientEmail)}" style="color: #2196F3;">
+                                            ${escapeHtml(normalizedRequest.ClientEmail)}
+                                        </a>` :
+                                        '<span style="color: #94a3b8;">Не указан</span>'
+                                    }
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Телефон клиента:</div>
+                                <div class="detail-value">
+                                    ${normalizedRequest.ClientPhone && normalizedRequest.ClientPhone !== 'Не указан' ?
+                                        `<a href="tel:${escapeHtml(normalizedRequest.ClientPhone)}" style="color: #2196F3;">
+                                            ${escapeHtml(normalizedRequest.ClientPhone)}
+                                        </a>` :
+                                        '<span style="color: #94a3b8;">Не указан</span>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
+                            ${normalizedRequest.AssignedToId ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Ответственный менеджер:</div>
+                                    <div class="detail-value">${escapeHtml(normalizedRequest.ManagerName || 'Неизвестный менеджер')}</div>
+                                </div>
+                                ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
+                                    <div class="detail-item" style="margin-top: 10px;">
+                                        <button onclick="unassignRequest(${normalizedRequest.Id})"
+                                                class="btn-danger"
+                                                style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                            <i class="bi bi-person-dash"></i> Отказаться от обращения
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            ` : `
+                                <div class="detail-item">
+                                    <div class="detail-label">Менеджер:</div>
+                                    <div class="detail-value">
+                                        <span style="color: #94a3b8; font-style: italic;">
+                                            <i class="bi bi-person-x"></i> Не назначен
+                                        </span>
+                                    </div>
+                                </div>
+                                ${normalizedRequest.Status === 'New' ? `
+                                    <div class="detail-item" style="margin-top: 10px;">
+                                        <button onclick="assignRequestToSelf(${normalizedRequest.Id})"
+                                                class="btn-assign-to-self">
+                                            <i class="bi bi-person-check"></i> Принять это обращение
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            `}
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="bi bi-chat-left-text"></i> Сообщение клиента</h4>
+                        <div class="detail-value message">${escapeHtml(normalizedRequest.Message)}</div>
+                    </div>
+
+                    ${normalizedRequest.RelatedOrder ? `
+                        <div class="detail-section">
+                            <h4><i class="bi bi-link-45deg"></i> Связанный заказ</h4>
+                            <div class="related-order-item" onclick="viewRelatedOrder(${normalizedRequest.RelatedOrderId})">
+                                <div class="related-order-header">
+                                    <h5 class="related-order-title">
+                                        <i class="bi bi-cart"></i> ${escapeHtml(normalizedRequest.RelatedOrder.orderName || normalizedRequest.RelatedOrder.OrderName)}
+                                    </h5>
+                                    <span class="related-order-status">
+                                        ${normalizedRequest.RelatedOrder.status || normalizedRequest.RelatedOrder.Status}
+                                    </span>
+                                </div>
+                                <div class="related-order-info">
+                                    ${escapeHtml(normalizedRequest.RelatedOrder.description || normalizedRequest.RelatedOrder.Description || '').substring(0, 200)}${(normalizedRequest.RelatedOrder.description || normalizedRequest.RelatedOrder.Description || '').length > 200 ? '...' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <!-- Вкладка для ответов -->
+                ${showResponseTab ? `
+                    <div id="tab-response" class="tab-content">
+                        <div class="response-section">
+                            <h4><i class="bi bi-chat-dots"></i> Отправить ответ</h4>
+                            <div class="response-form">
+                                <div class="form-group">
+                                    <label for="responseContent">Ваш ответ:</label>
+                                    <textarea id="responseContent" class="form-control" rows="6"
+                                              placeholder="Введите ваш ответ здесь..." maxlength="2000" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="completeRequestCheckbox">
+                                        <label class="form-check-label" for="completeRequestCheckbox">
+                                            Завершить обращение после отправки ответа
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="status-controls">
+                                    <button class="status-control-btn status-processing ${normalizedRequest.Status === 'Processing' ? 'active' : ''}"
+                                            onclick="selectStatus('Processing')">
+                                        <i class="bi bi-gear"></i> В обработке
+                                    </button>
+                                    <button class="status-control-btn status-completed"
+                                            onclick="selectStatus('Completed')">
+                                        <i class="bi bi-check-circle"></i> Завершить
+                                    </button>
+                                </div>
+
+                                <div class="modal-actions">
+                                    <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                    <button type="button" onclick="submitResponse()" class="btn-save">
+                                        <i class="bi bi-send"></i> Отправить ответ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- История ответов -->
+                        ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                            <div class="response-section">
+                                <h4><i class="bi bi-clock-history"></i> История ответов</h4>
+                                <div class="responses-list">
+                                    ${normalizedRequest.Responses.map((response, index) => `
+                                        <div class="response-item">
+                                            <div class="response-header">
+                                                <span class="response-author">
+                                                    <i class="bi bi-person-circle"></i> ${escapeHtml(response.authorName || response.AuthorName || 'Менеджер')}
+                                                </span>
+                                                <span class="response-date">
+                                                    ${response.createDate || response.CreateDate ?
+                                                        new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit'
+                                                        }) : 'Дата не указана'}
+                                                </span>
+                                            </div>
+                                            <div class="response-content">
+                                                ${escapeHtml(response.content || response.Content)}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="response-section">
+                                <div class="no-responses">
+                                    <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                    <p style="color: #94a3b8; font-size: 1.1rem;">Ответов пока нет</p>
+                                    <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">Вы будете первым, кто ответит на это обращение</p>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                ` : ''}
+
+                <!-- История ответов (отдельная вкладка) -->
+                ${normalizedRequest.Responses && normalizedRequest.Responses.length > 0 ? `
+                    <div id="tab-history" class="tab-content">
+                        <div class="response-section">
+                            <h4><i class="bi bi-clock-history"></i> Полная история ответов</h4>
+                            <p style="color: #64748b; margin-bottom: 20px; font-size: 0.9rem;">
+                                Все ответы на это обращение в хронологическом порядке.
+                            </p>
+                            <div class="responses-list">
+                                ${normalizedRequest.Responses.map((response, index) => `
+                                    <div class="response-item">
+                                        <div class="response-header">
+                                            <span class="response-author">
+                                                <i class="bi bi-person-circle"></i> ${escapeHtml(response.authorName || response.AuthorName || 'Менеджер')}
+                                            </span>
+                                            <span class="response-date">
+                                                ${response.createDate || response.CreateDate ?
+                                                    new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    }) : 'Дата не указана'}
+                                            </span>
+                                        </div>
+                                        <div class="response-content">
+                                            ${escapeHtml(response.content || response.Content)}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Редактирование -->
+                ${canEdit ? `
+                    <div id="tab-edit" class="tab-content">
+                        <div class="edit-section">
+                            <h4><i class="bi bi-pencil-square"></i> Редактирование обращения</h4>
+                            <form id="requestEditForm">
+                                <div class="form-group">
+                                    <label for="editTopic">Тема обращения:</label>
+                                    <input type="text" id="editTopic" class="form-control"
+                                           value="${escapeHtml(normalizedRequest.Topic)}" maxlength="200" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editMessage">Сообщение:</label>
+                                    <textarea id="editMessage" class="form-control" rows="6"
+                                              maxlength="2000" required>${escapeHtml(normalizedRequest.Message)}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editStatus">Статус:</label>
+                                    <select id="editStatus" class="form-control">
+                                        <option value="New" ${normalizedRequest.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                        <option value="Processing" ${normalizedRequest.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                        <option value="Completed" ${normalizedRequest.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                        <option value="Cancelled" ${normalizedRequest.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editPriority">Приоритет:</label>
+                                    <select id="editPriority" class="form-control">
+                                        <option value="Low" ${normalizedRequest.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
+                                        <option value="Medium" ${normalizedRequest.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
+                                        <option value="High" ${normalizedRequest.Priority === 'High' ? 'selected' : ''}>Высокий</option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-actions">
+                                    ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
+                                        <button type="button" onclick="unassignRequest(${normalizedRequest.Id})" class="btn-danger">
+                                            <i class="bi bi-person-dash"></i> Отказаться от обращения
+                                        </button>
+                                    ` : ''}
+                                    <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                    <button type="button" onclick="saveRequestChanges()" class="btn-save">
+                                        <i class="bi bi-save"></i> Сохранить изменения
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Кнопки действий -->
+                <div class="modal-actions">
+                    ${isAssignedToMe && normalizedRequest.Status === 'Processing' ? `
+                        <button onclick="completeRequest(${normalizedRequest.Id})"
+                                class="btn-complete"
+                                style="padding: 10px 20px; margin-right: auto;">
+                            <i class="bi bi-check-circle"></i> Завершить обращение
+                        </button>
+                    ` : ''}
+
+                    <button onclick="closeModal()" class="btn-cancel">
+                        <i class="bi bi-x"></i> Закрыть
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('requestDetails').innerHTML = html;
+
+            // Инициализируем выбранный статус
+            if (showResponseTab) {
+                document.querySelector(`.status-control-btn.status-${normalizedRequest.Status.toLowerCase()}`)?.classList.add('active');
+            }
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 'New': return 'Новый';
+                case 'Processing': return 'В обработке';
+                case 'Completed': return 'Завершен';
+                case 'Cancelled': return 'Отменен';
+                default: return status;
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.textContent.includes(
+                    tabName === 'general' ? 'Основная' :
+                    tabName === 'response' ? 'Ответить' :
+                    tabName === 'history' ? 'История' :
+                    tabName === 'edit' ? 'Редактировать' : ''
+                )) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        function selectStatus(status) {
+            document.querySelectorAll('.status-control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const selectedBtn = document.querySelector(`.status-control-btn.status-${status.toLowerCase()}`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+            }
+        }
+
+        async function assignRequestToSelf(requestId, event) {
+            if (event) event.stopPropagation();
+
+            if (!confirm('Вы уверены, что хотите принять это обращение?')) return;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/assign/${requestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Обращение успешно назначено на вас', 'success');
+                    closeModal();
+                    await loadRequests();
+                } else {
+                    showNotification(result.message || 'Ошибка при назначении обращения', 'error');
+                }
+            } catch (error) {
+                console.error('Error assigning request:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function unassignRequest(requestId) {
+            if (!confirm('Вы уверены, что хотите отказаться от этого обращения? Обращение вернется в статус "Новый".')) return;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/unassign/${requestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Вы успешно отказались от обращения', 'success');
+                    closeModal();
+                    await loadRequests();
+                } else {
+                    showNotification(result.message || 'Ошибка при отказе от обращения', 'error');
+                }
+            } catch (error) {
+                console.error('Error unassigning request:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function saveRequestChanges() {
+            try {
+                const token = localStorage.getItem('token');
+                const requestId = currentRequestId;
+
+                const updateData = {
+                    topic: document.getElementById('editTopic').value.trim(),
+                    message: document.getElementById('editMessage').value.trim(),
+                    status: document.getElementById('editStatus').value,
+                    priority: document.getElementById('editPriority').value
+                };
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/${requestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Обращение успешно обновлено', 'success');
+                    closeModal();
+                    await loadRequests();
+                } else {
+                    showNotification(result.message || 'Ошибка обновления обращения', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating request:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function completeRequest(requestId, event) {
+            if (event) event.stopPropagation();
+
+            if (!confirm('Вы уверены, что хотите завершить это обращение?')) return;
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const updateData = {
+                    status: 'Completed'
+                };
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/${requestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Обращение успешно завершено', 'success');
+                    await loadRequests();
+                    closeModal();
+                } else {
+                    showNotification(result.message || 'Ошибка завершения обращения', 'error');
+                }
+            } catch (error) {
+                console.error('Error completing request:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function submitResponse() {
+            try {
+                const token = localStorage.getItem('token');
+                const content = document.getElementById('responseContent').value.trim();
+                const completeRequestCheckbox = document.getElementById('completeRequestCheckbox');
+                const completeAfterResponse = completeRequestCheckbox ? completeRequestCheckbox.checked : false;
+
+                if (!content) {
+                    showNotification('Введите текст ответа', 'warning');
+                    return;
+                }
+
+                // Получаем выбранный статус
+                let newStatus = 'Processing';
+                const activeStatusBtn = document.querySelector('.status-control-btn.active');
+                if (activeStatusBtn) {
+                    const status = activeStatusBtn.getAttribute('class').match(/status-(\w+)/);
+                    if (status) {
+                        newStatus = status[1].charAt(0).toUpperCase() + status[1].slice(1);
+                    }
+                }
+
+                // Если выбрано завершение после ответа, устанавливаем статус "Завершено"
+                if (completeAfterResponse) {
+                    newStatus = 'Completed';
+                }
+
+                // Отправляем ответ
+                const responseData = {
+                    content: content,
+                    supportRequestId: currentRequestId,
+                    authorId: currentUser.id
+                };
+
+                const response = await fetch(`${API_URL}/api/SupportResponses`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(responseData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Ответ успешно отправлен', 'success');
+
+                    // Обновляем статус обращения если нужно
+                    if (newStatus !== currentRequestData.status) {
+                        await updateRequestStatus(newStatus);
+                    }
+
+                    // Обновляем данные
+                    await viewRequestDetails(currentRequestId);
+
+                    // Очищаем форму
+                    if (document.getElementById('responseContent')) {
+                        document.getElementById('responseContent').value = '';
+                    }
+                    if (completeRequestCheckbox) {
+                        completeRequestCheckbox.checked = false;
+                    }
+                } else {
+                    showNotification(result.message || 'Ошибка отправки ответа', 'error');
+                }
+            } catch (error) {
+                console.error('Error submitting response:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
+        async function updateRequestStatus(newStatus) {
+            try {
+                const token = localStorage.getItem('token');
+
+                const updateData = {
+                    status: newStatus
+                };
+
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/${currentRequestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    console.warn('Не удалось обновить статус обращения:', result.message);
+                }
+            } catch (error) {
+                console.error('Error updating request status:', error);
+            }
+        }
+
+        function viewRelatedOrder(orderId) {
+            // Открываем заказ в новой вкладке или вызываем функцию просмотра заказа
+            window.open(`orders-management.html?order=${orderId}`, '_blank');
+        }
+
+        function closeModal() {
+            document.getElementById('requestModal').style.display = 'none';
+            currentRequestId = null;
+            currentRequestData = null;
+        }
+
+        function updateStats() {
+            const today = new Date().toLocaleDateString('ru-RU');
+            const todayRequests = allRequests.filter(request =>
+                new Date(request.createDate).toLocaleDateString('ru-RU') === today
+            ).length;
+
+            const highPriorityRequests = allRequests.filter(request =>
+                request.priority === 'High'
+            ).length;
+
+            // Расчет среднего времени ответа (упрощенный)
+            const completedRequests = allRequests.filter(request =>
+                request.status === 'Completed' && request.createDate && request.completeDate
+            );
+
+            let totalResponseTime = 0;
+            if (completedRequests.length > 0) {
+                completedRequests.forEach(request => {
+                    const createDate = new Date(request.createDate);
+                    const completeDate = new Date(request.completeDate);
+                    const diffHours = (completeDate - createDate) / (1000 * 60 * 60);
+                    totalResponseTime += diffHours;
+                });
+                const avgResponseTime = totalResponseTime / completedRequests.length;
+                document.getElementById('avgResponseTime').textContent = `${Math.round(avgResponseTime)}ч`;
+            } else {
+                document.getElementById('avgResponseTime').textContent = '0ч';
+            }
+
+            document.getElementById('totalRequests').textContent = allRequests.length;
+            document.getElementById('todayRequests').textContent = todayRequests;
+            document.getElementById('highPriority').textContent = highPriorityRequests;
+        }
+
+        function searchRequests() {
+            renderRequests();
+        }
+
+        function filterRequests() {
+            renderRequests();
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            if (!notification) return;
+
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                    notification.style.animation = '';
+                }, 300);
+            }, type === 'error' ? 5000 : 3000);
+
+            notification.onclick = () => {
+                notification.style.display = 'none';
+            };
+        }
+
+        function redirectByRole(role) {
+            const dashboards = {
+                'Admin': 'admin-dashboard.html',
+                'Manager': 'manager-dashboard.html',
+                'User': 'user-dashboard.html'
+            };
+            window.location.href = dashboards[role] || 'login.html';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.logout = function () {
+            if (confirm('Вы уверены, что хотите выйти из системы?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        };
+
+        window.goBack = function () {
+            window.location.href = 'manager-dashboard.html';
+        };
+
+        document.getElementById('requestModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.getElementById('requestModal').style.display === 'flex') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
