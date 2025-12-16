@@ -175,7 +175,7 @@
                     </button>
                     <button class="action-button" onclick="viewReports()">
                         <i class="bi bi-file-text"></i>
-                        Отчеты
+                        Ответы на обращения
                     </button>
                 </div>
             </div>
@@ -586,11 +586,11 @@
         };
 
         window.viewOrders = function () {
-            showNotification('Функция просмотра заказов в разработке', 'info');
+            window.location.href = 'my-orders.html';
         };
 
         window.viewReports = function () {
-            showNotification('Функция просмотра отчетов в разработке', 'info');
+            window.location.href = 'support-responses.html';
         };
 
         // Обработка нажатия Escape для отмены редактирования

@@ -57,13 +57,8 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Содержание не должно превышать 3500 символов" });
                 }
 
-                // Проверяем, что хотя бы одна из сущностей указана
-                if (!reportDto.OrderId.HasValue && !reportDto.ServiceRequestId.HasValue && !reportDto.SupportRequestId.HasValue)
-                {
-                    return BadRequest(new { message = "Укажите связанный заказ, сервисный запрос или запрос поддержки" });
-                }
-
-                // Если указан запрос поддержки, проверяем права
+                // Если указан запрос поддержки, проверяем и получаем связанный заказ
+                int? orderIdFromSupportRequest = null;
                 if (reportDto.SupportRequestId.HasValue)
                 {
                     var supportRequest = await _context.SupportRequests
@@ -80,6 +75,12 @@ namespace SupportSystem.API.Controllers
                     {
                         return Forbid();
                     }
+
+                    // Получаем связанный заказ из запроса поддержки
+                    if (supportRequest.RelatedOrderId.HasValue)
+                    {
+                        orderIdFromSupportRequest = supportRequest.RelatedOrderId.Value;
+                    }
                 }
 
                 var report = new Report
@@ -88,7 +89,8 @@ namespace SupportSystem.API.Controllers
                     Content = reportDto.Content.Trim(),
                     CreateDate = DateTime.Now,
                     CreatedById = userId,
-                    OrderId = reportDto.OrderId,
+                    // Используем OrderId из DTO или из связанного запроса поддержки
+                    OrderId = reportDto.OrderId ?? orderIdFromSupportRequest,
                     ServiceRequestId = reportDto.ServiceRequestId,
                     SupportRequestId = reportDto.SupportRequestId
                 };
@@ -137,6 +139,71 @@ namespace SupportSystem.API.Controllers
                 return StatusCode(500, new
                 {
                     message = "Ошибка при создании отчета",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // GET: api/Reports/order/5 - получить отчеты по заказу (для клиента)
+        [HttpGet("order/{orderId}")]
+        public async Task<IActionResult> GetReportsByOrder(int orderId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized(new { message = "Пользователь не авторизован" });
+                }
+
+                // Проверяем, что заказ принадлежит пользователю
+                var order = await _context.Orders
+                    .FirstOrDefaultAsync(o => o.Id == orderId && o.ClientId == userId);
+
+                if (order == null)
+                {
+                    // Если заказ не принадлежит пользователю, проверяем права админа/менеджера
+                    var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                    if (userRole != "Admin" && userRole != "Manager")
+                    {
+                        return Forbid();
+                    }
+
+                    // Проверяем существование заказа
+                    var orderExists = await _context.Orders.AnyAsync(o => o.Id == orderId);
+                    if (!orderExists)
+                    {
+                        return NotFound(new { message = "Заказ не найден" });
+                    }
+                }
+
+                var reports = await _context.Reports
+                    .Where(r => r.OrderId == orderId)
+                    .Include(r => r.Author)
+                    .OrderByDescending(r => r.CreateDate)
+                    .Select(r => new ReportDto
+                    {
+                        Id = r.Id,
+                        Title = r.Title,
+                        Content = r.Content,
+                        CreateDate = r.CreateDate,
+                        CreatedById = r.CreatedById,
+                        AuthorName = r.Author.Name,
+                        AuthorEmail = r.Author.Email,
+                        OrderId = r.OrderId,
+                        ServiceRequestId = r.ServiceRequestId,
+                        SupportRequestId = r.SupportRequestId
+                    })
+                    .ToListAsync();
+
+                return Ok(reports);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении отчетов для заказа {OrderId}", orderId);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при получении отчетов",
                     error = ex.Message
                 });
             }

@@ -645,7 +645,10 @@ namespace SupportSystem.API.Controllers
         {
             try
             {
-                var supportRequest = await _context.SupportRequests.FindAsync(id);
+                var supportRequest = await _context.SupportRequests
+                    .Include(s => s.RelatedOrder)
+                    .FirstOrDefaultAsync(s => s.Id == id);
+
                 if (supportRequest == null)
                 {
                     return NotFound(new { message = "Запрос поддержки не найден" });
@@ -683,6 +686,8 @@ namespace SupportSystem.API.Controllers
                     supportRequest.AssignedToId = userId;
                 }
 
+                // ВАЖНОЕ ИСПРАВЛЕНИЕ: если запрос поддержки связан с заказом,
+                // устанавливаем OrderId в отчете
                 var report = new Report
                 {
                     Title = reportDto.Title.Trim(),
@@ -691,6 +696,7 @@ namespace SupportSystem.API.Controllers
                     CreatedById = userId,
                     SupportRequestId = id,
                     ServiceRequestId = null,
+                    // Устанавливаем OrderId, если запрос поддержки связан с заказом
                     OrderId = supportRequest.RelatedOrderId
                 };
 
@@ -716,7 +722,10 @@ namespace SupportSystem.API.Controllers
                         "Ответ отправлен и запрос завершен" : "Ответ успешно отправлен",
                     reportId = report.Id,
                     supportRequestId = supportRequest.Id,
-                    newStatus = supportRequest.Status.ToString()
+                    newStatus = supportRequest.Status.ToString(),
+                    // Возвращаем информацию о связанном заказе
+                    relatedOrderId = supportRequest.RelatedOrderId,
+                    orderLinked = supportRequest.RelatedOrderId.HasValue
                 });
             }
             catch (Exception ex)

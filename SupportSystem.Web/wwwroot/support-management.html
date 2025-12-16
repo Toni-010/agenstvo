@@ -2165,16 +2165,16 @@
                     }
                 }
 
-                // Создаем отчет (ответ)
+                // Создаем отчет (ответ) через правильный endpoint
                 const reportData = {
                     title: title,
                     content: content,
                     supportRequestId: currentRequestId,
-                    authorId: currentUser.id,
                     completeRequest: completeAfterResponse || newStatus === 'Completed'
                 };
 
-                const response = await fetch(`${API_URL}/api/Reports/create`, {
+                // Используем endpoint для ответов на запросы поддержки
+                const response = await fetch(`${API_URL}/api/SupportRequests/manager/respond/${currentRequestId}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -2338,6 +2338,71 @@
                 closeModal();
             }
         });
+
+        async function submitResponseAlternative() {
+            try {
+                const token = localStorage.getItem('token');
+                const title = document.getElementById('responseTitle').value.trim();
+                const content = document.getElementById('responseContent').value.trim();
+                const completeRequestCheckbox = document.getElementById('completeRequestCheckbox');
+                const completeAfterResponse = completeRequestCheckbox ? completeRequestCheckbox.checked : false;
+
+                if (!title || !content) {
+                    showNotification('Введите заголовок и текст ответа', 'warning');
+                    return;
+                }
+
+                // Используем существующий CreateReport endpoint
+                const reportData = {
+                    title: title,
+                    content: content,
+                    supportRequestId: currentRequestId,
+                    completeRequest: completeAfterResponse,
+                    // Если запрос поддержки связан с заказом, передаем OrderId
+                    orderId: currentRequestData.RelatedOrderId || null
+                };
+
+                const response = await fetch(`${API_URL}/api/Reports/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reportData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Ответ успешно отправлен', 'success');
+
+                    // Если нужно завершить обращение и есть флаг completeRequest
+                    if (completeAfterResponse && currentRequestData.Status !== 'Completed') {
+                        await updateRequestStatus('Completed');
+                    }
+
+                    // Обновляем данные
+                    await viewRequestDetails(currentRequestId);
+
+                    // Обновляем общий список
+                    await loadRequests();
+
+                    // Очищаем форму
+                    if (document.getElementById('responseContent')) {
+                        document.getElementById('responseTitle').value = `Ответ на обращение #${currentRequestId}`;
+                        document.getElementById('responseContent').value = '';
+                    }
+                    if (completeRequestCheckbox) {
+                        completeRequestCheckbox.checked = false;
+                    }
+                } else {
+                    showNotification(result.message || 'Ошибка отправки ответа', 'error');
+                }
+            } catch (error) {
+                console.error('Error submitting response:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
     </script>
 </body>
 </html>

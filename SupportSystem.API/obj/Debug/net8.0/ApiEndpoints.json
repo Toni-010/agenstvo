@@ -319,6 +319,22 @@
   },
   {
     "ContainingType": "SupportSystem.API.Controllers.ReportsController",
+    "Method": "GetReportsByOrder",
+    "RelativePath": "api/Reports/order/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.ReportsController",
     "Method": "GetReportsBySupportRequest",
     "RelativePath": "api/Reports/support-request/{supportRequestId}",
     "HttpMethod": "GET",

@@ -753,7 +753,39 @@
                 background: #d32f2f;
             }
 
-        /* Стили для управления статусами обращений */
+        /* Новые стили для кнопки ответа на обращение */
+        .btn-respond {
+            background: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+            .btn-respond:hover {
+                background: #1976d2;
+                transform: translateY(-2px);
+                text-decoration: none;
+                color: white;
+            }
+
+        /* Кнопка для ответа на обращение в секции запросов поддержки */
+        .support-request-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Стили для управления статусами обращений (оставляем, но упрощаем) */
         .support-status-management {
             background: #f8fafc;
             border-radius: 10px;
@@ -782,81 +814,6 @@
             flex: 1;
         }
 
-        .status-controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .status-control-btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            border: 1px solid #cbd5e1;
-            background: white;
-            color: #475057;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-            .status-control-btn:hover {
-                background: #f1f5f9;
-                transform: translateY(-1px);
-            }
-
-            .status-control-btn.active {
-                background: #4CAF50;
-                color: white;
-                border-color: #4CAF50;
-            }
-
-            .status-control-btn.status-new {
-                border-color: #bbdefb;
-                background: #e3f2fd;
-                color: #1565c0;
-            }
-
-                .status-control-btn.status-new.active {
-                    background: #1565c0;
-                    color: white;
-                }
-
-            .status-control-btn.status-processing {
-                border-color: #ffe0b2;
-                background: #fff3e0;
-                color: #e65100;
-            }
-
-                .status-control-btn.status-processing.active {
-                    background: #e65100;
-                    color: white;
-                }
-
-            .status-control-btn.status-completed {
-                border-color: #c8e6c9;
-                background: #e8f5e9;
-                color: #2e7d32;
-            }
-
-                .status-control-btn.status-completed.active {
-                    background: #2e7d32;
-                    color: white;
-                }
-
-            .status-control-btn.status-cancelled {
-                border-color: #ffcdd2;
-                background: #ffebee;
-                color: #c62828;
-            }
-
-                .status-control-btn.status-cancelled.active {
-                    background: #c62828;
-                    color: white;
-                }
-
         .current-status-display {
             margin-top: 10px;
             font-size: 0.9rem;
@@ -865,35 +822,6 @@
             align-items: center;
             gap: 8px;
         }
-
-        .status-change-btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-update-status {
-            background: #4CAF50;
-            color: white;
-        }
-
-            .btn-update-status:hover {
-                background: #388e3c;
-                transform: translateY(-2px);
-            }
-
-            .btn-update-status:disabled {
-                background: #cbd5e1;
-                cursor: not-allowed;
-                transform: none;
-            }
 
         .no-support-requests {
             text-align: center;
@@ -952,17 +880,6 @@
                 min-width: 100px;
             }
 
-            .status-controls {
-                flex-direction: column;
-            }
-
-            .status-control-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
             .order-actions {
                 flex-direction: column;
             }
@@ -972,11 +889,22 @@
                 justify-content: center;
             }
 
+            .support-request-actions {
+                flex-direction: column;
+            }
+
+            .btn-respond {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
             .modal-actions {
                 flex-direction: column;
             }
 
-            .btn-save, .btn-cancel, .btn-unassign, .btn-send {
+            .btn-save, .btn-cancel, .btn-unassign {
                 width: 100%;
             }
         }
@@ -1218,7 +1146,6 @@
         let allOrders = [];
         let currentOrderId = null;
         let currentOrderData = null;
-        let supportStatusChanges = {};
 
         document.addEventListener('DOMContentLoaded', function () {
             initializeOrdersPage();
@@ -1375,41 +1302,41 @@
             const isAssignedToMe = order.assignedToId === currentUser.id;
 
             card.innerHTML = `
-                        <div class="order-header">
-                            <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
-                            <span class="order-id">#${order.id}</span>
-                        </div>
-                        <div class="order-priority ${priorityClass}">${priorityText}</div>
-                        <div class="order-info">
-                            <div class="order-client">
-                                <i class="bi bi-person"></i>
-                                ${escapeHtml(order.clientName)}
+                            <div class="order-header">
+                                <h4 class="order-title">${escapeHtml(order.orderName)}</h4>
+                                <span class="order-id">#${order.id}</span>
                             </div>
-                            <div class="order-date">
-                                <i class="bi bi-calendar"></i>
-                                ${formattedDate}
+                            <div class="order-priority ${priorityClass}">${priorityText}</div>
+                            <div class="order-info">
+                                <div class="order-client">
+                                    <i class="bi bi-person"></i>
+                                    ${escapeHtml(order.clientName)}
+                                </div>
+                                <div class="order-date">
+                                    <i class="bi bi-calendar"></i>
+                                    ${formattedDate}
+                                </div>
+                                <div class="order-cost">
+                                    <i class="bi bi-cash"></i>
+                                    ${cost}
+                                </div>
                             </div>
-                            <div class="order-cost">
-                                <i class="bi bi-cash"></i>
-                                ${cost}
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            ${!isAssignedToMe && order.status === 'New' ? `
-                                <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
-                                    <i class="bi bi-person-check"></i> Принять
+                            <div class="order-actions">
+                                ${!isAssignedToMe && order.status === 'New' ? `
+                                    <button class="order-action-btn btn-assign" onclick="assignOrderToSelf(${order.id}, event)">
+                                        <i class="bi bi-person-check"></i> Принять
+                                    </button>
+                                ` : ''}
+                                <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
+                                    <i class="bi bi-eye"></i> Просмотр
                                 </button>
-                            ` : ''}
-                            <button class="order-action-btn btn-edit" onclick="viewOrderDetails(${order.id}, event)">
-                                <i class="bi bi-eye"></i> Просмотр
-                            </button>
-                            ${isAssignedToMe && order.status === 'Processing' ? `
-                                <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
-                                    <i class="bi bi-check-circle"></i> Завершить
-                                </button>
-                            ` : ''}
-                        </div>
-                    `;
+                                ${isAssignedToMe && order.status === 'Processing' ? `
+                                    <button class="order-action-btn btn-complete" onclick="completeOrder(${order.id}, event)">
+                                        <i class="bi bi-check-circle"></i> Завершить
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
 
             return card;
         }
@@ -1418,7 +1345,6 @@
             if (event) event.stopPropagation();
 
             currentOrderId = orderId;
-            supportStatusChanges = {}; // Сбросить изменения статусов
 
             try {
                 const token = localStorage.getItem('token');
@@ -1432,11 +1358,11 @@
                 // Показываем загрузку
                 document.getElementById('modalTitle').textContent = 'Загрузка...';
                 document.getElementById('orderDetails').innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                    <p style="color: #64748b; margin-top: 15px;">Загрузка информации о заказе...</p>
-                </div>
-            `;
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                        <p style="color: #64748b; margin-top: 15px;">Загрузка информации о заказе...</p>
+                    </div>
+                `;
 
                 document.getElementById('orderModal').style.display = 'flex';
 
@@ -1506,28 +1432,28 @@
             } catch (error) {
                 console.error('Error loading order details:', error);
                 document.getElementById('orderDetails').innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
-                    <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали заказа</h4>
-                    <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button onclick="closeModal()" class="btn-cancel">
-                            <i class="bi bi-x"></i> Закрыть
-                        </button>
-                        <button onclick="viewOrderDetails(${orderId})" class="btn-save">
-                            <i class="bi bi-arrow-clockwise"></i> Повторить попытку
-                        </button>
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
+                        <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали заказа</h4>
+                        <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
+                        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                            <button onclick="closeModal()" class="btn-cancel">
+                                <i class="bi bi-x"></i> Закрыть
+                            </button>
+                            <button onclick="viewOrderDetails(${orderId})" class="btn-save">
+                                <i class="bi bi-arrow-clockwise"></i> Повторить попытку
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
                 const style = document.createElement('style');
                 style.textContent = `
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `;
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
                 document.head.appendChild(style);
             }
         }
@@ -1564,9 +1490,6 @@
 
             const isAssignedToMe = normalizedOrder.AssignedToId === currentUser.id;
             const canEdit = isAssignedToMe || currentUser.role === 'Admin';
-            const showResponseTab = (isAssignedToMe || currentUser.role === 'Admin') &&
-                normalizedOrder.Status !== 'Completed' &&
-                normalizedOrder.Status !== 'Cancelled';
 
             document.getElementById('modalTitle').textContent = `Заказ #${normalizedOrder.Id}: ${escapeHtml(normalizedOrder.OrderName)}`;
 
@@ -1629,453 +1552,297 @@
 
             // Генерируем HTML
             const html = `
-            <!-- Вкладки -->
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('general')">
-                    <i class="bi bi-info-circle"></i> Основная информация
-                </button>
-                <button class="tab" onclick="switchTab('support')">
-                    <i class="bi bi-headset"></i> Запросы в поддержку
-                    ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ?
+                <!-- Вкладки -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('general')">
+                        <i class="bi bi-info-circle"></i> Основная информация
+                    </button>
+                    <button class="tab" onclick="switchTab('support')">
+                        <i class="bi bi-headset"></i> Запросы в поддержку
+                        ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ?
                     `<span style="margin-left: 8px; background: #2196F3; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                            ${normalizedOrder.SupportRequests.length}
-                        </span>` : ''
+                                ${normalizedOrder.SupportRequests.length}
+                            </span>` : ''
                 }
-                </button>
-                <button class="tab" onclick="switchTab('support-status')">
-                    <i class="bi bi-gear"></i> Управление статусами
-                    ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ?
-                    `<span style="margin-left: 8px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                            ${normalizedOrder.SupportRequests.length}
-                        </span>` : ''
-                }
-                </button>
-                ${canEdit ? `
-                    <button class="tab" onclick="switchTab('edit')">
-                        <i class="bi bi-pencil"></i> Редактировать
                     </button>
-                ` : ''}
-                ${showResponseTab ? `
-                    <button class="tab" onclick="switchTab('response')">
-                        <i class="bi bi-chat-dots"></i> Ответить
-                    </button>
-                ` : ''}
-            </div>
+                    ${canEdit ? `
+                        <button class="tab" onclick="switchTab('edit')">
+                            <i class="bi bi-pencil"></i> Редактировать
+                        </button>
+                    ` : ''}
+                </div>
 
-            <!-- Основная информация -->
-            <div id="tab-general" class="tab-content active">
-                <div class="order-detail-grid">
-                    <div class="detail-section">
-                        <h4><i class="bi bi-card-checklist"></i> Информация о заказе</h4>
-                        <div class="detail-item">
-                            <div class="detail-label">Название:</div>
-                            <div class="detail-value">${escapeHtml(normalizedOrder.OrderName)}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Статус:</div>
-                            <div class="detail-value">
-                                <span class="status-badge ${statusClass}">
-                                    <i class="bi ${statusIcon}"></i> ${normalizedOrder.Status}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Приоритет:</div>
-                            <div class="detail-value">
-                                <span class="order-priority ${priorityClass}">${priorityText}</span>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Стоимость заказа:</div>
-                            <div class="detail-value">${cost}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Дата создания:</div>
-                            <div class="detail-value">${formattedCreateDate}</div>
-                        </div>
-                        ${normalizedOrder.CompleteDate ? `
+                <!-- Основная информация -->
+                <div id="tab-general" class="tab-content active">
+                    <div class="order-detail-grid">
+                        <div class="detail-section">
+                            <h4><i class="bi bi-card-checklist"></i> Информация о заказе</h4>
                             <div class="detail-item">
-                                <div class="detail-label">Дата завершения:</div>
-                                <div class="detail-value">${completeDate}</div>
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    <div class="detail-section">
-                        <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
-                        <div class="detail-item">
-                            <div class="detail-label">Имя клиента:</div>
-                            <div class="detail-value">${escapeHtml(normalizedOrder.ClientName)}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Email клиента:</div>
-                            <div class="detail-value">
-                                ${normalizedOrder.ClientEmail && normalizedOrder.ClientEmail !== 'Не указан' ?
-                    `<a href="mailto:${escapeHtml(normalizedOrder.ClientEmail)}" style="color: #4CAF50;">
-                                        ${escapeHtml(normalizedOrder.ClientEmail)}
-                                    </a>` :
-                    '<span style="color: #94a3b8;">Не указан</span>'
-                }
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Телефон клиента:</div>
-                            <div class="detail-value">
-                                ${normalizedOrder.ClientPhone && normalizedOrder.ClientPhone !== 'Не указан' ?
-                    `<a href="tel:${escapeHtml(normalizedOrder.ClientPhone)}" style="color: #4CAF50;">
-                                        ${escapeHtml(normalizedOrder.ClientPhone)}
-                                    </a>` :
-                    '<span style="color: #94a3b8;">Не указан</span>'
-                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-section">
-                        <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
-                        ${normalizedOrder.AssignedToId ? `
-                            <div class="detail-item">
-                                <div class="detail-label">Имя менеджера:</div>
-                                <div class="detail-value">${escapeHtml(normalizedOrder.ManagerName || 'Неизвестный менеджер')}</div>
+                                <div class="detail-label">Название:</div>
+                                <div class="detail-value">${escapeHtml(normalizedOrder.OrderName)}</div>
                             </div>
                             <div class="detail-item">
-                                <div class="detail-label">Email менеджера:</div>
+                                <div class="detail-label">Статус:</div>
                                 <div class="detail-value">
-                                    ${normalizedOrder.ManagerEmail && normalizedOrder.ManagerEmail !== 'Не указан' ?
-                        `<a href="mailto:${escapeHtml(normalizedOrder.ManagerEmail)}" style="color: #4CAF50;">
-                                            ${escapeHtml(normalizedOrder.ManagerEmail)}
-                                        </a>` :
-                        '<span style="color: #94a3b8;">Не указан</span>'
-                    }
-                                </div>
-                            </div>
-                            ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
-                                <div class="detail-item" style="margin-top: 10px;">
-                                    <button onclick="unassignOrder(${normalizedOrder.Id})"
-                                            class="btn-danger"
-                                            style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
-                                        <i class="bi bi-person-dash"></i> Отказаться от заказа
-                                    </button>
-                                </div>
-                            ` : ''}
-                        ` : `
-                            <div class="detail-item">
-                                <div class="detail-label">Менеджер:</div>
-                                <div class="detail-value">
-                                    <span style="color: #94a3b8; font-style: italic;">
-                                        <i class="bi bi-person-x"></i> Не назначен
+                                    <span class="status-badge ${statusClass}">
+                                        <i class="bi ${statusIcon}"></i> ${normalizedOrder.Status}
                                     </span>
                                 </div>
                             </div>
-                            ${normalizedOrder.Status === 'New' ? `
-                                <div class="detail-item" style="margin-top: 10px;">
-                                    <button onclick="assignOrderToSelf(${normalizedOrder.Id})"
-                                            class="btn-assign"
-                                            style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
-                                        <i class="bi bi-person-check"></i> Принять этот заказ
-                                    </button>
+                            <div class="detail-item">
+                                <div class="detail-label">Приоритет:</div>
+                                <div class="detail-value">
+                                    <span class="order-priority ${priorityClass}">${priorityText}</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Стоимость заказа:</div>
+                                <div class="detail-value">${cost}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Дата создания:</div>
+                                <div class="detail-value">${formattedCreateDate}</div>
+                            </div>
+                            ${normalizedOrder.CompleteDate ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Дата завершения:</div>
+                                    <div class="detail-value">${completeDate}</div>
                                 </div>
                             ` : ''}
-                        `}
+                        </div>
+
+                        <div class="detail-section">
+                            <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
+                            <div class="detail-item">
+                                <div class="detail-label">Имя клиента:</div>
+                                <div class="detail-value">${escapeHtml(normalizedOrder.ClientName)}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Email клиента:</div>
+                                <div class="detail-value">
+                                    ${normalizedOrder.ClientEmail && normalizedOrder.ClientEmail !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(normalizedOrder.ClientEmail)}" style="color: #4CAF50;">
+                                            ${escapeHtml(normalizedOrder.ClientEmail)}
+                                        </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Телефон клиента:</div>
+                                <div class="detail-value">
+                                    ${normalizedOrder.ClientPhone && normalizedOrder.ClientPhone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(normalizedOrder.ClientPhone)}" style="color: #4CAF50;">
+                                            ${escapeHtml(normalizedOrder.ClientPhone)}
+                                        </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'
+                }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
+                            ${normalizedOrder.AssignedToId ? `
+                                <div class="detail-item">
+                                    <div class="detail-label">Имя менеджера:</div>
+                                    <div class="detail-value">${escapeHtml(normalizedOrder.ManagerName || 'Неизвестный менеджер')}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Email менеджера:</div>
+                                    <div class="detail-value">
+                                        ${normalizedOrder.ManagerEmail && normalizedOrder.ManagerEmail !== 'Не указан' ?
+                        `<a href="mailto:${escapeHtml(normalizedOrder.ManagerEmail)}" style="color: #4CAF50;">
+                                                ${escapeHtml(normalizedOrder.ManagerEmail)}
+                                            </a>` :
+                        '<span style="color: #94a3b8;">Не указан</span>'
+                    }
+                                    </div>
+                                </div>
+                                ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
+                                    <div class="detail-item" style="margin-top: 10px;">
+                                        <button onclick="unassignOrder(${normalizedOrder.Id})"
+                                                class="btn-danger"
+                                                style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                            <i class="bi bi-person-dash"></i> Отказаться от заказа
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            ` : `
+                                <div class="detail-item">
+                                    <div class="detail-label">Менеджер:</div>
+                                    <div class="detail-value">
+                                        <span style="color: #94a3b8; font-style: italic;">
+                                            <i class="bi bi-person-x"></i> Не назначен
+                                        </span>
+                                    </div>
+                                </div>
+                                ${normalizedOrder.Status === 'New' ? `
+                                    <div class="detail-item" style="margin-top: 10px;">
+                                        <button onclick="assignOrderToSelf(${normalizedOrder.Id})"
+                                                class="btn-assign"
+                                                style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                            <i class="bi bi-person-check"></i> Принять этот заказ
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            `}
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4><i class="bi bi-card-text"></i> Описание заказа</h4>
+                        <div class="detail-value description">${escapeHtml(normalizedOrder.Description)}</div>
                     </div>
                 </div>
 
-                <div class="detail-section">
-                    <h4><i class="bi bi-card-text"></i> Описание заказа</h4>
-                    <div class="detail-value description">${escapeHtml(normalizedOrder.Description)}</div>
-                </div>
-            </div>
+                <!-- Вкладка запросов в поддержку -->
+                <div id="tab-support" class="tab-content">
+                    <div class="detail-section">
+                        <h4><i class="bi bi-headset"></i> Запросы в поддержку по этому заказу</h4>
 
-            <!-- Вкладка запросов в поддержку -->
-            <div id="tab-support" class="tab-content">
-                <div class="detail-section">
-                    <h4><i class="bi bi-headset"></i> Запросы в поддержку по этому заказу</h4>
-
-                    ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ? `
-                        <div class="support-requests-list">
-                            ${normalizedOrder.SupportRequests.map((request, index) => `
-                                <div class="support-request-item">
-                                    <div class="support-request-header">
-                                        <h5 class="support-request-title">
-                                            <i class="bi bi-chat-left-text"></i> ${escapeHtml(request.topic || request.Topic || 'Без темы')}
-                                        </h5>
-                                        <span class="support-request-date">
-                                            ${request.createDate || request.CreateDate ?
+                        ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ? `
+                            <div class="support-requests-list">
+                                ${normalizedOrder.SupportRequests.map((request, index) => `
+                                    <div class="support-request-item">
+                                        <div class="support-request-header">
+                                            <h5 class="support-request-title">
+                                                <i class="bi bi-chat-left-text"></i> ${escapeHtml(request.topic || request.Topic || 'Без темы')}
+                                            </h5>
+                                            <span class="support-request-date">
+                                                ${request.createDate || request.CreateDate ?
                             new Date(request.createDate || request.CreateDate).toLocaleDateString('ru-RU', {
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric'
                             }) : 'Дата не указана'
                         }
-                                        </span>
-                                    </div>
-
-                                    <div class="support-request-client">
-                                        <i class="bi bi-person-circle"></i>
-                                        <span>${escapeHtml(request.clientName || request.ClientName || 'Неизвестный клиент')}</span>
-                                        ${request.clientEmail || request.ClientEmail ? `
-                                            <span style="margin-left: auto;">
-                                                <a href="mailto:${escapeHtml(request.clientEmail || request.ClientEmail)}" style="color: #4CAF50; text-decoration: none; font-size: 0.85rem;">
-                                                    <i class="bi bi-envelope"></i> ${escapeHtml(request.clientEmail || request.ClientEmail)}
-                                                </a>
                                             </span>
-                                        ` : ''}
-                                        ${request.clientPhone || request.ClientPhone ? `
-                                            <span style="margin-left: 10px;">
-                                                <a href="tel:${escapeHtml(request.clientPhone || request.ClientPhone)}" style="color: #4CAF50; text-decoration: none; font-size: 0.85rem;">
-                                                    <i class="bi bi-telephone"></i> ${escapeHtml(request.clientPhone || request.ClientPhone)}
-                                                </a>
+                                        </div>
+
+                                        <div class="support-request-client">
+                                            <i class="bi bi-person-circle"></i>
+                                            <span>${escapeHtml(request.clientName || request.ClientName || 'Неизвестный клиент')}</span>
+                                            ${request.clientEmail || request.ClientEmail ? `
+                                                <span style="margin-left: auto;">
+                                                    <a href="mailto:${escapeHtml(request.clientEmail || request.ClientEmail)}" style="color: #4CAF50; text-decoration: none; font-size: 0.85rem;">
+                                                        <i class="bi bi-envelope"></i> ${escapeHtml(request.clientEmail || request.ClientEmail)}
+                                                    </a>
+                                                </span>
+                                            ` : ''}
+                                            ${request.clientPhone || request.ClientPhone ? `
+                                                <span style="margin-left: 10px;">
+                                                    <a href="tel:${escapeHtml(request.clientPhone || request.ClientPhone)}" style="color: #4CAF50; text-decoration: none; font-size: 0.85rem;">
+                                                        <i class="bi bi-telephone"></i> ${escapeHtml(request.clientPhone || request.ClientPhone)}
+                                                    </a>
+                                                </span>
+                                            ` : ''}
+                                        </div>
+
+                                        <div style="margin-top: 10px;">
+                                            <span class="status-badge ${getStatusClass(request.status || request.Status)}">
+                                                <i class="bi ${getStatusIcon(request.status || request.Status)}"></i> ${request.status || request.Status || 'New'}
                                             </span>
-                                        ` : ''}
-                                    </div>
+                                        </div>
 
-                                    <div style="margin-top: 10px;">
-                                        <span class="status-badge ${getStatusClass(request.status || request.Status)}">
-                                            <i class="bi ${getStatusIcon(request.status || request.Status)}"></i> ${request.status || request.Status || 'New'}
-                                        </span>
-                                    </div>
+                                        <div class="support-request-message">
+                                            ${escapeHtml(request.message || request.Message || 'Сообщение отсутствует')}
+                                        </div>
 
-                                    <div class="support-request-message">
-                                        ${escapeHtml(request.message || request.Message || 'Сообщение отсутствует')}
+                                        <div class="support-request-actions">
+                                            <a href="support-management.html?supportRequest=${request.id || request.Id}" class="btn-respond">
+                                                <i class="bi bi-chat-dots"></i> Ответить на обращение
+                                            </a>
+                                        </div>
                                     </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="empty-list">
+                                <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                <p style="color: #94a3b8; font-size: 1.1rem;">Нет запросов в поддержку по этому заказу</p>
+                                <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">Клиент еще не обращался в поддержку по этому заказу</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+
+                <!-- Редактирование -->
+                ${canEdit ? `
+                    <div id="tab-edit" class="tab-content">
+                        <div class="edit-section">
+                            <h4><i class="bi bi-pencil-square"></i> Редактирование заказа</h4>
+                            <form id="orderEditForm">
+                                <div class="form-group">
+                                    <label for="editOrderName">Название заказа:</label>
+                                    <input type="text" id="editOrderName" class="form-control"
+                                           value="${escapeHtml(normalizedOrder.OrderName)}" maxlength="250" required>
                                 </div>
-                            `).join('')}
-                        </div>
-                    ` : `
-                        <div class="empty-list">
-                            <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                            <p style="color: #94a3b8; font-size: 1.1rem;">Нет запросов в поддержку по этому заказу</p>
-                            <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">Клиент еще не обращался в поддержку по этому заказу</p>
-                        </div>
-                    `}
-                </div>
-            </div>
 
-            <!-- Вкладка управления статусами обращений -->
-            <div id="tab-support-status" class="tab-content">
-                <div class="support-status-management">
-                    <h4><i class="bi bi-gear"></i> Управление статусами обращений</h4>
-                    <p style="color: #64748b; margin-bottom: 20px; font-size: 0.9rem;">
-                        Здесь вы можете изменить статусы обращений в поддержку для этого заказа.
-                        Выберите новый статус для каждого обращения и нажмите "Сохранить изменения".
-                    </p>
+                                <div class="form-group">
+                                    <label for="editDescription">Описание:</label>
+                                    <textarea id="editDescription" class="form-control" rows="5"
+                                              maxlength="3500" required>${escapeHtml(normalizedOrder.Description)}</textarea>
+                                </div>
 
-                    ${normalizedOrder.SupportRequests && normalizedOrder.SupportRequests.length > 0 ? `
-                        <div id="supportStatusControls">
-                            ${normalizedOrder.SupportRequests.map((request, index) => {
-                            const requestId = request.id || request.Id;
-                            const currentStatus = request.status || request.Status || 'New';
-                            return `
-                                    <div class="status-control-group" id="status-control-${requestId}">
-                                        <div class="status-control-header">
-                                            <h5 class="status-control-title">
-                                                <i class="bi bi-chat-left-text"></i> ${escapeHtml(request.topic || request.Topic || 'Без темы')}
-                                            </h5>
-                                            <span class="support-request-date">
-                                                ${request.createDate || request.CreateDate ?
-                                    new Date(request.createDate || request.CreateDate).toLocaleDateString('ru-RU', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    }) : 'Дата не указана'
-                                }
-                                            </span>
-                                        </div>
+                                <div class="form-group">
+                                    <label for="editCost">Стоимость (₽):</label>
+                                    <input type="number" id="editCost" class="form-control"
+                                           value="${normalizedOrder.Cost || ''}" step="0.01" min="0">
+                                </div>
 
-                                        <div class="current-status-display">
-                                            <span>Текущий статус:</span>
-                                            <span class="status-badge ${getStatusClass(currentStatus)}" id="current-status-${requestId}">
-                                                <i class="bi ${getStatusIcon(currentStatus)}"></i> ${currentStatus}
-                                            </span>
-                                        </div>
+                                <div class="form-group">
+                                    <label for="editStatus">Статус:</label>
+                                    <select id="editStatus" class="form-control">
+                                        <option value="New" ${normalizedOrder.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                        <option value="Processing" ${normalizedOrder.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                        <option value="Completed" ${normalizedOrder.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                        <option value="Cancelled" ${normalizedOrder.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                                    </select>
+                                </div>
 
-                                        <div class="status-controls">
-                                            <button class="status-control-btn status-new ${currentStatus === 'New' ? 'active' : ''}"
-                                                    onclick="selectSupportStatus(${requestId}, 'New')"
-                                                    data-status="New">
-                                                <i class="bi bi-plus-circle"></i> Новый
-                                            </button>
-                                            <button class="status-control-btn status-processing ${currentStatus === 'Processing' ? 'active' : ''}"
-                                                    onclick="selectSupportStatus(${requestId}, 'Processing')"
-                                                    data-status="Processing">
-                                                <i class="bi bi-gear"></i> В обработке
-                                            </button>
-                                            <button class="status-control-btn status-completed ${currentStatus === 'Completed' ? 'active' : ''}"
-                                                    onclick="selectSupportStatus(${requestId}, 'Completed')"
-                                                    data-status="Completed">
-                                                <i class="bi bi-check-circle"></i> Завершен
-                                            </button>
-                                            <button class="status-control-btn status-cancelled ${currentStatus === 'Cancelled' ? 'active' : ''}"
-                                                    onclick="selectSupportStatus(${requestId}, 'Cancelled')"
-                                                    data-status="Cancelled">
-                                                <i class="bi bi-x-circle"></i> Отменен
-                                            </button>
-                                        </div>
+                                <div class="form-group">
+                                    <label for="editPriority">Приоритет:</label>
+                                    <select id="editPriority" class="form-control">
+                                        <option value="Low" ${normalizedOrder.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
+                                        <option value="Medium" ${normalizedOrder.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
+                                        <option value="High" ${normalizedOrder.Priority === 'High' ? 'selected' : ''}>Высокий</option>
+                                    </select>
+                                </div>
 
-                                        <div style="margin-top: 10px; display: none;" id="selected-status-${requestId}">
-                                            <span style="color: #4CAF50; font-size: 0.9rem;">
-                                                <i class="bi bi-check-circle"></i> Выбран новый статус:
-                                                <span id="selected-status-text-${requestId}"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                `;
-                        }).join('')}
-                        </div>
-
-                        <div class="modal-actions">
-                            <button onclick="switchTab('support')" class="btn-cancel">
-                                <i class="bi bi-arrow-left"></i> Назад к списку
-                            </button>
-                            <button onclick="updateSupportStatuses()" class="btn-save" id="updateStatusesBtn">
-                                <i class="bi bi-save"></i> Сохранить изменения статусов
-                            </button>
-                        </div>
-                    ` : `
-                        <div class="no-support-requests">
-                            <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                            <p style="color: #94a3b8; font-size: 1.1rem;">Нет запросов в поддержку по этому заказу</p>
-                            <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">
-                                Для изменения статусов необходимо наличие обращений в поддержку
-                            </p>
-                            <button onclick="switchTab('support')" class="btn-cancel" style="margin-top: 20px;">
-                                <i class="bi bi-arrow-left"></i> Вернуться к списку обращений
-                            </button>
-                        </div>
-                    `}
-                </div>
-            </div>
-
-            <!-- Редактирование -->
-            ${canEdit ? `
-                <div id="tab-edit" class="tab-content">
-                    <div class="edit-section">
-                        <h4><i class="bi bi-pencil-square"></i> Редактирование заказа</h4>
-                        <form id="orderEditForm">
-                            <div class="form-group">
-                                <label for="editOrderName">Название заказа:</label>
-                                <input type="text" id="editOrderName" class="form-control"
-                                       value="${escapeHtml(normalizedOrder.OrderName)}" maxlength="250" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="editDescription">Описание:</label>
-                                <textarea id="editDescription" class="form-control" rows="5"
-                                          maxlength="3500" required>${escapeHtml(normalizedOrder.Description)}</textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="editCost">Стоимость (₽):</label>
-                                <input type="number" id="editCost" class="form-control"
-                                       value="${normalizedOrder.Cost || ''}" step="0.01" min="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="editStatus">Статус:</label>
-                                <select id="editStatus" class="form-control">
-                                    <option value="New" ${normalizedOrder.Status === 'New' ? 'selected' : ''}>Новый</option>
-                                    <option value="Processing" ${normalizedOrder.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
-                                    <option value="Completed" ${normalizedOrder.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
-                                    <option value="Cancelled" ${normalizedOrder.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="editPriority">Приоритет:</label>
-                                <select id="editPriority" class="form-control">
-                                    <option value="Low" ${normalizedOrder.Priority === 'Low' ? 'selected' : ''}>Низкий</option>
-                                    <option value="Medium" ${normalizedOrder.Priority === 'Medium' ? 'selected' : ''}>Средний</option>
-                                    <option value="High" ${normalizedOrder.Priority === 'High' ? 'selected' : ''}>Высокий</option>
-                                </select>
-                            </div>
-
-                            <div class="modal-actions">
-                                ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
-                                    <button type="button" onclick="unassignOrder(${normalizedOrder.Id})" class="btn-danger">
-                                        <i class="bi bi-person-dash"></i> Отказаться от заказа
+                                <div class="modal-actions">
+                                    ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
+                                        <button type="button" onclick="unassignOrder(${normalizedOrder.Id})" class="btn-danger">
+                                            <i class="bi bi-person-dash"></i> Отказаться от заказа
+                                        </button>
+                                    ` : ''}
+                                    <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                    <button type="button" onclick="saveOrderChanges()" class="btn-save">
+                                        <i class="bi bi-save"></i> Сохранить изменения
                                     </button>
-                                ` : ''}
-                                <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
-                                <button type="button" onclick="saveOrderChanges()" class="btn-save">
-                                    <i class="bi bi-save"></i> Сохранить изменения
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- Вкладка для ответов -->
-            ${showResponseTab ? `
-                <div id="tab-response" class="tab-content">
-                    <div class="edit-section">
-                        <h4><i class="bi bi-chat-dots"></i> Отправить ответ</h4>
-                        <form id="reportForm">
-                            <div class="form-group">
-                                <label for="reportTitle">Заголовок ответа:</label>
-                                <input type="text" id="reportTitle" class="form-control"
-                                       placeholder="Введите заголовок ответа" maxlength="250" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="reportContent">Содержание ответа:</label>
-                                <textarea id="reportContent" class="form-control" rows="8"
-                                          placeholder="Введите ваш ответ здесь..." maxlength="3500" required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="completeRequest">
-                                    <label class="form-check-label" for="completeRequest">
-                                        Завершить заказ после отправки ответа
-                                    </label>
                                 </div>
-                            </div>
-
-                            <div class="modal-actions">
-                                <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
-                                <button type="button" onclick="submitReport()" class="btn-save">
-                                    <i class="bi bi-send"></i> Отправить ответ
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Существующие отчеты -->
-                    <div class="detail-section" style="margin-top: 20px;">
-                        <h4><i class="bi bi-clock-history"></i> История ответов</h4>
-                        <div id="reportsList" class="reports-list">
-                            <div class="no-reports">
-                                <i class="bi bi-chat" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                                <p>Ответов пока нет</p>
-                            </div>
+                            </form>
                         </div>
                     </div>
-                </div>
-            ` : ''}
-
-            <!-- Кнопки действий -->
-            <div class="modal-actions">
-                ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
-                    <button onclick="completeOrder(${normalizedOrder.Id})"
-                            class="btn-complete"
-                            style="padding: 10px 20px; margin-right: auto;">
-                        <i class="bi bi-check-circle"></i> Завершить заказ
-                    </button>
                 ` : ''}
 
-                <button onclick="closeModal()" class="btn-cancel">
-                    <i class="bi bi-x"></i> Закрыть
-                </button>
-            </div>
-        `;
+                <!-- Кнопки действий -->
+                <div class="modal-actions">
+                    ${isAssignedToMe && normalizedOrder.Status === 'Processing' ? `
+                        <button onclick="completeOrder(${normalizedOrder.Id})"
+                                class="btn-complete"
+                                style="padding: 10px 20px; margin-right: auto;">
+                            <i class="bi bi-check-circle"></i> Завершить заказ
+                        </button>
+                    ` : ''}
+
+                    <button onclick="closeModal()" class="btn-cancel">
+                        <i class="bi bi-x"></i> Закрыть
+                    </button>
+                </div>
+            `;
 
             document.getElementById('orderDetails').innerHTML = html;
-
-            // Загружаем отчеты если есть вкладка ответов
-            if (showResponseTab) {
-                loadReports();
-            }
         }
 
         function getStatusClass(status) {
@@ -2113,161 +1880,11 @@
                 if (tab.textContent.includes(
                     tabName === 'general' ? 'Основная' :
                         tabName === 'support' ? 'Запросы' :
-                            tabName === 'support-status' ? 'Управление статусами' :
-                                tabName === 'edit' ? 'Редактировать' : ''
+                            tabName === 'edit' ? 'Редактировать' : ''
                 )) {
                     tab.classList.add('active');
                 }
             });
-        }
-
-        function selectSupportStatus(requestId, status) {
-            // Снимаем выделение со всех кнопок для этого запроса
-            const controlGroup = document.getElementById(`status-control-${requestId}`);
-            const buttons = controlGroup.querySelectorAll('.status-control-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            // Выделяем выбранную кнопку
-            const selectedButton = controlGroup.querySelector(`.status-control-btn[data-status="${status}"]`);
-            if (selectedButton) {
-                selectedButton.classList.add('active');
-            }
-
-            // Сохраняем изменение
-            supportStatusChanges[requestId] = status;
-
-            // Показываем сообщение о выбранном статусе
-            const statusDisplay = document.getElementById(`selected-status-${requestId}`);
-            const statusText = document.getElementById(`selected-status-text-${requestId}`);
-
-            statusText.textContent = getStatusText(status);
-
-            statusDisplay.style.display = 'block';
-
-            // Активируем кнопку сохранения
-            document.getElementById('updateStatusesBtn').disabled = false;
-        }
-
-        async function updateSupportStatuses() {
-            const requestIds = Object.keys(supportStatusChanges);
-
-            if (requestIds.length === 0) {
-                showNotification('Нет изменений для сохранения', 'warning');
-                return;
-            }
-
-            if (!confirm(`Вы уверены, что хотите изменить статусы для ${requestIds.length} обращений?`)) {
-                return;
-            }
-
-            try {
-                const token = localStorage.getItem('token');
-                let successCount = 0;
-                let errorCount = 0;
-
-                // Отключаем кнопку во время обновления
-                const updateBtn = document.getElementById('updateStatusesBtn');
-                const originalText = updateBtn.innerHTML;
-                updateBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Обновление...';
-                updateBtn.disabled = true;
-
-                // Обновляем каждый запрос отдельно через правильный endpoint
-                for (const requestId of requestIds) {
-                    const newStatus = supportStatusChanges[requestId];
-
-                    try {
-                        // Используем правильный endpoint из вашего контроллера
-                        const response = await fetch(`${API_URL}/api/SupportRequests/manager/status/${requestId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                status: newStatus
-                            })
-                        });
-
-                        if (response.ok) {
-                            const result = await response.json();
-                            if (result.success) {
-                                successCount++;
-
-                                // Обновляем отображение текущего статуса
-                                const statusBadge = document.getElementById(`current-status-${requestId}`);
-                                if (statusBadge) {
-                                    statusBadge.className = `status-badge ${getStatusClass(newStatus)}`;
-                                    statusBadge.innerHTML = `<i class="bi ${getStatusIcon(newStatus)}"></i> ${newStatus}`;
-                                }
-
-                                // Скрываем сообщение о выбранном статусе
-                                const statusDisplay = document.getElementById(`selected-status-${requestId}`);
-                                if (statusDisplay) {
-                                    statusDisplay.style.display = 'none';
-                                }
-                            } else {
-                                errorCount++;
-                                console.error(`Error updating request ${requestId}:`, result.message);
-                                showNotification(`Ошибка при обновлении обращения ${requestId}: ${result.message}`, 'error');
-                            }
-                        } else {
-                            errorCount++;
-                            const errorText = await response.text();
-                            console.error(`HTTP error ${response.status} for request ${requestId}:`, errorText);
-
-                            if (response.status === 401) {
-                                showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'error');
-                                localStorage.clear();
-                                setTimeout(() => window.location.href = 'login.html', 2000);
-                                return;
-                            }
-
-                            if (response.status === 403) {
-                                showNotification(`Нет прав для изменения обращения ${requestId}`, 'error');
-                            } else {
-                                showNotification(`Ошибка сервера при обновлении обращения ${requestId}`, 'error');
-                            }
-                        }
-                    } catch (requestError) {
-                        errorCount++;
-                        console.error(`Network error for request ${requestId}:`, requestError);
-                        showNotification(`Сетевая ошибка при обновлении обращения ${requestId}`, 'error');
-                    }
-                }
-
-                // Восстанавливаем кнопку
-                updateBtn.innerHTML = originalText;
-                updateBtn.disabled = false;
-
-                // Показываем итоговое уведомление
-                if (successCount > 0 && errorCount === 0) {
-                    showNotification(`Статусы для ${successCount} обращений успешно обновлены`, 'success');
-
-                    // Очищаем изменения
-                    supportStatusChanges = {};
-                    updateBtn.disabled = true;
-
-                    // Обновляем данные заказа
-                    await viewOrderDetails(currentOrderId);
-                } else if (successCount > 0 && errorCount > 0) {
-                    showNotification(`Обновлено ${successCount} из ${requestIds.length} обращений. ${errorCount} ошибок.`, 'warning');
-                    updateBtn.disabled = false;
-                } else {
-                    showNotification(`Не удалось обновить статусы (${errorCount} ошибок)`, 'error');
-                    updateBtn.disabled = false;
-                }
-
-            } catch (error) {
-                console.error('Error in updateSupportStatuses:', error);
-                showNotification('Ошибка при обновлении статусов', 'error');
-
-                // Восстанавливаем кнопку
-                const updateBtn = document.getElementById('updateStatusesBtn');
-                if (updateBtn) {
-                    updateBtn.innerHTML = '<i class="bi bi-save"></i> Сохранить изменения статусов';
-                    updateBtn.disabled = false;
-                }
-            }
         }
 
         async function assignOrderToSelf(orderId, event) {
@@ -2407,7 +2024,6 @@
             document.getElementById('orderModal').style.display = 'none';
             currentOrderId = null;
             currentOrderData = null;
-            supportStatusChanges = {};
         }
 
         function updateStats() {
@@ -2497,285 +2113,6 @@
                 closeModal();
             }
         });
-
-        async function loadReports() {
-            try {
-                const token = localStorage.getItem('token');
-                const reportsList = document.getElementById('reportsList');
-
-                if (!reportsList) return;
-
-                reportsList.innerHTML = `
-                <div style="text-align: center; padding: 20px;">
-                    <div style="width: 30px; height: 30px; border: 3px solid #f3f3f3; border-top: 3px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                    <p style="color: #64748b; margin-top: 10px;">Загрузка ответов...</p>
-                </div>
-            `;
-
-                const response = await fetch(`${API_URL}/api/Reports/order/${currentOrderId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    const reports = await response.json();
-                    renderReports(reports);
-                } else {
-                    reportsList.innerHTML = `
-                    <div class="empty-list">
-                        <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b; margin-bottom: 10px;"></i>
-                        <p style="color: #64748b;">Не удалось загрузить историю ответов</p>
-                    </div>
-                `;
-                }
-            } catch (error) {
-                console.error('Error loading reports:', error);
-                const reportsList = document.getElementById('reportsList');
-                if (reportsList) {
-                    reportsList.innerHTML = `
-                    <div class="empty-list">
-                        <p style="color: #64748b;">Ошибка загрузки истории ответов</p>
-                    </div>
-                `;
-                }
-            }
-        }
-
-        function renderReports(reports) {
-            const reportsList = document.getElementById('reportsList');
-
-            if (!reports || reports.length === 0) {
-                reportsList.innerHTML = `
-                <div class="no-reports">
-                    <i class="bi bi-chat" style="font-size: 2rem; color: #cbd5e1; margin-bottom: 10px;"></i>
-                    <p style="color: #94a3b8;">Ответов пока нет</p>
-                </div>
-            `;
-                return;
-            }
-
-            reportsList.innerHTML = `
-            <div class="related-items">
-                ${reports.map(report => `
-                    <div class="related-item" onclick="viewReportDetails(${report.id || report.Id})">
-                        <div class="item-header">
-                            <h5 class="item-title">
-                                <i class="bi bi-file-text"></i> ${escapeHtml(report.title || report.Title || 'Без заголовка')}
-                            </h5>
-                            <span class="item-status status-completed">
-                                <i class="bi bi-check-circle"></i> Отправлен
-                            </span>
-                        </div>
-                        <div class="item-content">
-                            ${escapeHtml(report.content || report.Content || '').substring(0, 200)}${(report.content || report.Content || '').length > 200 ? '...' : ''}
-                        </div>
-                        <div class="item-meta">
-                            <span>
-                                <i class="bi bi-person"></i> ${escapeHtml(report.authorName || report.AuthorName || 'Неизвестный автор')}
-                            </span>
-                            <span>
-                                <i class="bi bi-calendar"></i> ${report.createDate || report.CreateDate ?
-                    new Date(report.createDate || report.CreateDate).toLocaleDateString('ru-RU', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }) : 'Дата не указана'}
-                            </span>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        }
-
-        async function submitReport() {
-            try {
-                const token = localStorage.getItem('token');
-                const title = document.getElementById('reportTitle').value.trim();
-                const content = document.getElementById('reportContent').value.trim();
-                const completeRequest = document.getElementById('completeRequest').checked;
-
-                if (!title || !content) {
-                    showNotification('Заполните все обязательные поля', 'warning');
-                    return;
-                }
-
-                // Создаем отчет
-                const reportData = {
-                    title: title,
-                    content: content,
-                    orderId: currentOrderId,
-                    authorId: currentUser.id
-                };
-
-                const response = await fetch(`${API_URL}/api/Reports`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(reportData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    showNotification('Ответ успешно отправлен', 'success');
-
-                    // Если выбрано завершение заказа
-                    if (completeRequest) {
-                        await completeOrder(currentOrderId);
-                    } else {
-                        // Обновляем список отчетов
-                        await loadReports();
-                        // Очищаем форму
-                        document.getElementById('reportTitle').value = '';
-                        document.getElementById('reportContent').value = '';
-                        document.getElementById('completeRequest').checked = false;
-
-                        // Переключаемся на вкладку истории
-                        document.querySelectorAll('.tab').forEach(tab => {
-                            if (tab.textContent.includes('История')) {
-                                tab.click();
-                            }
-                        });
-                    }
-                } else {
-                    showNotification(result.message || 'Ошибка отправки ответа', 'error');
-                }
-            } catch (error) {
-                console.error('Error submitting report:', error);
-                showNotification('Ошибка соединения с сервером', 'error');
-            }
-        }
-
-        async function viewReportDetails(reportId) {
-            try {
-                const token = localStorage.getItem('token');
-
-                const response = await fetch(`${API_URL}/api/Reports/${reportId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    const report = await response.json();
-
-                    const modalHtml = `
-                    <div class="modal-overlay" style="display: flex; z-index: 2000;">
-                        <div class="modal-content" style="max-width: 700px;">
-                            <div class="modal-header">
-                                <h3><i class="bi bi-file-text"></i> ${escapeHtml(report.title || report.Title)}</h3>
-                                <button onclick="this.closest('.modal-overlay').remove()" class="modal-close">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="detail-section">
-                                    <div class="detail-item">
-                                        <div class="detail-label">Автор:</div>
-                                        <div class="detail-value">
-                                            <i class="bi bi-person"></i> ${escapeHtml(report.authorName || report.AuthorName || 'Неизвестный автор')}
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Дата создания:</div>
-                                        <div class="detail-value">
-                                            <i class="bi bi-calendar"></i> ${new Date(report.createDate || report.CreateDate).toLocaleDateString('ru-RU', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    })}
-                                        </div>
-                                    </div>
-                                    <div class="detail-item">
-                                        <div class="detail-label">Содержание:</div>
-                                        <div class="detail-value description">
-                                            ${escapeHtml(report.content || report.Content || '')}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-actions">
-                                    <button onclick="this.closest('.modal-overlay').remove()" class="btn-cancel">
-                                        <i class="bi bi-x"></i> Закрыть
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                    const modalDiv = document.createElement('div');
-                    modalDiv.innerHTML = modalHtml;
-                    document.body.appendChild(modalDiv.firstElementChild);
-
-                    // Закрытие по клику вне модального окна
-                    modalDiv.firstElementChild.addEventListener('click', function (e) {
-                        if (e.target === this) {
-                            this.remove();
-                        }
-                    });
-
-                    // Закрытие по Escape
-                    document.addEventListener('keydown', function closeOnEscape(e) {
-                        if (e.key === 'Escape') {
-                            modalDiv.firstElementChild.remove();
-                            document.removeEventListener('keydown', closeOnEscape);
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error viewing report details:', error);
-                showNotification('Ошибка загрузки отчета', 'error');
-            }
-        }
-
-        // Также добавьте функцию setLoading, если она используется
-        function setLoading(isLoading) {
-            if (isLoading) {
-                if (!document.getElementById('loadingOverlay')) {
-                    const loader = document.createElement('div');
-                    loader.id = 'loadingOverlay';
-                    loader.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10000;
-                `;
-                    loader.innerHTML = `
-                    <div style="background: white; padding: 30px; border-radius: 10px; text-align: center;">
-                        <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #4CAF50; border-radius: 50%; margin: 0 auto 15px; animation: spin 1s linear infinite;"></div>
-                        <p style="color: #333; font-weight: 500;">Загрузка...</p>
-                    </div>
-                `;
-                    document.body.appendChild(loader);
-                }
-            } else {
-                const loader = document.getElementById('loadingOverlay');
-                if (loader) {
-                    loader.remove();
-                }
-            }
-        }
-        function getStatusText(status) {
-            switch (status) {
-                case 'New': return 'Новый';
-                case 'Processing': return 'В обработке';
-                case 'Completed': return 'Завершен';
-                case 'Cancelled': return 'Отменен';
-                default: return status;
-            }
-        }
     </script>
 </body>
 </html>
