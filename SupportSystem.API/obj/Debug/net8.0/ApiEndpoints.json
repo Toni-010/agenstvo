@@ -417,6 +417,27 @@
   },
   {
     "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "UpdateSupportRequest",
+    "RelativePath": "api/SupportRequests/manager/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateDto",
+        "Type": "SupportSystem.API.Controllers.UpdateSupportRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
     "Method": "AssignSupportRequestToSelf",
     "RelativePath": "api/SupportRequests/manager/assign/{id}",
     "HttpMethod": "PUT",
@@ -494,6 +515,22 @@
       {
         "Name": "statusDto",
         "Type": "SupportSystem.API.Controllers.UpdateSupportRequestStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SupportSystem.API.Controllers.SupportRequestsController",
+    "Method": "UnassignSupportRequest",
+    "RelativePath": "api/SupportRequests/manager/unassign/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

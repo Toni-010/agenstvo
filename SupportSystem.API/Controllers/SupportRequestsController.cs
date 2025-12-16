@@ -390,13 +390,7 @@ namespace SupportSystem.API.Controllers
                     return NotFound(new { message = "Запрос поддержки не найден" });
                 }
 
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-
-                if (supportRequest.AssignedToId != userId && userRole != "Admin")
-                {
-                    return Forbid();
-                }
+                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ СМОТРЕТЬ ОБРАЩЕНИЕ - УБРАЛИ ПРОВЕРКУ ПРАВ
 
                 var supportRequestDetail = new
                 {
@@ -513,6 +507,137 @@ namespace SupportSystem.API.Controllers
             }
         }
 
+        // PUT: api/SupportRequests/manager/unassign/5 - отказаться от запроса поддержки
+        [HttpPut("manager/unassign/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> UnassignSupportRequest(int id)
+        {
+            try
+            {
+                var supportRequest = await _context.SupportRequests.FindAsync(id);
+                if (supportRequest == null)
+                {
+                    return NotFound(new { message = "Запрос поддержки не найден" });
+                }
+
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                // Проверяем, назначен ли запрос текущему пользователю
+                if (supportRequest.AssignedToId != userId)
+                {
+                    return BadRequest(new { message = "Этот запрос не назначен вам" });
+                }
+
+                // Сбрасываем назначение
+                supportRequest.AssignedToId = null;
+
+                // Если статус был "В обработке", возвращаем в "Новый"
+                if (supportRequest.Status == RequestStatus.Processing)
+                {
+                    supportRequest.Status = RequestStatus.New;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Вы успешно отказались от запроса поддержки",
+                    supportRequestId = supportRequest.Id,
+                    assignedToId = supportRequest.AssignedToId,
+                    status = supportRequest.Status.ToString()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при отказе от запроса поддержки {Id}", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при отказе от запроса",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // PUT: api/SupportRequests/manager/{id} - редактировать запрос поддержки
+        [HttpPut("manager/{id}")]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> UpdateSupportRequest(int id, [FromBody] UpdateSupportRequestDto updateDto)
+        {
+            try
+            {
+                var supportRequest = await _context.SupportRequests.FindAsync(id);
+                if (supportRequest == null)
+                {
+                    return NotFound(new { message = "Запрос поддержки не найден" });
+                }
+
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+                // Проверяем права: администратор, назначенный менеджер или любой менеджер для незавершенных обращений
+                if (supportRequest.AssignedToId != userId && userRole != "Admin" &&
+                    (supportRequest.Status == RequestStatus.Completed || supportRequest.Status == RequestStatus.Cancelled))
+                {
+                    return Forbid();
+                }
+
+                // Валидация
+                if (!string.IsNullOrWhiteSpace(updateDto.Topic))
+                {
+                    if (updateDto.Topic.Length > 250)
+                    {
+                        return BadRequest(new { message = "Тема не должна превышать 250 символов" });
+                    }
+                    supportRequest.Topic = updateDto.Topic.Trim();
+                }
+
+                if (!string.IsNullOrWhiteSpace(updateDto.Message))
+                {
+                    if (updateDto.Message.Length > 3500)
+                    {
+                        return BadRequest(new { message = "Сообщение не должно превышать 3500 символов" });
+                    }
+                    supportRequest.Message = updateDto.Message.Trim();
+                }
+
+                if (!string.IsNullOrWhiteSpace(updateDto.Status))
+                {
+                    if (!Enum.TryParse<RequestStatus>(updateDto.Status, true, out var newStatus))
+                    {
+                        return BadRequest(new { message = "Некорректный статус" });
+                    }
+
+                    // Автоматически назначаем обращение при смене статуса на Processing
+                    if (newStatus == RequestStatus.Processing && supportRequest.AssignedToId == null)
+                    {
+                        supportRequest.AssignedToId = userId;
+                    }
+
+                    supportRequest.Status = newStatus;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Запрос поддержки успешно обновлен",
+                    supportRequestId = supportRequest.Id,
+                    newStatus = supportRequest.Status.ToString()
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обновлении запроса поддержки {Id}", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при обновлении запроса",
+                    error = ex.Message
+                });
+            }
+        }
+
         // POST: api/SupportRequests/manager/respond/5 - создать ответ на запрос поддержки
         [HttpPost("manager/respond/{id}")]
         [Authorize(Roles = "Admin,Manager")]
@@ -529,10 +654,8 @@ namespace SupportSystem.API.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                if (supportRequest.AssignedToId != userId && userRole != "Admin")
-                {
-                    return Forbid();
-                }
+                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ ОТВЕЧАТЬ НА ОБРАЩЕНИЯ
+                // Убрали проверку: if (supportRequest.AssignedToId != userId && userRole != "Admin")
 
                 if (string.IsNullOrWhiteSpace(reportDto.Title))
                 {
@@ -554,6 +677,12 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Содержание не должно превышать 3500 символов" });
                 }
 
+                // Автоматически назначаем менеджера, если обращение еще не назначено
+                if (supportRequest.AssignedToId == null)
+                {
+                    supportRequest.AssignedToId = userId;
+                }
+
                 var report = new Report
                 {
                     Title = reportDto.Title.Trim(),
@@ -566,6 +695,12 @@ namespace SupportSystem.API.Controllers
                 };
 
                 _context.Reports.Add(report);
+
+                // Обновляем статус, если нужно
+                if (supportRequest.Status == RequestStatus.New)
+                {
+                    supportRequest.Status = RequestStatus.Processing;
+                }
 
                 if (reportDto.CompleteRequest)
                 {
@@ -616,7 +751,7 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Некорректный статус. Допустимые значения: New, Processing, Completed, Cancelled" });
                 }
 
-                // РАЗРЕШАЕМ И МЕНЕДЖЕРАМ, И АДМИНАМ ИЗМЕНЯТЬ СТАТУСЫ
+                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ ИЗМЕНЯТЬ СТАТУСЫ
 
                 // Автоматически назначаем обращение на менеджера при смене статуса на Processing
                 if (newStatus == RequestStatus.Processing && supportRequest.AssignedToId == null)
@@ -698,7 +833,12 @@ namespace SupportSystem.API.Controllers
         public string Status { get; set; } = string.Empty;
     }
 
-
+    public class UpdateSupportRequestDto
+    {
+        public string? Topic { get; set; }
+        public string? Message { get; set; }
+        public string? Status { get; set; }
+    }
 
     public class SupportRequestDetailDto
     {
