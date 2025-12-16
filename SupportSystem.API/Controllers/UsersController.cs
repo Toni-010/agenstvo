@@ -217,7 +217,11 @@ namespace SupportSystem.API.Controllers
                 var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                if (currentUserId != id && currentUserRole != "Admin")
+                // Разрешаем редактировать:
+                // 1. Самому пользователю (currentUserId == id)
+                // 2. Администратору (Admin)
+                // 3. Менеджеру (Manager) ← ДОБАВЛЯЕМ ЭТО!
+                if (currentUserId != id && currentUserRole != "Admin" && currentUserRole != "Manager") // ИЗМЕНЕНИЕ ТУТ!
                 {
                     return Forbid();
                 }
@@ -248,7 +252,12 @@ namespace SupportSystem.API.Controllers
 
                 // Обновляем только разрешенные поля
                 user.Name = updateUserDto.Name.Trim();
-                user.Email = updateUserDto.Email?.Trim();
+
+                if (!string.IsNullOrEmpty(updateUserDto.Email))
+                {
+                    user.Email = updateUserDto.Email.Trim();
+                }
+
                 user.Phone = updateUserDto.Phone?.Trim();
 
                 _context.Entry(user).State = EntityState.Modified;

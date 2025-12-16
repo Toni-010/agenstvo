@@ -12,6 +12,8 @@ wwwroot\login.html
 wwwroot\manager-dashboard.html
 wwwroot\orders-management.html
 wwwroot\register.html
-wwwroot\support.html
-wwwroot\user-dashboard.html
 wwwroot\support-management.html
+wwwroot\support.html
+wwwroot\team-management.html
+wwwroot\user-dashboard.html
+wwwroot\users-management.html
