@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление поддержкой - Support System</title>
+    <title>Управление поддержкой - Название</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -1041,7 +1041,7 @@
     <div class="container">
         <header class="dashboard-header">
             <h1 class="dashboard-title">
-                <a href="index.html" style="color: #4CAF50; text-decoration: none;">Support System</a>
+                <a href="index.html" style="color: #4CAF50; text-decoration: none;">Название</a>
             </h1>
             <div class="user-info">
                 <span id="userName">Загрузка...</span>
@@ -1325,52 +1325,52 @@
             card.setAttribute('data-id', request.id);
 
             const createDate = new Date(request.createDate);
-            const formattedDate = createDate.toLocaleDateString('ru-RU');
+            const formattedDate = createDate.toLocaleDateString('ru-RU'); // Только дата
             const isAssignedToMe = request.assignedToId === currentUser.id;
             const hasRelatedOrder = request.relatedOrderId > 0;
 
             card.innerHTML = `
-                    <div class="request-header">
-                        <h4 class="request-title">${escapeHtml(request.topic)}</h4>
-                        <span class="request-id">#${request.id}</span>
-                    </div>
-                    <div class="request-info">
-                        <div class="request-client">
-                            <i class="bi bi-person"></i>
-                            ${escapeHtml(request.clientName || 'Неизвестный клиент')}
+                        <div class="request-header">
+                            <h4 class="request-title">${escapeHtml(request.topic)}</h4>
+                            <span class="request-id">#${request.id}</span>
                         </div>
-                        <div class="request-date">
-                            <i class="bi bi-calendar"></i>
-                            ${formattedDate}
-                        </div>
-                        ${hasRelatedOrder ? `
-                            <div class="request-topic">
-                                <i class="bi bi-link"></i> Привязан к заказу #${request.relatedOrderId}
-                            </div>
-                        ` : ''}
-                        ${request.assignedToId ? `
+                        <div class="request-info">
                             <div class="request-client">
-                                <i class="bi bi-person-badge"></i>
-                                Менеджер: ${escapeHtml(request.managerName || 'Неизвестный')}
+                                <i class="bi bi-person"></i>
+                                ${escapeHtml(request.clientName || 'Неизвестный клиент')}
                             </div>
-                        ` : ''}
-                    </div>
-                    <div class="request-actions">
-                        <button class="request-action-btn btn-edit" onclick="viewRequestDetails(${request.id}, event)">
-                            <i class="bi bi-eye"></i> Просмотр
-                        </button>
-                        ${!isAssignedToMe && request.status === 'New' ? `
-                            <button class="request-action-btn btn-assign" onclick="assignRequestToSelf(${request.id}, event)">
-                                <i class="bi bi-person-check"></i> Принять
+                            <div class="request-date">
+                                <i class="bi bi-calendar"></i>
+                                ${formattedDate}
+                            </div>
+                            ${hasRelatedOrder ? `
+                                <div class="request-topic">
+                                    <i class="bi bi-link"></i> Привязан к заказу #${request.relatedOrderId}
+                                </div>
+                            ` : ''}
+                            ${request.assignedToId ? `
+                                <div class="request-client">
+                                    <i class="bi bi-person-badge"></i>
+                                    Менеджер: ${escapeHtml(request.managerName || 'Неизвестный')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="request-actions">
+                            <button class="request-action-btn btn-edit" onclick="viewRequestDetails(${request.id}, event)">
+                                <i class="bi bi-eye"></i> Просмотр
                             </button>
-                        ` : ''}
-                        ${isAssignedToMe && request.status === 'Processing' ? `
-                            <button class="request-action-btn btn-complete" onclick="completeRequest(${request.id}, event)">
-                                <i class="bi bi-check-circle"></i> Завершить
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
+                            ${!isAssignedToMe && request.status === 'New' ? `
+                                <button class="request-action-btn btn-assign" onclick="assignRequestToSelf(${request.id}, event)">
+                                    <i class="bi bi-person-check"></i> Принять
+                                </button>
+                            ` : ''}
+                            ${isAssignedToMe && request.status === 'Processing' ? `
+                                <button class="request-action-btn btn-complete" onclick="completeRequest(${request.id}, event)">
+                                    <i class="bi bi-check-circle"></i> Завершить
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
 
             return card;
         }
@@ -1392,11 +1392,11 @@
                 // Показываем загрузку
                 document.getElementById('modalTitle').textContent = 'Загрузка...';
                 document.getElementById('requestDetails').innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
-                            <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #2196F3; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                            <p style="color: #64748b; margin-top: 15px;">Загрузка информации об обращении...</p>
-                        </div>
-                    `;
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #2196F3; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                                <p style="color: #64748b; margin-top: 15px;">Загрузка информации об обращении...</p>
+                            </div>
+                        `;
 
                 document.getElementById('requestModal').style.display = 'flex';
 
@@ -1498,20 +1498,20 @@
             } catch (error) {
                 console.error('Error loading request details:', error);
                 document.getElementById('requestDetails').innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
-                            <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
-                            <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали обращения</h4>
-                            <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
-                            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                                <button onclick="closeModal()" class="btn-cancel">
-                                    <i class="bi bi-x"></i> Закрыть
-                                </button>
-                                <button onclick="viewRequestDetails(${requestId})" class="btn-save">
-                                    <i class="bi bi-arrow-clockwise"></i> Повторить попытку
-                                </button>
+                            <div style="text-align: center; padding: 40px;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px; color: #f59e0b;"></i>
+                                <h4 style="margin-bottom: 10px; color: #334155;">Не удалось загрузить детали обращения</h4>
+                                <p style="color: #64748b; margin-bottom: 15px; font-size: 0.9rem;">${escapeHtml(error.message)}</p>
+                                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                                    <button onclick="closeModal()" class="btn-cancel">
+                                        <i class="bi bi-x"></i> Закрыть
+                                    </button>
+                                    <button onclick="viewRequestDetails(${requestId})" class="btn-save">
+                                        <i class="bi bi-arrow-clockwise"></i> Повторить попытку
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             }
         }
 
@@ -1525,23 +1525,21 @@
 
             document.getElementById('modalTitle').textContent = `Обращение #${request.Id}: ${escapeHtml(request.Topic)}`;
 
-            // Форматируем даты
+            // Форматируем даты (ТОЛЬКО ДАТА, БЕЗ ВРЕМЕНИ)
             const createDate = new Date(request.CreateDate);
             const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                day: 'numeric'
+                // Убрали hour и minute
             });
 
             const completeDate = request.CompleteDate ?
                 new Date(request.CompleteDate).toLocaleDateString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    day: 'numeric'
+                    // Убрали hour и minute
                 }) : null;
 
             // Определяем стили статуса
@@ -1577,131 +1575,141 @@
 
             // Генерируем HTML
             const html = `
-                    <!-- Вкладки -->
-                    <div class="tabs">
-                        <button class="tab active" onclick="switchTab('general')">
-                            <i class="bi bi-info-circle"></i> Основная информация
-                        </button>
-                        ${showResponseTab ? `
-                            <button class="tab" onclick="switchTab('response')">
-                                <i class="bi bi-chat-dots"></i> Ответить
-                                ${request.Reports && request.Reports.length > 0 ?
+                        <!-- Вкладки -->
+                        <div class="tabs">
+                            <button class="tab active" onclick="switchTab('general')">
+                                <i class="bi bi-info-circle"></i> Основная информация
+                            </button>
+                            ${showResponseTab ? `
+                                <button class="tab" onclick="switchTab('response')">
+                                    <i class="bi bi-chat-dots"></i> Ответить
+                                    ${request.Reports && request.Reports.length > 0 ?
                         `<span style="margin-left: 8px; background: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                            ${request.Reports.length}
+                                        </span>` : ''}
+                                </button>
+                            ` : ''}
+                            ${request.Reports && request.Reports.length > 0 ? `
+                                <button class="tab" onclick="switchTab('history')">
+                                    <i class="bi bi-clock-history"></i> История ответов
+                                    <span style="margin-left: 8px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
                                         ${request.Reports.length}
-                                    </span>` : ''}
-                            </button>
-                        ` : ''}
-                        ${request.Reports && request.Reports.length > 0 ? `
-                            <button class="tab" onclick="switchTab('history')">
-                                <i class="bi bi-clock-history"></i> История ответов
-                                <span style="margin-left: 8px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                                    ${request.Reports.length}
-                                </span>
-                            </button>
-                        ` : ''}
-                        ${canEdit && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
-                            <button class="tab" onclick="switchTab('edit')">
-                                <i class="bi bi-pencil"></i> Редактировать
-                            </button>
-                        ` : ''}
-                    </div>
+                                    </span>
+                                </button>
+                            ` : ''}
+                            ${canEdit && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
+                                <button class="tab" onclick="switchTab('edit')">
+                                    <i class="bi bi-pencil"></i> Редактировать
+                                </button>
+                            ` : ''}
+                        </div>
 
-                    <!-- Основная информация -->
-                    <div id="tab-general" class="tab-content active">
-                        <div class="request-detail-grid">
-                            <div class="detail-section">
-                                <h4><i class="bi bi-chat-text"></i> Информация об обращении</h4>
-                                <div class="detail-item">
-                                    <div class="detail-label">Тема:</div>
-                                    <div class="detail-value">${escapeHtml(request.Topic)}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Статус:</div>
-                                    <div class="detail-value">
-                                        <span class="status-badge ${statusClass}">
-                                            <i class="bi ${statusIcon}"></i> ${statusText}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Дата создания:</div>
-                                    <div class="detail-value">${formattedCreateDate}</div>
-                                </div>
-                                ${completeDate ? `
+                        <!-- Основная информация -->
+                        <div id="tab-general" class="tab-content active">
+                            <div class="request-detail-grid">
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-chat-text"></i> Информация об обращении</h4>
                                     <div class="detail-item">
-                                        <div class="detail-label">Дата завершения:</div>
-                                        <div class="detail-value">${completeDate}</div>
+                                        <div class="detail-label">Тема:</div>
+                                        <div class="detail-value">${escapeHtml(request.Topic)}</div>
                                     </div>
-                                ` : ''}
-                                ${request.RelatedOrderId ? `
                                     <div class="detail-item">
-                                        <div class="detail-label">Связанный заказ:</div>
+                                        <div class="detail-label">Статус:</div>
                                         <div class="detail-value">
-                                            <span style="color: #4CAF50; font-weight: 600; cursor: pointer;" onclick="viewRelatedOrder(${request.RelatedOrderId})">
-                                                <i class="bi bi-link"></i> Заказ #${request.RelatedOrderId}
+                                            <span class="status-badge ${statusClass}">
+                                                <i class="bi ${statusIcon}"></i> ${statusText}
                                             </span>
                                         </div>
                                     </div>
-                                ` : ''}
-                            </div>
-
-                            <div class="detail-section">
-                                <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
-                                <div class="detail-item">
-                                    <div class="detail-label">Имя клиента:</div>
-                                    <div class="detail-value">${escapeHtml(request.ClientName)}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Email клиента:</div>
-                                    <div class="detail-value">
-                                        ${request.ClientEmail && request.ClientEmail !== 'Не указан' ?
-                    `<a href="mailto:${escapeHtml(request.ClientEmail)}" style="color: #2196F3;">
-                                                ${escapeHtml(request.ClientEmail)}
-                                            </a>` :
-                    '<span style="color: #94a3b8;">Не указан</span>'}
-                                    </div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Телефон клиента:</div>
-                                    <div class="detail-value">
-                                        ${request.ClientPhone && request.ClientPhone !== 'Не указан' ?
-                    `<a href="tel:${escapeHtml(request.ClientPhone)}" style="color: #2196F3;">
-                                                ${escapeHtml(request.ClientPhone)}
-                                            </a>` :
-                    '<span style="color: #94a3b8;">Не указан</span>'}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="detail-section">
-                                <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
-                                ${request.AssignedToId ? `
                                     <div class="detail-item">
-                                        <div class="detail-label">Ответственный менеджер:</div>
-                                        <div class="detail-value">
-                                            ${escapeHtml(request.ManagerName || 'Неизвестный менеджер')}
-                                            ${request.ManagerEmail ? `<br/><small style="color: #64748b;">${escapeHtml(request.ManagerEmail)}</small>` : ''}
-                                        </div>
+                                        <div class="detail-label">Дата создания:</div>
+                                        <div class="detail-value">${formattedCreateDate}</div>
                                     </div>
-                                    ${isAssignedToMe && request.Status === 'Processing' ? `
-                                        <div class="detail-item" style="margin-top: 10px;">
-                                            <button onclick="unassignRequest(${request.Id})"
-                                                    class="btn-danger"
-                                                    style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
-                                                <i class="bi bi-person-dash"></i> Отказаться от обращения
-                                            </button>
+                                    ${completeDate ? `
+                                        <div class="detail-item">
+                                            <div class="detail-label">Дата завершения:</div>
+                                            <div class="detail-value">${completeDate}</div>
                                         </div>
                                     ` : ''}
-                                ` : `
+                                    ${request.RelatedOrderId ? `
+                                        <div class="detail-item">
+                                            <div class="detail-label">Связанный заказ:</div>
+                                            <div class="detail-value">
+                                                <span style="color: #4CAF50; font-weight: 600; cursor: pointer;" onclick="viewRelatedOrder(${request.RelatedOrderId})">
+                                                    <i class="bi bi-link"></i> Заказ #${request.RelatedOrderId}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-person"></i> Информация о клиенте</h4>
                                     <div class="detail-item">
-                                        <div class="detail-label">Менеджер:</div>
+                                        <div class="detail-label">Имя клиента:</div>
+                                        <div class="detail-value">${escapeHtml(request.ClientName)}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Email клиента:</div>
                                         <div class="detail-value">
-                                            <span style="color: #94a3b8; font-style: italic;">
-                                                <i class="bi bi-person-x"></i> Не назначен
-                                            </span>
+                                            ${request.ClientEmail && request.ClientEmail !== 'Не указан' ?
+                    `<a href="mailto:${escapeHtml(request.ClientEmail)}" style="color: #2196F3;">
+                                                    ${escapeHtml(request.ClientEmail)}
+                                                </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'}
                                         </div>
                                     </div>
-                                    ${request.Status === 'New' ? `
+                                    <div class="detail-item">
+                                        <div class="detail-label">Телефон клиента:</div>
+                                        <div class="detail-value">
+                                            ${request.ClientPhone && request.ClientPhone !== 'Не указан' ?
+                    `<a href="tel:${escapeHtml(request.ClientPhone)}" style="color: #2196F3;">
+                                                    ${escapeHtml(request.ClientPhone)}
+                                                </a>` :
+                    '<span style="color: #94a3b8;">Не указан</span>'}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="detail-section">
+                                    <h4><i class="bi bi-person-badge"></i> Информация о менеджере</h4>
+                                    ${request.AssignedToId ? `
+                                        <div class="detail-item">
+                                            <div class="detail-label">Ответственный менеджер:</div>
+                                            <div class="detail-value">
+                                                ${escapeHtml(request.ManagerName || 'Неизвестный менеджер')}
+                                                ${request.ManagerEmail ? `<br/><small style="color: #64748b;">${escapeHtml(request.ManagerEmail)}</small>` : ''}
+                                            </div>
+                                        </div>
+                                        ${isAssignedToMe && request.Status === 'Processing' ? `
+                                            <div class="detail-item" style="margin-top: 10px;">
+                                                <button onclick="unassignRequest(${request.Id})"
+                                                        class="btn-danger"
+                                                        style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                                                    <i class="bi bi-person-dash"></i> Отказаться от обращения
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    ` : `
+                                        <div class="detail-item">
+                                            <div class="detail-label">Менеджер:</div>
+                                            <div class="detail-value">
+                                                <span style="color: #94a3b8; font-style: italic;">
+                                                    <i class="bi bi-person-x"></i> Не назначен
+                                                </span>
+                                            </div>
+                                        </div>
+                                        ${request.Status === 'New' ? `
+                                            <div class="detail-item" style="margin-top: 10px;">
+                                                <button onclick="assignRequestToSelf(${request.Id})"
+                                                        class="btn-assign-to-self">
+                                                    <i class="bi bi-person-check"></i> Принять это обращение
+                                                </button>
+                                            </div>
+                                        ` : ''}
+                                    `}
+                                    <!-- Кнопка назначения для менеджеров, если обращение не назначено -->
+                                    ${!request.AssignedToId && request.Status !== 'Completed' && request.Status !== 'Cancelled' && !isAssignedToMe ? `
                                         <div class="detail-item" style="margin-top: 10px;">
                                             <button onclick="assignRequestToSelf(${request.Id})"
                                                     class="btn-assign-to-self">
@@ -1709,81 +1717,115 @@
                                             </button>
                                         </div>
                                     ` : ''}
-                                `}
-                                <!-- Кнопка назначения для менеджеров, если обращение не назначено -->
-                                ${!request.AssignedToId && request.Status !== 'Completed' && request.Status !== 'Cancelled' && !isAssignedToMe ? `
-                                    <div class="detail-item" style="margin-top: 10px;">
-                                        <button onclick="assignRequestToSelf(${request.Id})"
-                                                class="btn-assign-to-self">
-                                            <i class="bi bi-person-check"></i> Принять это обращение
-                                        </button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-
-                        <div class="detail-section">
-                            <h4><i class="bi bi-chat-left-text"></i> Сообщение клиента</h4>
-                            <div class="detail-value message">${escapeHtml(request.Message)}</div>
-                        </div>
-                    </div>
-
-                    <!-- Вкладка для ответов -->
-                    ${showResponseTab ? `
-                        <div id="tab-response" class="tab-content">
-                            <div class="response-section">
-                                <h4><i class="bi bi-chat-dots"></i> Отправить ответ</h4>
-                                <div class="response-form">
-                                    <div class="form-group">
-                                        <label for="responseTitle">Заголовок ответа:</label>
-                                        <input type="text" id="responseTitle" class="form-control"
-                                               placeholder="Введите заголовок ответа" value="Ответ на обращение #${request.Id}" maxlength="250" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="responseContent">Ваш ответ:</label>
-                                        <textarea id="responseContent" class="form-control" rows="6"
-                                                  placeholder="Введите ваш ответ здесь..." maxlength="2000" required></textarea>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="completeRequestCheckbox">
-                                            <label class="form-check-label" for="completeRequestCheckbox">
-                                                Завершить обращение после отправки ответа
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="status-controls">
-                                        <button class="status-control-btn status-processing ${request.Status === 'Processing' ? 'active' : ''}"
-                                                onclick="selectStatus('Processing')">
-                                            <i class="bi bi-gear"></i> В обработке
-                                        </button>
-                                        <button class="status-control-btn status-completed"
-                                                onclick="selectStatus('Completed')">
-                                            <i class="bi bi-check-circle"></i> Завершить
-                                        </button>
-                                        ${request.Status === 'New' ? `
-                                            <button class="status-control-btn status-new"
-                                                    onclick="selectStatus('New')">
-                                                <i class="bi bi-plus-circle"></i> Новый
-                                            </button>
-                                        ` : ''}
-                                    </div>
-
-                                    <div class="modal-actions">
-                                        <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
-                                        <button type="button" onclick="submitResponse()" class="btn-save">
-                                            <i class="bi bi-send"></i> Отправить ответ
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
 
-                            <!-- История ответов -->
-                            ${request.Reports && request.Reports.length > 0 ? `
+                            <div class="detail-section">
+                                <h4><i class="bi bi-chat-left-text"></i> Сообщение клиента</h4>
+                                <div class="detail-value message">${escapeHtml(request.Message)}</div>
+                            </div>
+                        </div>
+
+                        <!-- Вкладка для ответов -->
+                        ${showResponseTab ? `
+                            <div id="tab-response" class="tab-content">
                                 <div class="response-section">
-                                    <h4><i class="bi bi-clock-history"></i> История ответов</h4>
+                                    <h4><i class="bi bi-chat-dots"></i> Отправить ответ</h4>
+                                    <div class="response-form">
+                                        <div class="form-group">
+                                            <label for="responseTitle">Заголовок ответа:</label>
+                                            <input type="text" id="responseTitle" class="form-control"
+                                                   placeholder="Введите заголовок ответа" value="Ответ на обращение #${request.Id}" maxlength="250" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="responseContent">Ваш ответ:</label>
+                                            <textarea id="responseContent" class="form-control" rows="6"
+                                                      placeholder="Введите ваш ответ здесь..." maxlength="2000" required></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="completeRequestCheckbox">
+                                                <label class="form-check-label" for="completeRequestCheckbox">
+                                                    Завершить обращение после отправки ответа
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="status-controls">
+                                            <button class="status-control-btn status-processing ${request.Status === 'Processing' ? 'active' : ''}"
+                                                    onclick="selectStatus('Processing')">
+                                                <i class="bi bi-gear"></i> В обработке
+                                            </button>
+                                            <button class="status-control-btn status-completed"
+                                                    onclick="selectStatus('Completed')">
+                                                <i class="bi bi-check-circle"></i> Завершить
+                                            </button>
+                                            ${request.Status === 'New' ? `
+                                                <button class="status-control-btn status-new"
+                                                        onclick="selectStatus('New')">
+                                                    <i class="bi bi-plus-circle"></i> Новый
+                                                </button>
+                                            ` : ''}
+                                        </div>
+
+                                        <div class="modal-actions">
+                                            <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                            <button type="button" onclick="submitResponse()" class="btn-save">
+                                                <i class="bi bi-send"></i> Отправить ответ
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- История ответов -->
+                                ${request.Reports && request.Reports.length > 0 ? `
+                                    <div class="response-section">
+                                        <h4><i class="bi bi-clock-history"></i> История ответов</h4>
+                                        <div class="responses-list">
+                                            ${request.Reports.map((response, index) => `
+                                                <div class="response-item">
+                                                    <div class="response-header">
+                                                        <span class="response-author">
+                                                            <i class="bi bi-person-circle"></i> ${escapeHtml(response.authorName || response.AuthorName || 'Менеджер')}
+                                                        </span>
+                                                        <span class="response-date">
+                                                            ${response.createDate || response.CreateDate ?
+                            new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                                // Только дата, без времени
+                            }) : 'Дата не указана'}
+                                                        </span>
+                                                    </div>
+                                                    <div class="response-content">
+                                                        ${escapeHtml(response.content || response.Content || response.title || response.Title || 'Нет содержания')}
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="response-section">
+                                        <div class="no-responses">
+                                            <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                            <p style="color: #94a3b8; font-size: 1.1rem;">Ответов пока нет</p>
+                                            <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">Вы будете первым, кто ответит на это обращение</p>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        ` : ''}
+
+                        <!-- История ответов (отдельная вкладка) -->
+                        ${request.Reports && request.Reports.length > 0 ? `
+                            <div id="tab-history" class="tab-content">
+                                <div class="response-section">
+                                    <h4><i class="bi bi-clock-history"></i> Полная история ответов</h4>
+                                    <p style="color: #64748b; margin-bottom: 20px; font-size: 0.9rem;">
+                                        Все ответы на это обращение в хронологическом порядке.
+                                    </p>
                                     <div class="responses-list">
                                         ${request.Reports.map((response, index) => `
                                             <div class="response-item">
@@ -1793,141 +1835,95 @@
                                                     </span>
                                                     <span class="response-date">
                                                         ${response.createDate || response.CreateDate ?
-                            new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            }) : 'Дата не указана'}
+                                    new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                        // Только дата, без времени
+                                    }) : 'Дата не указана'}
                                                     </span>
                                                 </div>
                                                 <div class="response-content">
                                                     ${escapeHtml(response.content || response.Content || response.title || response.Title || 'Нет содержания')}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        `).join('')}
+                                            `).join('')}
                                     </div>
                                 </div>
-                            ` : `
-                                <div class="response-section">
-                                    <div class="no-responses">
-                                        <i class="bi bi-chat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                                        <p style="color: #94a3b8; font-size: 1.1rem;">Ответов пока нет</p>
-                                        <p style="color: #cbd5e1; font-size: 0.9rem; margin-top: 10px;">Вы будете первым, кто ответит на это обращение</p>
-                                    </div>
-                                </div>
-                            `}
-                        </div>
-                    ` : ''}
+                            </div>
+                        ` : ''}
 
-                    <!-- История ответов (отдельная вкладка) -->
-                    ${request.Reports && request.Reports.length > 0 ? `
-                        <div id="tab-history" class="tab-content">
-                            <div class="response-section">
-                                <h4><i class="bi bi-clock-history"></i> Полная история ответов</h4>
-                                <p style="color: #64748b; margin-bottom: 20px; font-size: 0.9rem;">
-                                    Все ответы на это обращение в хронологическом порядке.
-                                </p>
-                                <div class="responses-list">
-                                    ${request.Reports.map((response, index) => `
-                                        <div class="response-item">
-                                            <div class="response-header">
-                                                <span class="response-author">
-                                                    <i class="bi bi-person-circle"></i> ${escapeHtml(response.authorName || response.AuthorName || 'Менеджер')}
-                                                </span>
-                                                <span class="response-date">
-                                                    ${response.createDate || response.CreateDate ?
-                                    new Date(response.createDate || response.CreateDate).toLocaleDateString('ru-RU', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    }) : 'Дата не указана'}
-                                                </span>
-                                            </div>
-                                            <div class="response-content">
-                                                ${escapeHtml(response.content || response.Content || response.title || response.Title || 'Нет содержания')}
-                                            </div>
+                        <!-- Редактирование (без приоритета) -->
+                        ${canEdit && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
+                            <div id="tab-edit" class="tab-content">
+                                <div class="edit-section">
+                                    <h4><i class="bi bi-pencil-square"></i> Редактирование обращения</h4>
+                                    <form id="requestEditForm">
+                                        <div class="form-group">
+                                            <label for="editTopic">Тема обращения:</label>
+                                            <input type="text" id="editTopic" class="form-control"
+                                                   value="${escapeHtml(request.Topic)}" maxlength="200" required>
                                         </div>
-                                    `).join('')}
+
+                                        <div class="form-group">
+                                            <label for="editMessage">Сообщение:</label>
+                                            <textarea id="editMessage" class="form-control" rows="6"
+                                                      maxlength="2000" required>${escapeHtml(request.Message)}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="editStatus">Статус:</label>
+                                            <select id="editStatus" class="form-control">
+                                                <option value="New" ${request.Status === 'New' ? 'selected' : ''}>Новый</option>
+                                                <option value="Processing" ${request.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
+                                                <option value="Completed" ${request.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
+                                                <option value="Cancelled" ${request.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="modal-actions">
+                                            ${isAssignedToMe && request.Status === 'Processing' ? `
+                                                <button type="button" onclick="unassignRequest(${request.Id})" class="btn-danger">
+                                                    <i class="bi bi-person-dash"></i> Отказаться от обращения
+                                                </button>
+                                            ` : ''}
+                                            ${!request.AssignedToId && request.Status === 'New' ? `
+                                                <button type="button" onclick="assignRequestToSelf(${request.Id})" class="btn-assign-to-self">
+                                                    <i class="bi bi-person-check"></i> Принять это обращение
+                                                </button>
+                                            ` : ''}
+                                            <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
+                                            <button type="button" onclick="saveRequestChanges()" class="btn-save">
+                                                <i class="bi bi-save"></i> Сохранить изменения
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Редактирование (без приоритета) -->
-                    ${canEdit && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
-                        <div id="tab-edit" class="tab-content">
-                            <div class="edit-section">
-                                <h4><i class="bi bi-pencil-square"></i> Редактирование обращения</h4>
-                                <form id="requestEditForm">
-                                    <div class="form-group">
-                                        <label for="editTopic">Тема обращения:</label>
-                                        <input type="text" id="editTopic" class="form-control"
-                                               value="${escapeHtml(request.Topic)}" maxlength="200" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="editMessage">Сообщение:</label>
-                                        <textarea id="editMessage" class="form-control" rows="6"
-                                                  maxlength="2000" required>${escapeHtml(request.Message)}</textarea>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="editStatus">Статус:</label>
-                                        <select id="editStatus" class="form-control">
-                                            <option value="New" ${request.Status === 'New' ? 'selected' : ''}>Новый</option>
-                                            <option value="Processing" ${request.Status === 'Processing' ? 'selected' : ''}>В обработке</option>
-                                            <option value="Completed" ${request.Status === 'Completed' ? 'selected' : ''}>Завершенный</option>
-                                            <option value="Cancelled" ${request.Status === 'Cancelled' ? 'selected' : ''}>Отмененный</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="modal-actions">
-                                        ${isAssignedToMe && request.Status === 'Processing' ? `
-                                            <button type="button" onclick="unassignRequest(${request.Id})" class="btn-danger">
-                                                <i class="bi bi-person-dash"></i> Отказаться от обращения
-                                            </button>
-                                        ` : ''}
-                                        ${!request.AssignedToId && request.Status === 'New' ? `
-                                            <button type="button" onclick="assignRequestToSelf(${request.Id})" class="btn-assign-to-self">
-                                                <i class="bi bi-person-check"></i> Принять это обращение
-                                            </button>
-                                        ` : ''}
-                                        <button type="button" onclick="closeModal()" class="btn-cancel">Отмена</button>
-                                        <button type="button" onclick="saveRequestChanges()" class="btn-save">
-                                            <i class="bi bi-save"></i> Сохранить изменения
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Кнопки действий -->
-                    <div class="modal-actions">
-                        ${(isAssignedToMe || currentUser.role === 'Admin') && request.Status === 'Processing' ? `
-                            <button onclick="completeRequest(${request.Id})"
-                                    class="btn-complete"
-                                    style="padding: 10px 20px; margin-right: auto;">
-                                <i class="bi bi-check-circle"></i> Завершить обращение
-                            </button>
-                        ` : ''}
-                        ${currentUser.role === 'Admin' && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
-                            <button onclick="cancelRequest(${request.Id})"
-                                    class="btn-danger"
-                                    style="padding: 10px 20px; margin-right: auto;">
-                                <i class="bi bi-x-circle"></i> Отменить обращение
-                            </button>
                         ` : ''}
 
-                        <button onclick="closeModal()" class="btn-cancel">
-                            <i class="bi bi-x"></i> Закрыть
-                        </button>
-                    </div>
-                `;
+                        <!-- Кнопки действий -->
+                        <div class="modal-actions">
+                            ${(isAssignedToMe || currentUser.role === 'Admin') && request.Status === 'Processing' ? `
+                                <button onclick="completeRequest(${request.Id})"
+                                        class="btn-complete"
+                                        style="padding: 10px 20px; margin-right: auto;">
+                                    <i class="bi bi-check-circle"></i> Завершить обращение
+                                </button>
+                            ` : ''}
+                            ${currentUser.role === 'Admin' && request.Status !== 'Completed' && request.Status !== 'Cancelled' ? `
+                                <button onclick="cancelRequest(${request.Id})"
+                                        class="btn-danger"
+                                        style="padding: 10px 20px; margin-right: auto;">
+                                    <i class="bi bi-x-circle"></i> Отменить обращение
+                                </button>
+                            ` : ''}
+
+                            <button onclick="closeModal()" class="btn-cancel">
+                                <i class="bi bi-x"></i> Закрыть
+                            </button>
+                        </div>
+                    `;
 
             document.getElementById('requestDetails').innerHTML = html;
 

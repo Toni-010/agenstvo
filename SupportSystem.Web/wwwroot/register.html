@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация - Support System</title>
+    <title>Регистрация - Название</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
@@ -11,47 +11,49 @@
     <div class="container">
         <div class="login-box">
             <h1 class="login-title">
-                <a href="index.html" style="color: #667eea; text-decoration: none;">Support System</a>
+                <a href="index.html" style="color: #667eea; text-decoration: none;">Название</a>
             </h1>
             <h2 class="login-title">Регистрация нового пользователя</h2>
 
             <form id="registerForm">
                 <div class="form-group">
                     <label class="form-label">Имя*</label>
-                    <input type="text" id="name" class="form-input" placeholder="Иван Иванов" required>
+                    <input type="text" id="name" class="form-input" placeholder="Иван Иванов" required maxlength="35">
+                    <div id="nameError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Email*</label>
-                    <input type="email" id="email" class="form-input" placeholder="user@mail.com" required>
+                    <input type="email" id="email" class="form-input" placeholder="user@mail.com" required maxlength="100">
+                    <div id="emailError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Телефон</label>
-                    <input type="tel" id="phone" class="form-input" placeholder="+7 (999) 999-99-99">
+                    <input type="tel" id="phone" class="form-input" placeholder="+79991234567">
+                    <div id="phoneError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
+                    <small style="color: #666; font-size: 0.9rem; display: block; margin-top: 5px;">
+                        Формат: +79991234567 (12 символов: + и 11 цифр)
+                    </small>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Пароль*</label>
-                    <input type="password" id="password" class="form-input" placeholder="Минимум 4 символа" required minlength="4">
+                    <input type="password" id="password" class="form-input" placeholder="Минимум 8 символов" required maxlength="35">
+                    <div id="passwordError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
+                    <small style="color: #666; font-size: 0.9rem; display: block; margin-top: 5px;">
+                        Пароль должен содержать минимум 8 символов (максимум 35)
+                    </small>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Подтвердите пароль*</label>
-                    <input type="password" id="confirmPassword" class="form-input" placeholder="Повторите пароль" required minlength="4">
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Повторите пароль" required maxlength="35">
+                    <div id="confirmPasswordError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Роль*</label>
-                    <select id="role" class="form-input" required>
-                        <option value="User" selected>Клиент (User)</option>
-                        <option value="Manager">Менеджер (Manager)</option>
-                        <option value="Admin">Администратор (Admin)</option>
-                    </select>
-                    <small style="color: #666; font-size: 0.9rem; display: block; margin-top: 5px;">
-                        Для демонстрации можно выбрать любую роль
-                    </small>
-                </div>
+                <!-- Скрытое поле для роли (всегда "User") -->
+                <input type="hidden" id="role" value="user">
 
                 <button type="submit" class="btn-login" id="registerButton">
                     Зарегистрироваться
@@ -75,40 +77,227 @@
             const form = document.getElementById('registerForm');
             const registerButton = document.getElementById('registerButton');
 
-            form.addEventListener('submit', async function (e) {
-                e.preventDefault();
+            // Функция для показа ошибки
+            function showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
 
+            // Функция для скрытия ошибки
+            function hideError(elementId) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+
+            // Валидация имени
+            function validateName(name) {
+                hideError('nameError');
+
+                if (!name.trim()) {
+                    showError('nameError', 'Имя обязательно для заполнения');
+                    return false;
+                }
+
+                if (name.length < 2) {
+                    showError('nameError', 'Имя должно содержать минимум 2 символа');
+                    return false;
+                }
+
+                if (name.length > 35) {
+                    showError('nameError', 'Имя не должно превышать 35 символов');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Валидация email
+            function validateEmail(email) {
+                hideError('emailError');
+
+                if (!email.trim()) {
+                    showError('emailError', 'Email обязателен для заполнения');
+                    return false;
+                }
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('emailError', 'Введите корректный email (например: user@mail.com)');
+                    return false;
+                }
+
+                if (email.length > 100) {
+                    showError('emailError', 'Email не должен превышать 100 символов');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Валидация телефона
+            function validatePhone(phone) {
+                hideError('phoneError');
+
+                if (!phone.trim()) {
+                    return true; // телефон не обязательный
+                }
+
+                // Проверяем длину (максимум 12 символов в базе)
+                if (phone.length > 12) {
+                    showError('phoneError', 'Номер телефона не должен превышать 12 символов');
+                    return false;
+                }
+
+                // Проверяем формат: начинается с +7 и потом 10 цифр
+                const phoneRegex = /^\+7\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    showError('phoneError', 'Введите корректный номер телефона. Формат: +79991234567');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Валидация пароля
+            function validatePassword(password) {
+                hideError('passwordError');
+
+                if (!password) {
+                    showError('passwordError', 'Пароль обязателен для заполнения');
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    showError('passwordError', 'Пароль должен содержать минимум 8 символов');
+                    return false;
+                }
+
+                if (password.length > 35) {
+                    showError('passwordError', 'Пароль не должен превышать 35 символов');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Валидация подтверждения пароля
+            function validateConfirmPassword(password, confirmPassword) {
+                hideError('confirmPasswordError');
+
+                if (!confirmPassword) {
+                    showError('confirmPasswordError', 'Подтверждение пароля обязательно');
+                    return false;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('confirmPasswordError', 'Пароли не совпадают');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Подготовка телефона для отправки
+            function preparePhoneForSend(phone) {
+                if (!phone.trim()) {
+                    return null; // отправляем null если пусто
+                }
+
+                // Оставляем только цифры и +
+                let cleaned = phone.replace(/[^\d+]/g, '');
+
+                // Если начинается с 8, меняем на +7
+                if (cleaned.startsWith('8')) {
+                    cleaned = '+7' + cleaned.substring(1);
+                }
+
+                // Если начинается с 7 без +, добавляем +
+                if (cleaned.startsWith('7') && !cleaned.startsWith('+7')) {
+                    cleaned = '+' + cleaned;
+                }
+
+                // Обрезаем до 11 цифр после +7
+                if (cleaned.length > 12) {
+                    cleaned = cleaned.substring(0, 12);
+                }
+
+                console.log('Подготовленный телефон для отправки:', cleaned);
+                return cleaned;
+            }
+
+            // Автоматическое форматирование номера телефона при вводе
+            document.getElementById('phone').addEventListener('input', function (e) {
+                let value = e.target.value;
+
+                // Оставляем только цифры и +
+                value = value.replace(/[^\d+]/g, '');
+
+                // Если начинается с 8, меняем на +7
+                if (value.startsWith('8')) {
+                    value = '+7' + value.substring(1);
+                }
+
+                // Если начинается с 7 без +, добавляем +
+                if (value.startsWith('7') && !value.startsWith('+7')) {
+                    value = '+' + value;
+                }
+
+                // Обрезаем до 12 символов
+                if (value.length > 12) {
+                    value = value.substring(0, 12);
+                }
+
+                e.target.value = value;
+            });
+
+            // Валидация всей формы
+            function validateForm() {
                 const name = document.getElementById('name').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const phone = document.getElementById('phone').value.trim();
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
-                const role = document.getElementById('role').value;
 
-                console.log('Попытка регистрации для:', email);
+                let isValid = true;
 
-                // Валидация
-                if (!name || !email || !password) {
-                    alert('Заполните обязательные поля (отмечены *)');
+                if (!validateName(name)) isValid = false;
+                if (!validateEmail(email)) isValid = false;
+                if (!validatePhone(phone)) isValid = false;
+                if (!validatePassword(password)) isValid = false;
+                if (!validateConfirmPassword(password, confirmPassword)) isValid = false;
+
+                return isValid;
+            }
+
+            // Обработка сабмита формы
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                console.log('Попытка регистрации');
+
+                // Валидация формы
+                if (!validateForm()) {
                     return;
                 }
 
-                if (password.length < 4) {
-                    alert('Пароль должен быть не менее 4 символов');
-                    return;
-                }
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phoneInput = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value;
+                const role = document.getElementById('role').value; // "user" (в нижнем регистре!)
 
-                if (password !== confirmPassword) {
-                    alert('Пароли не совпадают');
-                    return;
-                }
+                // Подготавливаем телефон для отправки
+                const phone = preparePhoneForSend(phoneInput);
 
-                // Проверка email
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    alert('Введите корректный email');
-                    return;
-                }
+                console.log('Данные для регистрации:', {
+                    name,
+                    email,
+                    phone: phone,
+                    role,
+                    passwordLength: password.length
+                });
 
                 // Отправка запроса
                 registerButton.innerHTML = 'Регистрация...';
@@ -117,26 +306,49 @@
                 try {
                     console.log('Отправляю запрос на регистрацию:', `${API_URL}/api/Auth/register`);
 
+                    // Формируем данные ТОЧНО как в DTO
+                    const requestData = {
+                        name: name,
+                        email: email,
+                        password: password,
+                        phone: phone, // отправляем подготовленный телефон или null
+                        role: role // "user" в нижнем регистре
+                    };
+
+                    console.log('Отправляемые данные:', JSON.stringify(requestData, null, 2));
+
                     const response = await fetch(`${API_URL}/api/Auth/register`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({
-                            name: name,
-                            email: email,
-                            phone: phone || null,
-                            password: password,
-                            role: role
-                        })
+                        body: JSON.stringify(requestData)
                     });
 
                     console.log('Статус ответа:', response.status);
 
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.message || `Ошибка сервера: ${response.status}`);
+                        let errorMessage = `Ошибка сервера: ${response.status} ${response.statusText}`;
+
+                        try {
+                            const errorData = await response.json();
+                            console.error('Детали ошибки от сервера:', errorData);
+
+                            errorMessage = errorData.message || errorMessage;
+
+                            // Если есть ошибки валидации
+                            if (errorData.errors) {
+                                const errorDetails = Object.values(errorData.errors).flat().join(', ');
+                                errorMessage += ': ' + errorDetails;
+                            } else if (errorData.title) {
+                                errorMessage += ': ' + errorData.title;
+                            }
+                        } catch (parseError) {
+                            console.error('Ошибка парсинга:', parseError);
+                        }
+
+                        throw new Error(errorMessage);
                     }
 
                     const data = await response.json();
@@ -148,35 +360,50 @@
 
                     alert('Регистрация успешна! Вы будете перенаправлены...');
 
-                    // Перенаправление по роли
+                    // Перенаправление в панель пользователя
                     setTimeout(() => {
-                        redirectByRole(data.user.role);
+                        window.location.href = 'user-dashboard.html';
                     }, 1000);
 
                 } catch (error) {
                     console.error('❌ Ошибка регистрации:', error);
-                    alert('Ошибка: ' + error.message);
+
+                    // Показываем более подробное сообщение об ошибке
+                    let errorMsg = error.message;
+                    if (errorMsg.includes('Failed to fetch')) {
+                        errorMsg = 'Не удалось подключиться к серверу. Проверьте, запущен ли сервер на localhost:7100';
+                    }
+
+                    alert('Ошибка при регистрации: ' + errorMsg);
+                } finally {
+                    // Всегда восстанавливаем кнопку
                     registerButton.innerHTML = 'Зарегистрироваться';
                     registerButton.disabled = false;
                 }
             });
-        });
 
-        function redirectByRole(role) {
-            switch (role) {
-                case 'Admin':
-                    window.location.href = 'admin-dashboard.html';
-                    break;
-                case 'Manager':
-                    window.location.href = 'manager-dashboard.html';
-                    break;
-                case 'User':
-                    window.location.href = 'user-dashboard.html';
-                    break;
-                default:
-                    window.location.href = 'index.html';
-            }
-        }
+            // Валидация в реальном времени
+            document.getElementById('name').addEventListener('blur', function () {
+                validateName(this.value);
+            });
+
+            document.getElementById('email').addEventListener('blur', function () {
+                validateEmail(this.value);
+            });
+
+            document.getElementById('phone').addEventListener('blur', function () {
+                validatePhone(this.value);
+            });
+
+            document.getElementById('password').addEventListener('blur', function () {
+                validatePassword(this.value);
+            });
+
+            document.getElementById('confirmPassword').addEventListener('blur', function () {
+                const password = document.getElementById('password').value;
+                validateConfirmPassword(password, this.value);
+            });
+        });
     </script>
 </body>
 </html>

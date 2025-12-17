@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои заказы - Support System</title>
+    <title>Мои заказы - Название</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -588,7 +588,7 @@
     <div class="container">
         <header class="dashboard-header">
             <h1 class="dashboard-title">
-                <a href="index.html" style="color: #667eea; text-decoration: none;">Support System</a>
+                <a href="index.html" style="color: #667eea; text-decoration: none;">Название</a>
             </h1>
             <div class="user-info">
                 <span id="userName">Загрузка...</span>
@@ -843,12 +843,12 @@
 
             if (filteredOrders.length === 0) {
                 container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="bi bi-inbox"></i>
-                            <h3>Нет заказов с выбранным статусом</h3>
-                            <p>Попробуйте выбрать другой фильтр</p>
-                        </div>
-                    `;
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <h3>Нет заказов с выбранным статусом</h3>
+                                <p>Попробуйте выбрать другой фильтр</p>
+                            </div>
+                        `;
                 return;
             }
 
@@ -885,57 +885,53 @@
                 ? order.description.substring(0, 150) + '...'
                 : order.description;
 
+            // ТОЛЬКО ДАТА (без времени)
             const date = new Date(order.createDate).toLocaleDateString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric'
             });
 
-            const time = new Date(order.createDate).toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
             // Показываем кнопку "Подробнее" только для НЕ новых заказов
             const showDetailsButton = status !== 'new';
             const detailsButtonHtml = showDetailsButton
                 ? `<button class="order-action-btn view" onclick="viewOrderDetails(${order.id})">
-                            <i class="bi bi-eye"></i> Подробнее
-                       </button>`
+                                <i class="bi bi-eye"></i> Подробнее
+                           </button>`
                 : '';
 
             return `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <h3 class="order-title">${order.orderName}</h3>
-                            <span class="order-id">#${order.id}</span>
-                        </div>
-
-                        <div class="order-meta">
-                            <div class="order-date">
-                                <i class="bi bi-calendar"></i> ${date} ${time}
-                            </div>
-                            ${order.cost ? `<div class="order-cost">${order.cost}</div>` : ''}
-                        </div>
-
-                        <div class="order-description">
-                            ${description}
-                        </div>
-
-                        <div class="order-footer">
-                            <div class="status-badge ${statusClass}">
-                                ${statusText}
+                        <div class="order-card">
+                            <div class="order-header">
+                                <h3 class="order-title">${order.orderName}</h3>
+                                <span class="order-id">#${order.id}</span>
                             </div>
 
-                            <div class="order-actions">
-                                ${detailsButtonHtml}
-                                <a href="support.html?orderId=${order.id}" class="order-action-btn support">
-                                    <i class="bi bi-headset"></i> Поддержка
-                                </a>
+                            <div class="order-meta">
+                                <div class="order-date">
+                                    <i class="bi bi-calendar"></i> ${date}
+                                </div>
+                                ${order.cost ? `<div class="order-cost">${order.cost}</div>` : ''}
+                            </div>
+
+                            <div class="order-description">
+                                ${description}
+                            </div>
+
+                            <div class="order-footer">
+                                <div class="status-badge ${statusClass}">
+                                    ${statusText}
+                                </div>
+
+                                <div class="order-actions">
+                                    ${detailsButtonHtml}
+                                    <a href="support.html?orderId=${order.id}" class="order-action-btn support">
+                                        <i class="bi bi-headset"></i> Поддержка
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
         }
 
         function getStatusText(status) {
@@ -970,16 +966,16 @@
                     document.getElementById('modalOrderStatus').textContent = getStatusText(order.status);
                     document.getElementById('modalOrderPriority').textContent = order.priority;
 
+                    // ТОЛЬКО ДАТА создания (без времени)
                     const createDate = new Date(order.createDate);
                     document.getElementById('modalCreateDate').textContent =
-                        createDate.toLocaleDateString('ru-RU') + ' ' +
-                        createDate.toLocaleTimeString('ru-RU');
+                        createDate.toLocaleDateString('ru-RU');
 
+                    // ТОЛЬКО ДАТА завершения (без времени)
                     if (order.completeDate) {
                         const completeDate = new Date(order.completeDate);
                         document.getElementById('modalCompleteDate').textContent =
-                            completeDate.toLocaleDateString('ru-RU') + ' ' +
-                            completeDate.toLocaleTimeString('ru-RU');
+                            completeDate.toLocaleDateString('ru-RU');
                     } else {
                         document.getElementById('modalCompleteDate').textContent = 'Не завершен';
                     }
@@ -990,38 +986,38 @@
                     const managerInfo = document.getElementById('managerInfo');
                     if (order.assignedToId && order.managerName && order.managerName !== "Не назначен") {
                         managerInfo.innerHTML = `
-                                <div class="manager-info">
-                                    <div class="info-row">
-                                        <span class="info-label">Имя:</span>
-                                        <span class="info-value">${order.managerName}</span>
+                                    <div class="manager-info">
+                                        <div class="info-row">
+                                            <span class="info-label">Имя:</span>
+                                            <span class="info-value">${order.managerName}</span>
+                                        </div>
+                                        ${order.managerEmail ? `
+                                        <div class="info-row">
+                                            <span class="info-label">Email:</span>
+                                            <span class="info-value">${order.managerEmail}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${order.managerPhone ? `
+                                        <div class="info-row">
+                                            <span class="info-label">Телефон:</span>
+                                            <span class="info-value">${order.managerPhone}</span>
+                                        </div>
+                                        ` : ''}
+                                        ${order.managerRole ? `
+                                        <div class="info-row">
+                                            <span class="info-label">Роль:</span>
+                                            <span class="info-value">${order.managerRole}</span>
+                                        </div>
+                                        ` : ''}
                                     </div>
-                                    ${order.managerEmail ? `
-                                    <div class="info-row">
-                                        <span class="info-label">Email:</span>
-                                        <span class="info-value">${order.managerEmail}</span>
-                                    </div>
-                                    ` : ''}
-                                    ${order.managerPhone ? `
-                                    <div class="info-row">
-                                        <span class="info-label">Телефон:</span>
-                                        <span class="info-value">${order.managerPhone}</span>
-                                    </div>
-                                    ` : ''}
-                                    ${order.managerRole ? `
-                                    <div class="info-row">
-                                        <span class="info-label">Роль:</span>
-                                        <span class="info-value">${order.managerRole}</span>
-                                    </div>
-                                    ` : ''}
-                                </div>
-                            `;
+                                `;
                     } else {
                         managerInfo.innerHTML = `
-                                <div class="no-reports">
-                                    <i class="bi bi-person-x"></i>
-                                    <p>Менеджер не назначен</p>
-                                </div>
-                            `;
+                                    <div class="no-reports">
+                                        <i class="bi bi-person-x"></i>
+                                        <p>Менеджер не назначен</p>
+                                    </div>
+                                `;
                     }
 
                     // Загружаем отчеты по этому заказу
@@ -1054,7 +1050,7 @@
 
                     if (reports && reports.length > 0) {
                         const reportsHtml = reports.map(report => {
-                            // Форматируем дату отчета
+                            // ТОЛЬКО ДАТА отчета (без времени)
                             const reportDate = new Date(report.createDate);
                             const formattedDate = reportDate.toLocaleDateString('ru-RU', {
                                 day: '2-digit',
@@ -1068,79 +1064,79 @@
                                 : report.content;
 
                             return `
-                        <div class="report-card">
-                            <div class="report-header">
-                                <h4 class="report-title">${report.title}</h4>
-                                <span class="report-date">
-                                    <i class="bi bi-calendar"></i> ${formattedDate}
-                                </span>
-                            </div>
-                            <div class="report-content">${shortContent}</div>
-                            <div class="report-footer">
-                                <div class="report-author">
-                                    <i class="bi bi-person-circle"></i>
-                                    <span class="author-name">${report.authorName || 'Неизвестный автор'}</span>
-                                    ${report.authorEmail ? `<span class="author-email">(${report.authorEmail})</span>` : ''}
+                            <div class="report-card">
+                                <div class="report-header">
+                                    <h4 class="report-title">${report.title}</h4>
+                                    <span class="report-date">
+                                        <i class="bi bi-calendar"></i> ${formattedDate}
+                                    </span>
                                 </div>
-                                ${report.content.length > 150 ? `
-                                <button class="btn-show-more" onclick="showFullReport(${report.id}, '${report.title.replace(/'/g, "\\'")}', \`${report.content.replace(/`/g, "\\`").replace(/\n/g, "<br>")}\`)">
-                                    <i class="bi bi-arrows-angle-expand"></i> Показать полностью
-                                </button>
-                                ` : ''}
+                                <div class="report-content">${shortContent}</div>
+                                <div class="report-footer">
+                                    <div class="report-author">
+                                        <i class="bi bi-person-circle"></i>
+                                        <span class="author-name">${report.authorName || 'Неизвестный автор'}</span>
+                                        ${report.authorEmail ? `<span class="author-email">(${report.authorEmail})</span>` : ''}
+                                    </div>
+                                    ${report.content.length > 150 ? `
+                                    <button class="btn-show-more" onclick="showFullReport(${report.id}, '${report.title.replace(/'/g, "\\'")}', \`${report.content.replace(/`/g, "\\`").replace(/\n/g, "<br>")}\`)">
+                                        <i class="bi bi-arrows-angle-expand"></i> Показать полностью
+                                    </button>
+                                    ` : ''}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                         }).join('');
 
                         reportsList.innerHTML = `
-                    <div style="margin-bottom: 15px;">
-                        <h5 style="color: #475569; margin-bottom: 10px;">
-                            <i class="bi bi-file-text"></i> Отчеты по заказу (${reports.length})
-                        </h5>
-                    </div>
-                    ${reportsHtml}
-                `;
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: #475569; margin-bottom: 10px;">
+                                <i class="bi bi-file-text"></i> Отчеты по заказу (${reports.length})
+                            </h5>
+                        </div>
+                        ${reportsHtml}
+                    `;
                     } else {
                         reportsList.innerHTML = `
-                    <div class="no-reports">
-                        <i class="bi bi-file-earmark-excel"></i>
-                        <p>Отчетов по этому заказу пока нет</p>
-                        <small>Как только менеджер добавит отчет, он появится здесь</small>
-                    </div>
-                `;
+                        <div class="no-reports">
+                            <i class="bi bi-file-earmark-excel"></i>
+                            <p>Отчетов по этому заказу пока нет</p>
+                            <small>Как только менеджер добавит отчет, он появится здесь</small>
+                        </div>
+                    `;
                     }
                 } else if (response.status === 403) {
                     reportsList.innerHTML = `
-                <div class="no-reports">
-                    <i class="bi bi-shield-lock"></i>
-                    <p>Нет доступа к отчетам по этому заказу</p>
-                </div>
-            `;
+                    <div class="no-reports">
+                        <i class="bi bi-shield-lock"></i>
+                        <p>Нет доступа к отчетам по этому заказу</p>
+                    </div>
+                `;
                 } else if (response.status === 404) {
                     reportsList.innerHTML = `
-                <div class="no-reports">
-                    <i class="bi bi-file-earmark"></i>
-                    <p>Нет отчетов по этому заказу</p>
-                </div>
-            `;
+                    <div class="no-reports">
+                        <i class="bi bi-file-earmark"></i>
+                        <p>Нет отчетов по этому заказу</p>
+                    </div>
+                `;
                 } else {
                     reportsList.innerHTML = `
-                <div class="no-reports">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <p>Не удалось загрузить отчеты</p>
-                    <small>Попробуйте обновить страницу</small>
-                </div>
-            `;
+                    <div class="no-reports">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <p>Не удалось загрузить отчеты</p>
+                        <small>Попробуйте обновить страницу</small>
+                    </div>
+                `;
                 }
             } catch (error) {
                 console.error('Error loading reports:', error);
                 document.getElementById('reportsList').innerHTML = `
-            <div class="no-reports">
-                <i class="bi bi-exclamation-triangle"></i>
-                <p>Ошибка загрузки отчетов</p>
-                <small>${error.message}</small>
-            </div>
-        `;
+                <div class="no-reports">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <p>Ошибка загрузки отчетов</p>
+                    <small>${error.message}</small>
+                </div>
+            `;
             }
         }
 
@@ -1148,25 +1144,25 @@
         function showFullReport(reportId, title, content) {
             // Создаем модальное окно для полного отчета
             const modalHtml = `
-        <div id="reportModal" class="modal-overlay active">
-            <div class="modal" style="max-width: 800px;">
-                <div class="modal-header">
-                    <h3 class="modal-title">
-                        <i class="bi bi-file-text"></i>
-                        ${title}
-                    </h3>
-                    <button class="close-modal" onclick="closeReportModal()">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-                <div class="modal-content">
-                    <div class="full-report-content">
-                        ${content}
+            <div id="reportModal" class="modal-overlay active">
+                <div class="modal" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">
+                            <i class="bi bi-file-text"></i>
+                            ${title}
+                        </h3>
+                        <button class="close-modal" onclick="closeReportModal()">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div class="modal-content">
+                        <div class="full-report-content">
+                            ${content}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
 
             // Добавляем модальное окно в body
             document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -1216,15 +1212,15 @@
         function showEmptyState() {
             const container = document.getElementById('ordersContainer');
             container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="bi bi-cart"></i>
-                        <h3>У вас пока нет заказов</h3>
-                        <p>Создайте свой первый заказ, чтобы начать работу</p>
-                        <a href="create-order.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 8px;">
-                            <i class="bi bi-plus-circle"></i> Создать заказ
-                        </a>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="bi bi-cart"></i>
+                            <h3>У вас пока нет заказов</h3>
+                            <p>Создайте свой первый заказ, чтобы начать работу</p>
+                            <a href="create-order.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 8px;">
+                                <i class="bi bi-plus-circle"></i> Создать заказ
+                            </a>
+                        </div>
+                    `;
 
             document.getElementById('statsContainer').style.display = 'none';
         }

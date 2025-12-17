@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ответы на обращения - Support System</title>
+    <title>Ответы на обращения - Название</title>
     <style>
         * {
             margin: 0;
@@ -401,7 +401,7 @@
 
         <div class="header">
             <h1>
-                <a href="index.html">Support System</a> | Ответы на обращения
+                <a href="index.html">Название</a> | Ответы на обращения
             </h1>
             <div class="user-info">
                 <span id="userName">Загрузка...</span>
@@ -527,11 +527,11 @@
             } catch (error) {
                 console.error('Error loading support requests:', error);
                 document.getElementById('requestsList').innerHTML = `
-                    <div class="empty-state">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        <p>Ошибка загрузки обращений</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <p>Ошибка загрузки обращений</p>
+                        </div>
+                    `;
             }
         }
 
@@ -540,28 +540,28 @@
 
             if (!supportRequests || supportRequests.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="bi bi-inbox"></i>
-                        <h3>Обращений нет</h3>
-                        <p>Вы еще не создали ни одного обращения в поддержку</p>
-                    </div>
-                `;
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <h3>Обращений нет</h3>
+                            <p>Вы еще не создали ни одного обращения в поддержку</p>
+                        </div>
+                    `;
                 return;
             }
 
             container.innerHTML = supportRequests.map(request => `
-                <div class="request-item" onclick="selectRequest(${request.id})" id="request-${request.id}">
-                    <div class="request-topic">${escapeHtml(request.topic)}</div>
-                    <div class="request-meta">
-                        <span class="request-date">
-                            ${formatDate(request.createDate)}
-                        </span>
-                        <span class="request-status status-${request.status.toLowerCase()}">
-                            ${getStatusText(request.status)}
-                        </span>
+                    <div class="request-item" onclick="selectRequest(${request.id})" id="request-${request.id}">
+                        <div class="request-topic">${escapeHtml(request.topic)}</div>
+                        <div class="request-meta">
+                            <span class="request-date">
+                                ${formatDate(request.createDate)}
+                            </span>
+                            <span class="request-status status-${request.status.toLowerCase()}">
+                                ${getStatusText(request.status)}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
         }
 
         async function selectRequest(requestId) {
@@ -615,12 +615,12 @@
             } catch (error) {
                 console.error('Error loading responses:', error);
                 document.getElementById('responsesList').innerHTML = `
-                    <div class="no-responses">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        <h3>Ошибка загрузки ответов</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `;
+                        <div class="no-responses">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <h3>Ошибка загрузки ответов</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
             }
         }
 
@@ -629,35 +629,35 @@
 
             if (!reports || reports.length === 0) {
                 container.innerHTML = `
-                    <div class="no-responses">
-                        <i class="bi bi-chat-dots"></i>
-                        <h3>Ответы пока отсутствуют</h3>
-                        <p>Менеджер еще не ответил на это обращение</p>
-                    </div>
-                `;
+                        <div class="no-responses">
+                            <i class="bi bi-chat-dots"></i>
+                            <h3>Ответы пока отсутствуют</h3>
+                            <p>Менеджер еще не ответил на это обращение</p>
+                        </div>
+                    `;
                 return;
             }
 
             container.innerHTML = reports.map(report => `
-                <div class="response-content">
-                    <h4><i class="bi bi-chat-left-text"></i> ${escapeHtml(report.title)}</h4>
-                    <div class="response-text">${escapeHtml(report.content)}</div>
-                    <div class="response-meta">
-                        <div class="author-info">
-                            <div class="author-avatar">
-                                ${getInitials(report.authorName)}
+                    <div class="response-content">
+                        <h4><i class="bi bi-chat-left-text"></i> ${escapeHtml(report.title)}</h4>
+                        <div class="response-text">${escapeHtml(report.content)}</div>
+                        <div class="response-meta">
+                            <div class="author-info">
+                                <div class="author-avatar">
+                                    ${getInitials(report.authorName)}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 500;">${escapeHtml(report.authorName)}</div>
+                                    <div style="font-size: 12px;">${report.authorEmail || ''}</div>
+                                </div>
                             </div>
                             <div>
-                                <div style="font-weight: 500;">${escapeHtml(report.authorName)}</div>
-                                <div style="font-size: 12px;">${report.authorEmail || ''}</div>
+                                ${formatDate(report.createDate)}
                             </div>
                         </div>
-                        <div>
-                            ${formatDate(report.createDate)}
-                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
         }
 
         function getStatusText(status) {
@@ -672,12 +672,11 @@
 
         function formatDate(dateString) {
             const date = new Date(dateString);
+            // ТОЛЬКО ДАТА (без времени)
             return date.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                day: 'numeric'
             });
         }
 
