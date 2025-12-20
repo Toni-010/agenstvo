@@ -3,64 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\users-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\users-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\user-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\user-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\team-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\team-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\support-responses.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support-responses.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\support-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\support.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\register.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\register.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\orders-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\orders-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\my-orders.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\my-orders.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\manager-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\create-order.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\create-order.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\about.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\about.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\order-admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\order-admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\admin-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\admin-dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\user-admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\user-admin.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\dtos\\updateuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\dtos\\updateuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -83,196 +43,66 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "users-management.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\users-management.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\users-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\users-management.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\users-management.html*",
-              "ViewState": "AgIAAKEBAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
+              "Title": "order-admin.html",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\order-admin.html",
+              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\order-admin.html",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\order-admin.html*",
+              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\order-admin.html*",
+              "ViewState": "AgIAAL8GAAAAAAAAAAAYwP0GAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:21:58.904Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "user-dashboard.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\user-dashboard.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\user-dashboard.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\user-dashboard.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\user-dashboard.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:20:48.496Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "team-management.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\team-management.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\team-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\team-management.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\team-management.html*",
-              "ViewState": "AgIAAA4BAAAAAAAAAAAAAAUAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:20:02.298Z",
+              "WhenOpened": "2025-12-20T13:28:23.838Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "support-responses.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-responses.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support-responses.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-responses.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support-responses.html*",
-              "ViewState": "AgIAAHQBAAAAAAAAAAAAAJMBAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:19:39.342Z",
+              "Title": "UpdateUserDto.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\DTOs\\UpdateUserDto.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API\\DTOs\\UpdateUserDto.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\DTOs\\UpdateUserDto.cs",
+              "RelativeToolTip": "SupportSystem.API\\DTOs\\UpdateUserDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-20T13:18:04.584Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "support-management.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support-management.html*",
-              "ViewState": "AgIAAAIEAAAAAAAAAAAAABMEAABcAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "user-admin.html",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\user-admin.html",
+              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\user-admin.html",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\user-admin.html",
+              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\user-admin.html",
+              "ViewState": "AgIAAFIEAAAAAAAAAAAYwF0EAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:19:17.491Z",
+              "WhenOpened": "2025-12-20T12:56:37.034Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "register.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\register.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\register.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\register.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\register.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:15:46.26Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "support.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:15:45.35Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "orders-management.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\orders-management.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\orders-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\orders-management.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\orders-management.html*",
-              "ViewState": "AgIAAMYDAAAAAAAAAAAAAOUDAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:15:19.873Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "my-orders.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\my-orders.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\my-orders.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\my-orders.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\my-orders.html*",
-              "ViewState": "AgIAAEACAAAAAAAAAAAAAE4CAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:15:02.52Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "manager-dashboard.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\manager-dashboard.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\manager-dashboard.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\manager-dashboard.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\manager-dashboard.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:52.652Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "login.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\login.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\login.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\login.html",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\login.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:42.847Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "index.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\index.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\index.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\index.html",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\index.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:41.364Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "create-order.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\create-order.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\create-order.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\create-order.html*",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\create-order.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:30.255Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 1,
               "Title": "admin-dashboard.html",
               "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\admin-dashboard.html",
               "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\admin-dashboard.html",
               "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\admin-dashboard.html*",
               "RelativeToolTip": "SupportSystem.Web\\wwwroot\\admin-dashboard.html*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABcAAAAAAAAAA==",
+              "ViewState": "AgIAAIoCAAAAAAAAAAAAwKYCAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:19.14Z",
+              "WhenOpened": "2025-12-20T12:48:40.643Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "about.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\about.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\about.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\about.html",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\about.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-17T00:14:08.161Z",
+              "DocumentIndex": 4,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API\\Controllers\\OrdersController.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "SupportSystem.API\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAANECAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T12:59:31.349Z",
               "EditorCaption": ""
             }
           ]

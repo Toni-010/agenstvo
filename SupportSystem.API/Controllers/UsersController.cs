@@ -213,15 +213,15 @@ namespace SupportSystem.API.Controllers
         {
             try
             {
-                // Проверяем авторизацию - пользователь может редактировать только свой профиль
+                // Проверяем авторизацию
                 var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
                 // Разрешаем редактировать:
                 // 1. Самому пользователю (currentUserId == id)
                 // 2. Администратору (Admin)
-                // 3. Менеджеру (Manager) ← ДОБАВЛЯЕМ ЭТО!
-                if (currentUserId != id && currentUserRole != "Admin" && currentUserRole != "Manager") // ИЗМЕНЕНИЕ ТУТ!
+                // 3. Менеджеру (Manager) - но только менеджер не может менять роль
+                if (currentUserId != id && currentUserRole != "Admin" && currentUserRole != "Manager")
                 {
                     return Forbid();
                 }
@@ -232,7 +232,7 @@ namespace SupportSystem.API.Controllers
                     return NotFound(new { message = "Пользователь не найден" });
                 }
 
-                // Валидация
+                // Валидация имени
                 if (string.IsNullOrWhiteSpace(updateUserDto.Name))
                 {
                     return BadRequest(new { message = "Имя не может быть пустым" });
@@ -250,7 +250,7 @@ namespace SupportSystem.API.Controllers
                     }
                 }
 
-                // Обновляем только разрешенные поля
+                // Обновляем основные поля
                 user.Name = updateUserDto.Name.Trim();
 
                 if (!string.IsNullOrEmpty(updateUserDto.Email))
@@ -259,6 +259,21 @@ namespace SupportSystem.API.Controllers
                 }
 
                 user.Phone = updateUserDto.Phone?.Trim();
+
+                // Обновляем роль только если текущий пользователь - администратор
+                // И если роль указана в DTO
+                if (currentUserRole == "Admin" && !string.IsNullOrEmpty(updateUserDto.Role))
+                {
+                    // Проверяем валидность роли
+                    if (Enum.TryParse<Data.Enums.UserRole>(updateUserDto.Role, out var newRole))
+                    {
+                        user.Role = newRole;
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Некорректная роль пользователя" });
+                    }
+                }
 
                 _context.Entry(user).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
