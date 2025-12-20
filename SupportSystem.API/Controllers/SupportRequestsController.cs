@@ -792,6 +792,64 @@ namespace SupportSystem.API.Controllers
             }
         }
 
+        // DELETE: api/SupportRequests/5 - удалить запрос поддержки
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<object>> DeleteSupportRequest(int id)
+        {
+            try
+            {
+                var supportRequest = await _context.SupportRequests
+                    .Include(s => s.Reports)
+                    .FirstOrDefaultAsync(s => s.Id == id);
+
+                if (supportRequest == null)
+                {
+                    return NotFound(new
+                    {
+                        success = false,
+                        message = "Запрос поддержки не найден"
+                    });
+                }
+
+                // Проверяем, что удаляет администратор
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                if (userRole != "Admin")
+                {
+                    return StatusCode(403, new
+                    {
+                        success = false,
+                        message = "Только администратор может удалять запросы поддержки"
+                    });
+                }
+
+                // Удаляем связанные отчеты
+                _context.Reports.RemoveRange(supportRequest.Reports);
+
+                // Удаляем запрос
+                _context.SupportRequests.Remove(supportRequest);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Запрос поддержки и связанные отчеты успешно удалены",
+                    deletedRequestId = id,
+                    deletedReportsCount = supportRequest.Reports.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при удалении запроса поддержки {Id}", id);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Ошибка при удалении запроса",
+                    error = ex.Message
+                });
+            }
+        }
+
         // GET: api/SupportRequests/manager/stats - статистика по запросам поддержки
         [HttpGet("manager/stats")]
         [Authorize(Roles = "Admin,Manager")]

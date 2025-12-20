@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -852,6 +853,33 @@
             padding: 20px;
             font-style: italic;
         }
+
+        /* Новые стили для кнопки снятия менеджера */
+        .btn-unassign {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+            .btn-unassign:hover {
+                background: #f57c00;
+                transform: translateY(-2px);
+            }
+
+            .btn-unassign:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+                transform: none;
+            }
     </style>
 </head>
 <body class="orders-management-page">
@@ -1052,6 +1080,9 @@
                             <select id="orderManager" class="form-control" disabled>
                                 <!-- Список менеджеров будет заполнен динамически -->
                             </select>
+                            <button type="button" id="unassignManagerBtn" class="btn-unassign" style="display: none;">
+                                <i class="bi bi-person-dash"></i> Снять менеджера
+                            </button>
                         </div>
                         <div class="contact-info" id="managerInfo">
                             <!-- Информация о менеджере будет заполнена динамически -->
@@ -1098,7 +1129,7 @@
         let isEditMode = false;
         let currentUser = null;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeOrdersManagement();
         });
 
@@ -1248,15 +1279,15 @@
 
             if (currentOrders.length === 0) {
                 tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="10" style="text-align: center; padding: 40px;">
-                            <div style="color: #666; font-size: 16px;">
-                                <i class="bi bi-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 10px; display: block;"></i>
-                                Заказы не найдены
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 40px;">
+                                <div style="color: #666; font-size: 16px;">
+                                    <i class="bi bi-inbox" style="font-size: 48px; color: #ddd; margin-bottom: 10px; display: block;"></i>
+                                    Заказы не найдены
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                 return;
             }
 
@@ -1287,50 +1318,50 @@
                 const cost = order.cost ? `${order.cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
 
                 html += `
-                    <tr>
-                        <td>#${order.id}</td>
-                        <td>
-                            <strong>${order.orderName}</strong>
-                            <div style="font-size: 12px; color: #666; margin-top: 5px;">
-                                ${order.description.substring(0, 50)}${order.description.length > 50 ? '...' : ''}
-                            </div>
-                        </td>
-                        <td>
-                            <strong>${order.clientName}</strong>
-                            <div class="contact-info">
-                                <span>${order.clientEmail}</span>
-                                <span>${order.clientPhone}</span>
-                            </div>
-                        </td>
-                        <td>
-                            ${order.managerName || 'Не назначен'}
-                            ${order.managerEmail ? `
-                                <div class="contact-info">
-                                    <span>${order.managerEmail}</span>
-                                    <span>${order.managerPhone || 'Телефон не указан'}</span>
+                        <tr>
+                            <td>#${order.id}</td>
+                            <td>
+                                <strong>${order.orderName}</strong>
+                                <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                    ${order.description.substring(0, 50)}${order.description.length > 50 ? '...' : ''}
                                 </div>
-                            ` : ''}
-                        </td>
-                        <td><span class="status-badge ${statusClass}">${getStatusText(order.status)}</span></td>
-                        <td><span class="priority-badge ${priorityClass}">${getPriorityText(order.priority)}</span></td>
-                        <td>${cost}</td>
-                        <td>${createDate}</td>
-                        <td>${completeDate}</td>
-                        <td>
-                            <div class="table-actions">
-                                <button onclick="viewOrder(${order.id})" class="btn-view">
-                                    <i class="bi bi-eye"></i> Просмотр
-                                </button>
-                                <button onclick="editOrder(${order.id})" class="btn-edit">
-                                    <i class="bi bi-pencil"></i> Изменить
-                                </button>
-                                <button onclick="deleteOrder(${order.id}, '${order.orderName.replace(/'/g, "\\'")}')" class="btn-delete">
-                                    <i class="bi bi-trash"></i> Удалить
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                            </td>
+                            <td>
+                                <strong>${order.clientName}</strong>
+                                <div class="contact-info">
+                                    <span>${order.clientEmail}</span>
+                                    <span>${order.clientPhone}</span>
+                                </div>
+                            </td>
+                            <td>
+                                ${order.managerName || 'Не назначен'}
+                                ${order.managerEmail ? `
+                                    <div class="contact-info">
+                                        <span>${order.managerEmail}</span>
+                                        <span>${order.managerPhone || 'Телефон не указан'}</span>
+                                    </div>
+                                ` : ''}
+                            </td>
+                            <td><span class="status-badge ${statusClass}">${getStatusText(order.status)}</span></td>
+                            <td><span class="priority-badge ${priorityClass}">${getPriorityText(order.priority)}</span></td>
+                            <td>${cost}</td>
+                            <td>${createDate}</td>
+                            <td>${completeDate}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <button onclick="viewOrder(${order.id})" class="btn-view">
+                                        <i class="bi bi-eye"></i> Просмотр
+                                    </button>
+                                    <button onclick="editOrder(${order.id})" class="btn-edit">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </button>
+                                    <button onclick="deleteOrder(${order.id}, '${order.orderName.replace(/'/g, "\\'")}')" class="btn-delete">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
             });
 
             tableBody.innerHTML = html;
@@ -1378,10 +1409,10 @@
             }
 
             let html = `
-                <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-            `;
+                    <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                `;
 
             // Показываем первую страницу
             html += `<button class="page-btn ${currentPage === 1 ? 'active' : ''}" onclick="changePage(1)">1</button>`;
@@ -1407,10 +1438,10 @@
             }
 
             html += `
-                <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            `;
+                    <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                `;
 
             pagination.innerHTML = html;
         }
@@ -1491,34 +1522,54 @@
 
             // Информация о клиенте
             document.getElementById('clientInfo').innerHTML = `
-                <span><strong>Имя:</strong> ${order.clientName}</span>
-                <span><strong>Email:</strong> ${order.clientEmail || 'Не указан'}</span>
-                <span><strong>Телефон:</strong> ${order.clientPhone || 'Не указан'}</span>
-                <span><strong>ID клиента:</strong> ${order.clientId}</span>
-            `;
+                    <span><strong>Имя:</strong> ${order.clientName}</span>
+                    <span><strong>Email:</strong> ${order.clientEmail || 'Не указан'}</span>
+                    <span><strong>Телефон:</strong> ${order.clientPhone || 'Не указан'}</span>
+                    <span><strong>ID клиента:</strong> ${order.clientId}</span>
+                `;
 
-            // Заполняем список менеджеров
+            // Заполняем список менеджеров (без опции "Не назначен")
             const managerSelect = document.getElementById('orderManager');
-            managerSelect.innerHTML = '<option value="">Не назначен</option>';
+            managerSelect.innerHTML = '';
 
-            managers.forEach(manager => {
+            // Добавляем текущего менеджера если он есть
+            if (order.assignedToId && order.managerName) {
                 const option = document.createElement('option');
-                option.value = manager.id;
-                option.textContent = `${manager.name} (${manager.role === 'Admin' ? 'Администратор' : 'Менеджер'})`;
-                if (order.assignedToId === manager.id) {
-                    option.selected = true;
-                }
+                option.value = order.assignedToId;
+                option.textContent = `${order.managerName} (${order.managerRole === 'Admin' ? 'Администратор' : 'Менеджер'})`;
+                option.selected = true;
                 managerSelect.appendChild(option);
+            }
+
+            // Добавляем остальных менеджеров
+            managers.forEach(manager => {
+                if (!order.assignedToId || manager.id !== order.assignedToId) {
+                    const option = document.createElement('option');
+                    option.value = manager.id;
+                    option.textContent = `${manager.name} (${manager.role === 'Admin' ? 'Администратор' : 'Менеджер'})`;
+                    managerSelect.appendChild(option);
+                }
             });
+
+            // Показываем/скрываем кнопку снятия менеджера
+            const unassignBtn = document.getElementById('unassignManagerBtn');
+            if (order.assignedToId) {
+                unassignBtn.style.display = 'block';
+                unassignBtn.onclick = function () {
+                    unassignManagerFromOrder(order.id);
+                };
+            } else {
+                unassignBtn.style.display = 'none';
+            }
 
             // Информация о менеджере
             if (order.assignedToId && order.managerName) {
                 document.getElementById('managerInfo').innerHTML = `
-                    <span><strong>Имя:</strong> ${order.managerName}</span>
-                    <span><strong>Email:</strong> ${order.managerEmail || 'Не указан'}</span>
-                    <span><strong>Телефон:</strong> ${order.managerPhone || 'Не указан'}</span>
-                    <span><strong>Роль:</strong> ${order.managerRole === 'Admin' ? 'Администратор' : 'Менеджер'}</span>
-                `;
+                        <span><strong>Имя:</strong> ${order.managerName}</span>
+                        <span><strong>Email:</strong> ${order.managerEmail || 'Не указан'}</span>
+                        <span><strong>Телефон:</strong> ${order.managerPhone || 'Не указан'}</span>
+                        <span><strong>Роль:</strong> ${order.managerRole === 'Admin' ? 'Администратор' : 'Менеджер'}</span>
+                    `;
                 document.getElementById('managerInfo').style.display = 'block';
             } else {
                 document.getElementById('managerInfo').innerHTML = '<span>Менеджер не назначен</span>';
@@ -1550,6 +1601,38 @@
             document.getElementById('orderModal').classList.add('active');
         }
 
+        async function unassignManagerFromOrder(orderId) {
+            if (!confirm('Вы уверены, что хотите снять менеджера с этого заказа? Заказ вернется в статус "Новый".')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+
+                // Используем новый метод для администратора
+                const response = await fetch(`${API_URL}/api/Orders/admin/unassign/${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showNotification('Менеджер успешно снят с заказа', 'success');
+                    await loadOrders();
+                    closeOrderModal();
+                } else {
+                    showNotification(result.message || 'Ошибка при снятии менеджера', 'error');
+                }
+            } catch (error) {
+                console.error('Error unassigning manager:', error);
+                showNotification('Ошибка соединения с сервером', 'error');
+            }
+        }
+
         function enableEditMode() {
             isEditMode = true;
 
@@ -1560,6 +1643,11 @@
             document.getElementById('orderStatus').disabled = false;
             document.getElementById('orderPriority').disabled = false;
             document.getElementById('orderManager').disabled = false;
+
+            // Показываем кнопку снятия менеджера если он назначен
+            if (document.getElementById('orderManager').value) {
+                document.getElementById('unassignManagerBtn').style.display = 'block';
+            }
 
             // Меняем заголовок
             document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil"></i> Редактировать заказ';
@@ -1579,6 +1667,9 @@
             document.getElementById('orderStatus').disabled = true;
             document.getElementById('orderPriority').disabled = true;
             document.getElementById('orderManager').disabled = true;
+
+            // Скрываем кнопку снятия менеджера
+            document.getElementById('unassignManagerBtn').style.display = 'none';
 
             // Меняем заголовок
             document.getElementById('modalTitle').innerHTML = '<i class="bi bi-eye"></i> Просмотр заказа';
@@ -1605,6 +1696,7 @@
 
             // Скрываем информацию о менеджере
             document.getElementById('managerInfo').style.display = 'none';
+            document.getElementById('unassignManagerBtn').style.display = 'none';
 
             // Возвращаем кнопки в исходное состояние
             document.getElementById('editOrderBtn').style.display = 'inline-block';
@@ -1613,7 +1705,7 @@
 
         function setupEventListeners() {
             // Форма заказа
-            document.getElementById('orderForm').addEventListener('submit', function(e) {
+            document.getElementById('orderForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 saveOrder();
             });
@@ -1750,7 +1842,7 @@
                     input.classList.add('error');
 
                     // Убираем подсветку при исправлении ошибки
-                    input.addEventListener('input', function() {
+                    input.addEventListener('input', function () {
                         this.classList.remove('error');
                         element.classList.remove('show');
                     }, { once: true });
@@ -1785,6 +1877,7 @@
         window.filterByStatus = filterByStatus;
         window.filterByAssignment = filterByAssignment;
         window.changePage = changePage;
+        window.unassignManagerFromOrder = unassignManagerFromOrder;
     </script>
 </body>
 </html>

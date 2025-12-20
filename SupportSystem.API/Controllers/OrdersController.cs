@@ -872,6 +872,62 @@ namespace SupportSystem.API.Controllers
                 });
             }
         }
+        // PUT: api/Orders/admin/unassign/5 - снять менеджера с заказа (для администратора)
+        [HttpPut("admin/unassign/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UnassignManager(int id)
+        {
+            try
+            {
+                var order = await _context.Orders.FindAsync(id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Заказ не найден" });
+                }
+
+                // Сохраняем информацию о старом менеджере для логов
+                var oldManagerId = order.AssignedToId;
+                var oldManager = oldManagerId.HasValue ?
+                    await _context.Users.FindAsync(oldManagerId.Value) : null;
+
+                // Админ может снять любого менеджера
+                order.AssignedToId = null;
+
+                // Возвращаем статус в "Новый" только если заказ был в обработке
+                if (order.Status == OrderStatus.Processing)
+                {
+                    order.Status = OrderStatus.New;
+                }
+
+                order.CompleteDate = null; // Сбрасываем дату завершения
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Менеджер успешно снят с заказа",
+                    orderId = order.Id,
+                    assignedToId = order.AssignedToId,
+                    status = order.Status.ToString(),
+                    oldManager = oldManager != null ? new
+                    {
+                        id = oldManager.Id,
+                        name = oldManager.Name,
+                        email = oldManager.Email
+                    } : null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при снятии менеджера с заказа {OrderId} администратором", id);
+                return StatusCode(500, new
+                {
+                    message = "Ошибка при снятии менеджера",
+                    error = ex.Message
+                });
+            }
+        }
 
         #endregion
 
