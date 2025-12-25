@@ -20,5 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SupportSystem.API\SupportSystem.API.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestDTOs\" />
+  </ItemGroup>
 
 </Project>

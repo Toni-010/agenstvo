@@ -1,4 +1,4 @@
-﻿// SupportSystem.API.Tests/ControllersTests/OrdersControllerFinalTests.cs
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +13,7 @@ using SupportSystem.API.Data.Models;
 using SupportSystem.API.DTOs;
 using System.Reflection;
 using System.Security.Claims;
+using System.Dynamic;
 
 namespace SupportSystem.API.Tests.ControllersTests
 {
@@ -64,15 +65,17 @@ namespace SupportSystem.API.Tests.ControllersTests
             return user;
         }
 
-        private async Task<Order> CreateTestOrder(int clientId, string orderName = "Test Order")
+        private async Task<Order> CreateTestOrder(int clientId, string orderName = "Test Order",
+            OrderStatus status = OrderStatus.New, Priority priority = Priority.Medium, int? assignedToId = null)
         {
             var order = new Order
             {
                 OrderName = orderName,
                 Description = $"Description for {orderName}",
                 ClientId = clientId,
-                Status = OrderStatus.New,
-                Priority = Priority.Medium,
+                Status = status,
+                Priority = priority,
+                AssignedToId = assignedToId,
                 CreateDate = DateTime.Now
             };
 
@@ -100,17 +103,17 @@ namespace SupportSystem.API.Tests.ControllersTests
             };
         }
 
-        // ====== ТЕСТЫ С УЧЕТОМ РЕАЛЬНОЙ СИТУАЦИИ ======
+        
 
         [Test]
         public void GetOrders_MethodIsProtectedByAuthorizeAttribute()
         {
-            // Arrange & Act
+            
             var method = typeof(OrdersController).GetMethod("GetOrders");
             var authorizeAttribute = method?.GetCustomAttributes(typeof(AuthorizeAttribute), true)
                 .FirstOrDefault() as AuthorizeAttribute;
 
-            // Assert
+            
             Assert.That(authorizeAttribute, Is.Not.Null,
                 "Метод GetOrders должен быть защищен атрибутом [Authorize]");
 
@@ -126,7 +129,7 @@ namespace SupportSystem.API.Tests.ControllersTests
         [TestCase("Admin", true, TestName = "GetOrders_AdminRole_ShouldHaveAccess")]
         public async Task GetOrders_RoleBasedAccess_TestBehavior(string role, bool shouldHaveAccess)
         {
-            // Arrange
+           
             var userRole = role switch
             {
                 "Admin" => UserRole.Admin,
@@ -137,7 +140,7 @@ namespace SupportSystem.API.Tests.ControllersTests
             var user = await CreateTestUser(userRole, $"Test {role}");
             SetupUserContext(user.Id, role);
 
-            // Создаем тестовые данные
+            
             if (shouldHaveAccess)
             {
                 var client1 = await CreateTestUser(UserRole.User, "Client 1");
@@ -146,32 +149,29 @@ namespace SupportSystem.API.Tests.ControllersTests
                 await CreateTestOrder(client2.Id, "Order 2");
             }
 
-            // Act
+            
             var result = await _controller.GetOrders();
 
-            // Assert - проверяем фактическое поведение
+            
             Console.WriteLine($"Роль: {role}, Ожидается доступ: {shouldHaveAccess}");
             Console.WriteLine($"Фактический результат: {result.Result?.GetType().Name}");
 
-            // ВАЖНО: Так как атрибут не работает в тестах, мы проверяем логику,
-            // а не механизм авторизации
+            
 
             if (shouldHaveAccess)
             {
-                // Для Admin/Manager ожидаем успешный результат
-                // (хотя в тестах User тоже получит доступ из-за ограничений тестового окружения)
+                
                 Console.WriteLine($"Для роли '{role}' ожидается OkObjectResult");
 
-                // Мы знаем, что в тестах атрибут не работает, поэтому этот тест
-                // проверяет, что метод ВООБЩЕ работает для авторизованных пользователей
+                
             }
             else
             {
-                // Для User в идеале должен быть ForbidResult, но в тестах его не будет
+                
                 Console.WriteLine($"Для роли '{role}' ожидается ForbidResult (но в тестах не сработает)");
             }
 
-            // Тест всегда проходит, так как мы проверяем логику, а не реализацию
+            
             Assert.Pass($"Тестирование логики доступа для роли '{role}' завершено. " +
                        $"В продакшене доступ {(shouldHaveAccess ? "разрешен" : "запрещен")}.");
         }
@@ -179,7 +179,7 @@ namespace SupportSystem.API.Tests.ControllersTests
         [Test]
         public async Task GetOrders_ReturnsCorrectData_WhenAccessGranted()
         {
-            // Arrange - Админ должен иметь доступ
+            
             var admin = await CreateTestUser(UserRole.Admin, "Admin");
             SetupUserContext(admin.Id, "Admin");
 
@@ -189,10 +189,10 @@ namespace SupportSystem.API.Tests.ControllersTests
             await CreateTestOrder(client1.Id, "Laptop Repair");
             await CreateTestOrder(client2.Id, "Software Installation");
 
-            // Act
+            
             var result = await _controller.GetOrders();
 
-            // Assert
+            
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
 
             var okResult = result.Result as OkObjectResult;
@@ -212,63 +212,71 @@ namespace SupportSystem.API.Tests.ControllersTests
         [Test]
         public async Task GetOrder_ExistingOrder_ReturnsOrder()
         {
-            // Arrange
+            
             var user = await CreateTestUser(UserRole.User, "Client");
             var order = await CreateTestOrder(user.Id, "My Order");
             SetupUserContext(user.Id, "User");
 
-            // Act
+            
             var result = await _controller.GetOrder(order.Id);
 
-            // Assert
+            
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+
+            Console.WriteLine("✓ GetOrder возвращает существующий заказ");
         }
 
         [Test]
         public async Task GetOrder_OtherUsersOrder_ReturnsForbidden()
         {
-            // Arrange
+            
             var user1 = await CreateTestUser(UserRole.User, "Client 1");
             var user2 = await CreateTestUser(UserRole.User, "Client 2");
             var order = await CreateTestOrder(user2.Id, "Other's Order");
-            SetupUserContext(user1.Id, "User"); // user1 пытается получить заказ user2
+            SetupUserContext(user1.Id, "User"); 
 
-            // Act
+            
             var result = await _controller.GetOrder(order.Id);
 
-            // Assert - должен быть ForbidResult или NotFound
-            Assert.That(result.Result, Is.InstanceOf<ForbidResult>().Or.InstanceOf<NotFoundResult>());
+            
+            Assert.That(result.Result, Is.InstanceOf<ForbidResult>().Or.InstanceOf<NotFoundResult>(),
+                "Пользователь не должен иметь доступ к чужому заказу");
+
+            Console.WriteLine("✓ GetOrder блокирует доступ к чужому заказу");
         }
 
         [Test]
         public async Task GetOrder_NonExistingId_ReturnsNotFound()
         {
-            // Arrange
+            
             var user = await CreateTestUser(UserRole.User, "Client");
             SetupUserContext(user.Id, "User");
 
-            // Act
-            var result = await _controller.GetOrder(99999); // Несуществующий ID
+            
+            var result = await _controller.GetOrder(99999); 
 
-            // Assert
-            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
+            
+            Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>(),
+                "Несуществующий заказ должен возвращать NotFound");
+
+            Console.WriteLine("✓ GetOrder возвращает NotFound для несуществующего ID");
         }
 
         [Test]
         public async Task CreateOrder_CheckIfMethodWorks()
         {
-            // Arrange
+            
             var user = await CreateTestUser(UserRole.User, "Client");
             SetupUserContext(user.Id, "User");
 
-            // Просто проверяем, что метод существует и не падает
+            
             var method = typeof(OrdersController).GetMethod("CreateOrder");
             Assert.That(method, Is.Not.Null, "Метод CreateOrder должен существовать");
 
-            // Проверяем, что контроллер инициализирован
+            
             Assert.That(_controller, Is.Not.Null, "Контроллер должен быть инициализирован");
 
-            // Проверяем наличие атрибута Authorize
+            
             var authorizeAttribute = method.GetCustomAttributes(typeof(AuthorizeAttribute), true)
                 .FirstOrDefault() as AuthorizeAttribute;
             Assert.That(authorizeAttribute, Is.Not.Null,
@@ -279,11 +287,10 @@ namespace SupportSystem.API.Tests.ControllersTests
             Console.WriteLine($"  - Защищен: [Authorize]");
             Console.WriteLine($"  - Принимает: {method.GetParameters()[0].ParameterType.Name}");
 
-            // Можно проверить бизнес-логику другим способом
-            // Например, что заказы вообще можно создавать в системе
+            
             var ordersBefore = await _context.Orders.CountAsync();
 
-            // Создаем заказ напрямую через контекст (минуя контроллер)
+            
             var order = new Order
             {
                 OrderName = "Direct Test Order",
@@ -311,11 +318,11 @@ namespace SupportSystem.API.Tests.ControllersTests
         {
             Console.WriteLine("=== Проверка метода UpdateOrderAsManager ===");
 
-            // Ищем метод
+            
             var method = typeof(OrdersController).GetMethod("UpdateOrderAsManager",
                 new[] { typeof(int), typeof(UpdateOrderDto) });
 
-            // Вариант: может быть с параметром [FromBody]
+            
             if (method == null)
             {
                 method = typeof(OrdersController).GetMethods()
@@ -325,7 +332,7 @@ namespace SupportSystem.API.Tests.ControllersTests
 
             Assert.That(method, Is.Not.Null, "Метод UpdateOrderAsManager должен существовать");
 
-            // Проверяем атрибуты
+            
             Console.WriteLine("Атрибуты метода:");
             var attributes = method.GetCustomAttributes(true);
             foreach (var attr in attributes)
@@ -336,7 +343,7 @@ namespace SupportSystem.API.Tests.ControllersTests
                     Console.WriteLine($"    Template: {httpPut.Template}");
             }
 
-            // Проверяем защиту
+            
             var authorizeAttribute = method.GetCustomAttributes(typeof(AuthorizeAttribute), true)
                 .FirstOrDefault() as AuthorizeAttribute;
 
@@ -350,7 +357,7 @@ namespace SupportSystem.API.Tests.ControllersTests
                 Console.WriteLine($"✓ Защищен: [Authorize(Roles = \"{authorizeAttribute.Roles}\")]");
             }
 
-            // Проверяем параметры
+            
             var parameters = method.GetParameters();
             Console.WriteLine($"\nПараметры ({parameters.Length}):");
             Assert.That(parameters.Length, Is.EqualTo(2), "Должно быть 2 параметра");
@@ -361,12 +368,167 @@ namespace SupportSystem.API.Tests.ControllersTests
             Assert.Pass("Проверка сигнатуры завершена");
         }
 
+        [Test]
+        public async Task UpdateOrderAsManager_ManagerUpdatesAssignedOrder_Success()
+        {
+            
+            var manager = await CreateTestUser(UserRole.Manager, "Manager");
+            var client = await CreateTestUser(UserRole.User, "Client");
 
+            
+            var order = await CreateTestOrder(
+                clientId: client.Id,
+                orderName: "Order to Update",
+                assignedToId: manager.Id); 
+
+            SetupUserContext(manager.Id, "Manager");
+
+            
+            var updateDto = new UpdateOrderDto
+            {
+                OrderName = "Updated Order Name",
+                Description = "Updated description",
+                Status = "Processing",
+                Priority = "High",
+                Cost = 2000.00m,
+                AssignedToId = manager.Id
+            };
+
+            
+            var result = await _controller.UpdateOrderAsManager(order.Id, updateDto);
+
+            
+            Assert.That(result, Is.InstanceOf<OkObjectResult>(),
+                "Менеджер должен иметь возможность обновить назначенный ему заказ");
+
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+
+            
+            var updatedOrder = await _context.Orders.FindAsync(order.Id);
+            Assert.That(updatedOrder, Is.Not.Null);
+
+            Console.WriteLine("✓ Менеджер может обновить назначенный ему заказ");
+        }
+
+        
+
+        [Test]
+        public async Task UpdateOrderAsManager_AdminUpdatesAnyOrder_Success()
+        {
+            
+            var admin = await CreateTestUser(UserRole.Admin, "Admin");
+            var client = await CreateTestUser(UserRole.User, "Client");
+            var manager = await CreateTestUser(UserRole.Manager, "Manager");
+
+            
+            var order = await CreateTestOrder(
+                clientId: client.Id,
+                orderName: "Order for Admin Update",
+                assignedToId: manager.Id);
+
+            SetupUserContext(admin.Id, "Admin");
+
+            var updateDto = new UpdateOrderDto
+            {
+                Status = "Completed",
+                Priority = "Low"
+            };
+
+            
+            var result = await _controller.UpdateOrderAsManager(order.Id, updateDto);
+
+            
+            Assert.That(result, Is.InstanceOf<OkObjectResult>(),
+                "Админ должен иметь возможность обновить любой заказ");
+
+            Console.WriteLine("✓ Админ может обновить любой заказ");
+        }
+
+       
+
+        [Test]
+        public async Task UpdateOrderAsManager_UpdateStatusToCompleted_SetsCompleteDate()
+        {
+            
+            var manager = await CreateTestUser(UserRole.Manager, "Manager");
+            var client = await CreateTestUser(UserRole.User, "Client");
+
+            var order = await CreateTestOrder(
+                clientId: client.Id,
+                orderName: "Order to Complete",
+                assignedToId: manager.Id,
+                status: OrderStatus.Processing); 
+
+            SetupUserContext(manager.Id, "Manager");
+
+            var updateDto = new UpdateOrderDto
+            {
+                Status = "Completed" 
+            };
+
+            
+            var result = await _controller.UpdateOrderAsManager(order.Id, updateDto);
+
+            
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            
+            var updatedOrder = await _context.Orders.FindAsync(order.Id);
+            Assert.That(updatedOrder, Is.Not.Null);
+            Assert.That(updatedOrder.Status, Is.EqualTo(OrderStatus.Completed),
+                "Статус должен измениться на Completed");
+
+            Assert.That(updatedOrder.CompleteDate, Is.Not.Null,
+                "При статусе Completed должен устанавливаться CompleteDate");
+
+            Console.WriteLine("✓ При обновлении статуса на Completed устанавливается CompleteDate");
+        }
+
+       
+        [Test]
+        public async Task UpdateOrderAsManager_UpdateOrderNameAndDescription_Works()
+        {
+            
+            var manager = await CreateTestUser(UserRole.Manager, "Manager");
+            var client = await CreateTestUser(UserRole.User, "Client");
+
+            var order = await CreateTestOrder(
+                clientId: client.Id,
+                orderName: "Original Name",
+                assignedToId: manager.Id);
+
+            SetupUserContext(manager.Id, "Manager");
+
+            var updateDto = new UpdateOrderDto
+            {
+                OrderName = "Updated Name",
+                Description = "Updated Description",
+                Cost = 999.99m,
+                Priority = "High"
+            };
+
+            
+            var result = await _controller.UpdateOrderAsManager(order.Id, updateDto);
+
+            
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+            
+            var updatedOrder = await _context.Orders.FindAsync(order.Id);
+            Assert.That(updatedOrder, Is.Not.Null);
+            Assert.That(updatedOrder.OrderName, Is.EqualTo("Updated Name"));
+            Assert.That(updatedOrder.Description, Is.EqualTo("Updated Description"));
+            Assert.That(updatedOrder.Cost, Is.EqualTo(999.99m));
+            Assert.That(updatedOrder.Priority, Is.EqualTo(Priority.High));
+
+            Console.WriteLine("✓ Обновление названия, описания и стоимости работает корректно");
+        }
 
         [Test]
         public async Task GetMyOrders_UserSeesOnlyHisOrders()
         {
-            // Arrange
+            
             var user1 = await CreateTestUser(UserRole.User, "Client 1");
             var user2 = await CreateTestUser(UserRole.User, "Client 2");
 
@@ -374,12 +536,12 @@ namespace SupportSystem.API.Tests.ControllersTests
 
             await CreateTestOrder(user1.Id, "My Order 1");
             await CreateTestOrder(user1.Id, "My Order 2");
-            await CreateTestOrder(user2.Id, "Other User Order"); // Не должен видеть
+            await CreateTestOrder(user2.Id, "Other User Order"); 
 
-            // Act
+            
             var result = await _controller.GetMyOrders();
 
-            // Assert
+            
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
 
             var okResult = result.Result as OkObjectResult;
@@ -391,6 +553,30 @@ namespace SupportSystem.API.Tests.ControllersTests
             Assert.That(count, Is.EqualTo(2), $"Пользователь должен видеть только 2 своих заказа, но видит {count}");
 
             Console.WriteLine("✓ GetMyOrders корректно фильтрует заказы по пользователю");
+        }
+
+        [Test]
+        public async Task GetMyOrders_EmptyResult_WhenNoOrders()
+        {
+            
+            var user = await CreateTestUser(UserRole.User, "Client");
+            SetupUserContext(user.Id, "User");
+
+            
+            var result = await _controller.GetMyOrders();
+
+            
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result.Result as OkObjectResult;
+            var orders = okResult.Value as System.Collections.IEnumerable;
+
+            int count = 0;
+            foreach (var item in orders) count++;
+
+            Assert.That(count, Is.EqualTo(0), "Должен быть пустой список при отсутствии заказов");
+
+            Console.WriteLine("✓ GetMyOrders возвращает пустой список при отсутствии заказов");
         }
     }
 }

@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SupportSystem.API.Data; // Для ApplicationDbContext
-using SupportSystem.API.Data.Models; // Для User, Order, SupportRequest и т.д.
-using SupportSystem.API.Data.Enums; // Для UserRole, OrderStatus и т.д.
+using SupportSystem.API.Data; 
+using SupportSystem.API.Data.Models; 
+using SupportSystem.API.Data.Enums; 
 
 namespace SupportSystem.API.Tests
 {
@@ -47,7 +47,7 @@ namespace SupportSystem.API.Tests
 
         protected async Task<User> CreateTestUser(
             int id = 1,
-            UserRole role = UserRole.User, // Используем enum напрямую
+            UserRole role = UserRole.User, 
             string name = "Test User",
             string email = "test@test.com",
             string phone = null)
@@ -59,7 +59,7 @@ namespace SupportSystem.API.Tests
                 Email = email,
                 Phone = phone,
                 Password = "password123",
-                Role = role, // Используем enum
+                Role = role, 
                 RegDate = DateTime.Now
             };
 
@@ -71,8 +71,8 @@ namespace SupportSystem.API.Tests
         protected async Task<Order> CreateTestOrder(
             int clientId = 1,
             string orderName = "Test Order",
-            OrderStatus status = OrderStatus.New, // Используем enum
-            Priority priority = Priority.Medium, // Используем enum
+            OrderStatus status = OrderStatus.New, 
+            Priority priority = Priority.Medium, 
             decimal? cost = null,
             int? assignedToId = null)
         {
@@ -98,7 +98,7 @@ namespace SupportSystem.API.Tests
             int clientId = 1,
             string topic = "Test Support Topic",
             string message = "Test support message",
-            RequestStatus status = RequestStatus.New, // Используем enum
+            RequestStatus status = RequestStatus.New, 
             int? relatedOrderId = null,
             int? assignedToId = null)
         {
@@ -122,7 +122,7 @@ namespace SupportSystem.API.Tests
             int clientId = 1,
             string serviceType = "Repair",
             string description = "Test service description",
-            RequestStatus status = RequestStatus.New, // Используем enum
+            RequestStatus status = RequestStatus.New, 
             decimal? cost = null,
             int? orderId = null,
             int? assignedToId = null)
@@ -179,15 +179,15 @@ namespace SupportSystem.API.Tests
             Context.ChangeTracker.Clear();
         }
 
-        // Методы для создания тестовых данных из строк (если нужно)
+        
         protected async Task<User> CreateTestUserFromString(
             int id = 1,
-            string role = "User", // строка
+            string role = "User", 
             string name = "Test User",
             string email = "test@test.com",
             string phone = null)
         {
-            // Преобразуем строку в enum
+            
             var userRole = Enum.Parse<UserRole>(role);
             return await CreateTestUser(id, userRole, name, email, phone);
         }
@@ -195,12 +195,12 @@ namespace SupportSystem.API.Tests
         protected async Task<Order> CreateTestOrderFromString(
             int clientId = 1,
             string orderName = "Test Order",
-            string status = "New", // строка
-            string priority = "Medium", // строка
+            string status = "New", 
+            string priority = "Medium", 
             decimal? cost = null,
             int? assignedToId = null)
         {
-            // Преобразуем строки в enum
+            
             var orderStatus = Enum.Parse<OrderStatus>(status);
             var orderPriority = Enum.Parse<Priority>(priority);
             return await CreateTestOrder(clientId, orderName, orderStatus, orderPriority, cost, assignedToId);
