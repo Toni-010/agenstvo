@@ -132,6 +132,7 @@ namespace SupportSystem.API.Controllers
 
         // POST: api/Orders/create
         [HttpPost("create")]
+        [Authorize]
         public async Task<ActionResult<object>> CreateOrder([FromBody] CreateOrderDto orderDto)
         {
             try

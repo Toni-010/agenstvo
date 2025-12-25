@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\data\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api.tests\\controllerstestss\\orderscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|solutionrelative:supportsystem.api.tests\\controllerstestss\\orderscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api.tests\\testdtos\\updateorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|solutionrelative:supportsystem.api.tests\\testdtos\\updateorderdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\wwwroot\\support-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\wwwroot\\support-management.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api.tests\\testbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|solutionrelative:supportsystem.api.tests\\testbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api.tests\\supportsystem.api.tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|solutionrelative:supportsystem.api.tests\\supportsystem.api.tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.web\\supportsystem.web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{21FAD797-15AF-446E-A7F5-43A0587E3F1E}|SupportSystem.Web\\SupportSystem.Web.csproj|solutionrelative:supportsystem.web\\supportsystem.web.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{140A35D6-7C28-4599-83D2-2B6FA68E7E83}|SupportSystem.API\\SupportSystem.API.csproj|solutionrelative:supportsystem.api\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|c:\\users\\\u0430\u043D\u0442\u043E\u043D\\source\\repos\\supportsystemsolution\\supportsystem.api.tests\\testhelpers\\authorizationtesthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{09B925CD-D29E-4559-BFF5-75DE0A8DE10B}|SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj|solutionrelative:supportsystem.api.tests\\testhelpers\\authorizationtesthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,8 +34,73 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UpdateOrderDto.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestDTOs\\UpdateOrderDto.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API.Tests\\TestDTOs\\UpdateOrderDto.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestDTOs\\UpdateOrderDto.cs",
+              "RelativeToolTip": "SupportSystem.API.Tests\\TestDTOs\\UpdateOrderDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T01:42:19.656Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuthorizationTestHelper.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestHelpers\\AuthorizationTestHelper.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API.Tests\\TestHelpers\\AuthorizationTestHelper.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestHelpers\\AuthorizationTestHelper.cs",
+              "RelativeToolTip": "SupportSystem.API.Tests\\TestHelpers\\AuthorizationTestHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T01:12:57.754Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API\\Controllers\\OrdersController.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "SupportSystem.API\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAgwIYAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T01:05:47.183Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OrdersControllerTests.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\ControllersTestss\\OrdersControllerTests.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API.Tests\\ControllersTestss\\OrdersControllerTests.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\ControllersTestss\\OrdersControllerTests.cs",
+              "RelativeToolTip": "SupportSystem.API.Tests\\ControllersTestss\\OrdersControllerTests.cs",
+              "ViewState": "AgIAAP4AAAAAAAAAAAAYwF8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-25T00:56:38.502Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SupportSystem.API.Tests",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj",
+              "RelativeDocumentMoniker": "SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj",
+              "RelativeToolTip": "SupportSystem.API.Tests\\SupportSystem.API.Tests.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-25T00:25:08.116Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
@@ -42,67 +111,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Data\\Models\\User.cs",
-              "RelativeDocumentMoniker": "SupportSystem.API\\Data\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Data\\Models\\User.cs",
-              "RelativeToolTip": "SupportSystem.API\\Data\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T20:49:40.693Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Program.cs",
-              "RelativeDocumentMoniker": "SupportSystem.API\\Program.cs",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API\\Program.cs",
-              "RelativeToolTip": "SupportSystem.API\\Program.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T20:26:08.282Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "support-management.html",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\wwwroot\\support-management.html",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\wwwroot\\support-management.html",
-              "RelativeToolTip": "SupportSystem.Web\\wwwroot\\support-management.html",
-              "ViewState": "AgIAABcJAAAAAAAAAAAiwGMJAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2025-12-24T20:01:27.892Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\Program.cs",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\Program.cs",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\Program.cs",
-              "RelativeToolTip": "SupportSystem.Web\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "TestBase.cs",
+              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestBase.cs",
+              "RelativeDocumentMoniker": "SupportSystem.API.Tests\\TestBase.cs",
+              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.API.Tests\\TestBase.cs",
+              "RelativeToolTip": "SupportSystem.API.Tests\\TestBase.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAA9wLMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T19:40:23.718Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SupportSystem.Web",
-              "DocumentMoniker": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\SupportSystem.Web.csproj",
-              "RelativeDocumentMoniker": "SupportSystem.Web\\SupportSystem.Web.csproj",
-              "ToolTip": "C:\\Users\\\u0410\u043D\u0442\u043E\u043D\\source\\repos\\SupportSystemSolution\\SupportSystem.Web\\SupportSystem.Web.csproj",
-              "RelativeToolTip": "SupportSystem.Web\\SupportSystem.Web.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-24T19:40:00.441Z",
+              "WhenOpened": "2025-12-25T00:25:35.727Z",
               "EditorCaption": ""
             }
           ]
