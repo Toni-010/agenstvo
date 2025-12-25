@@ -271,10 +271,10 @@
             const isAuthenticated = await checkAuth();
             if (isAuthenticated) {
                 await loadManagerProfile();
-                await loadOrders(); // Загружаем заказы
-                await loadSupportRequests(); // Загружаем запросы поддержки
-                await loadManagerStats(); // Теперь статистика посчитается правильно
-                await loadRecentActivity(); // Активность тоже обновится
+                await loadOrders(); 
+                await loadSupportRequests(); 
+                await loadManagerStats(); 
+                await loadRecentActivity(); 
                 showWelcomeMessage();
             }
         }
@@ -672,7 +672,7 @@
 
             welcomeMessage.style.display = 'flex';
 
-            // Автоматически скрыть через 10 секунд
+            
             setTimeout(() => {
                 welcomeMessage.style.display = 'none';
             }, 10000);

@@ -89,7 +89,7 @@ namespace SupportSystem.API.Controllers
                     Content = reportDto.Content.Trim(),
                     CreateDate = DateTime.Now,
                     CreatedById = userId,
-                    // Используем OrderId из DTO или из связанного запроса поддержки
+                    
                     OrderId = reportDto.OrderId ?? orderIdFromSupportRequest,
                     ServiceRequestId = reportDto.ServiceRequestId,
                     SupportRequestId = reportDto.SupportRequestId

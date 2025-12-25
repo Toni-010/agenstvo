@@ -1083,7 +1083,7 @@
                             <option value="Completed">Завершенные</option>
                             <option value="Cancelled">Отмененные</option>
                         </select>
-                        <!-- Убрал фильтр по приоритету -->
+                        
                         <button onclick="loadRequests()" class="btn-refresh">
                             <i class="bi bi-arrow-clockwise"></i> Обновить
                         </button>
@@ -1091,7 +1091,7 @@
                 </div>
             </div>
 
-            <!-- Доска обращений (Kanban) -->
+            
             <div class="requests-kanban">
                 <div class="kanban-column" id="newRequestsColumn">
                     <div class="column-header">
@@ -1099,7 +1099,7 @@
                         <span class="column-count" id="newCount">0</span>
                     </div>
                     <div class="column-content" id="newRequestsList">
-                        <!-- Новые обращения будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1109,7 +1109,7 @@
                         <span class="column-count" id="processingCount">0</span>
                     </div>
                     <div class="column-content" id="processingRequestsList">
-                        <!-- Обращения в обработке будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1119,7 +1119,7 @@
                         <span class="column-count" id="completedCount">0</span>
                     </div>
                     <div class="column-content" id="completedRequestsList">
-                        <!-- Завершенные обращения будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1129,7 +1129,7 @@
                         <span class="column-count" id="cancelledCount">0</span>
                     </div>
                     <div class="column-content" id="cancelledRequestsList">
-                        <!-- Отмененные обращения будут здесь -->
+                       
                     </div>
                 </div>
             </div>
@@ -1150,7 +1150,7 @@
                         <div class="stat-label">Без ответа:</div>
                         <div class="stat-value" id="withoutResponse">0</div>
                     </div>
-                    <!-- Убрал "Среднее время ответа" -->
+                    
                 </div>
             </div>
         </div>
@@ -1169,7 +1169,7 @@
             </div>
             <div class="modal-body">
                 <div id="requestDetails">
-                    <!-- Детали обращения будут здесь -->
+                    
                 </div>
             </div>
         </div>
@@ -1325,7 +1325,7 @@
             card.setAttribute('data-id', request.id);
 
             const createDate = new Date(request.createDate);
-            const formattedDate = createDate.toLocaleDateString('ru-RU'); // Только дата
+            const formattedDate = createDate.toLocaleDateString('ru-RU'); 
             const isAssignedToMe = request.assignedToId === currentUser.id;
             const hasRelatedOrder = request.relatedOrderId > 0;
 
@@ -1518,20 +1518,20 @@
         function renderRequestDetails(request) {
             const isAssignedToMe = request.AssignedToId === currentUser.id;
             const canEdit = isAssignedToMe || currentUser.role === 'Admin';
-            // Любой менеджер может отвечать на обращения
+            
             const showResponseTab = (currentUser.role === 'Manager' || currentUser.role === 'Admin') &&
                 request.Status !== 'Completed' &&
                 request.Status !== 'Cancelled';
 
             document.getElementById('modalTitle').textContent = `Обращение #${request.Id}: ${escapeHtml(request.Topic)}`;
 
-            // Форматируем даты (ТОЛЬКО ДАТА, БЕЗ ВРЕМЕНИ)
+            
             const createDate = new Date(request.CreateDate);
             const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-                // Убрали hour и minute
+                
             });
 
             const completeDate = request.CompleteDate ?
@@ -1539,10 +1539,10 @@
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
-                    // Убрали hour и minute
+                    
                 }) : null;
 
-            // Определяем стили статуса
+            
             let statusClass = '';
             let statusIcon = '';
             let statusText = '';
@@ -1573,7 +1573,7 @@
                     statusText = request.Status;
             }
 
-            // Генерируем HTML
+           
             const html = `
                         <!-- Вкладки -->
                         <div class="tabs">
@@ -1795,7 +1795,7 @@
                                 year: 'numeric',
                                 month: 'short',
                                 day: 'numeric'
-                                // Только дата, без времени
+                                
                             }) : 'Дата не указана'}
                                                         </span>
                                                     </div>
@@ -1839,7 +1839,7 @@
                                         year: 'numeric',
                                         month: 'short',
                                         day: 'numeric'
-                                        // Только дата, без времени
+                                        
                                     }) : 'Дата не указана'}
                                                     </span>
                                                 </div>
@@ -2161,7 +2161,7 @@
                     }
                 }
 
-                // Создаем отчет (ответ) через правильный endpoint
+                
                 const reportData = {
                     title: title,
                     content: content,
@@ -2169,7 +2169,7 @@
                     completeRequest: completeAfterResponse || newStatus === 'Completed'
                 };
 
-                // Используем endpoint для ответов на запросы поддержки
+                
                 const response = await fetch(`${API_URL}/api/SupportRequests/manager/respond/${currentRequestId}`, {
                     method: 'POST',
                     headers: {
@@ -2257,7 +2257,7 @@
                 new Date(request.createDate).toLocaleDateString('ru-RU') === today
             ).length;
 
-            // Убрал высокий приоритет и среднее время ответа
+            
             const withoutResponse = allRequests.filter(request =>
                 request.status === 'New' || request.status === 'Processing'
             ).length;
@@ -2348,13 +2348,13 @@
                     return;
                 }
 
-                // Используем существующий CreateReport endpoint
+                
                 const reportData = {
                     title: title,
                     content: content,
                     supportRequestId: currentRequestId,
                     completeRequest: completeAfterResponse,
-                    // Если запрос поддержки связан с заказом, передаем OrderId
+                    
                     orderId: currentRequestData.RelatedOrderId || null
                 };
 
@@ -2372,18 +2372,18 @@
                 if (response.ok && result.success) {
                     showNotification('Ответ успешно отправлен', 'success');
 
-                    // Если нужно завершить обращение и есть флаг completeRequest
+                    
                     if (completeAfterResponse && currentRequestData.Status !== 'Completed') {
                         await updateRequestStatus('Completed');
                     }
 
-                    // Обновляем данные
+                    
                     await viewRequestDetails(currentRequestId);
 
-                    // Обновляем общий список
+                    
                     await loadRequests();
 
-                    // Очищаем форму
+                    
                     if (document.getElementById('responseContent')) {
                         document.getElementById('responseTitle').value = `Ответ на обращение #${currentRequestId}`;
                         document.getElementById('responseContent').value = '';

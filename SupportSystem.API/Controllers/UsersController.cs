@@ -174,7 +174,7 @@ namespace SupportSystem.API.Controllers
                     Name = createUserDto.Name,
                     Email = createUserDto.Email,
                     Phone = createUserDto.Phone,
-                    Password = createUserDto.Password, // В реальном приложении нужно хэшировать!
+                    Password = createUserDto.Password, 
                     Role = userRole,
                     RegDate = DateTime.Now
                 };
@@ -217,10 +217,7 @@ namespace SupportSystem.API.Controllers
                 var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                // Разрешаем редактировать:
-                // 1. Самому пользователю (currentUserId == id)
-                // 2. Администратору (Admin)
-                // 3. Менеджеру (Manager) - но только менеджер не может менять роль
+               
                 if (currentUserId != id && currentUserRole != "Admin" && currentUserRole != "Manager")
                 {
                     return Forbid();
@@ -260,8 +257,7 @@ namespace SupportSystem.API.Controllers
 
                 user.Phone = updateUserDto.Phone?.Trim();
 
-                // Обновляем роль только если текущий пользователь - администратор
-                // И если роль указана в DTO
+                
                 if (currentUserRole == "Admin" && !string.IsNullOrEmpty(updateUserDto.Role))
                 {
                     // Проверяем валидность роли

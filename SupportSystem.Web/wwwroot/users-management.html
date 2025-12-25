@@ -596,7 +596,7 @@
                     throw new Error(`Ошибка загрузки: ${response.status} ${response.statusText}`);
                 }
 
-                // Проверяем, что ответ не пустой
+                
                 const responseText = await response.text();
                 if (!responseText) {
                     throw new Error('Сервер вернул пустой ответ');
@@ -610,14 +610,14 @@
                     throw new Error('Сервер вернул невалидный JSON ответ');
                 }
 
-                // Проверяем, что это массив
+                
                 if (!Array.isArray(usersData)) {
                     throw new Error('Сервер вернул неверный формат данных');
                 }
 
                 allUsers = usersData;
 
-                // Фильтруем только пользователей (не менеджеров и не админов)
+                
                 filteredUsers = allUsers.filter(user => user.role === 'User');
 
                 displayUsers();
@@ -745,7 +745,7 @@
             document.getElementById('editEmail').value = user.email;
             document.getElementById('editPhone').value = user.phone || '';
 
-            // Очищаем ошибки
+            
             clearErrors();
 
             document.getElementById('editModal').style.display = 'flex';
@@ -795,14 +795,14 @@
             try {
                 const token = localStorage.getItem('token');
 
-                // Создаем объект с данными для обновления
+                
                 const updateData = {
                     name: name,
                     email: email,
                     phone: phone || null
                 };
 
-                console.log('Отправка данных:', updateData); // Для отладки
+                console.log('Отправка данных:', updateData); 
 
                 const response = await fetch(`${API_URL}/api/Users/${userId}`, {
                     method: 'PUT',
@@ -813,13 +813,13 @@
                     body: JSON.stringify(updateData)
                 });
 
-                // Получаем текст ответа для отладки
+                
                 const responseText = await response.text();
-                console.log('Ответ сервера:', responseText); // Для отладки
+                console.log('Ответ сервера:', responseText); 
 
                 let result;
                 try {
-                    // Пробуем распарсить JSON
+                    
                     result = responseText ? JSON.parse(responseText) : {};
                 } catch (parseError) {
                     console.error('Ошибка парсинга JSON:', parseError);
@@ -831,7 +831,7 @@
                         showNotification('Данные пользователя успешно обновлены', 'success');
                         closeEditModal();
 
-                        // Обновляем данные пользователя в массиве
+                        /
                         const userIndex = allUsers.findIndex(u => u.id === parseInt(userId));
                         if (userIndex !== -1) {
                             allUsers[userIndex] = {
@@ -842,7 +842,7 @@
                             };
                         }
 
-                        // Перезагружаем список
+                        
                         await loadUsers();
                     } else {
                         throw new Error(result.message || 'Ошибка обновления данных');
@@ -889,7 +889,7 @@
             };
         }
 
-        // Закрытие модального окна при клике вне его
+        
         document.addEventListener('click', function (event) {
             const modal = document.getElementById('editModal');
             if (event.target === modal) {
@@ -897,7 +897,7 @@
             }
         });
 
-        // Закрытие модального окна по Escape
+        
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 closeEditModal();

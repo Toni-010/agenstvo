@@ -1058,7 +1058,7 @@
                         <span class="column-count" id="newCount">0</span>
                     </div>
                     <div class="column-content" id="newOrdersList">
-                        <!-- Новые заказы будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1068,7 +1068,7 @@
                         <span class="column-count" id="processingCount">0</span>
                     </div>
                     <div class="column-content" id="processingOrdersList">
-                        <!-- Заказы в обработке будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1078,7 +1078,7 @@
                         <span class="column-count" id="completedCount">0</span>
                     </div>
                     <div class="column-content" id="completedOrdersList">
-                        <!-- Завершенные заказы будут здесь -->
+                        
                     </div>
                 </div>
 
@@ -1088,7 +1088,7 @@
                         <span class="column-count" id="cancelledCount">0</span>
                     </div>
                     <div class="column-content" id="cancelledOrdersList">
-                        <!-- Отмененные заказы будут здесь -->
+                        
                     </div>
                 </div>
             </div>
@@ -1493,23 +1493,21 @@
 
             document.getElementById('modalTitle').textContent = `Заказ #${normalizedOrder.Id}: ${escapeHtml(normalizedOrder.OrderName)}`;
 
-            // Форматируем даты
+            
             const createDate = new Date(normalizedOrder.CreateDate);
             const formattedCreateDate = createDate.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                day: 'numeric'
+               
             });
 
             const completeDate = normalizedOrder.CompleteDate ?
                 new Date(normalizedOrder.CompleteDate).toLocaleDateString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    day: 'numeric'
+                   
                 }) : 'Не завершен';
 
             const cost = normalizedOrder.Cost ? `${normalizedOrder.Cost.toLocaleString('ru-RU')} ₽` : 'Не указана';
@@ -1550,7 +1548,7 @@
                 priorityText = 'Низкий';
             }
 
-            // Генерируем HTML
+            
             const html = `
                 <!-- Вкладки -->
                 <div class="tabs">

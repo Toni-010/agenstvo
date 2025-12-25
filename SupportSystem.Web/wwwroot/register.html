@@ -52,7 +52,7 @@
                     <div id="confirmPasswordError" class="error-text" style="display: none; color: #e53e3e; font-size: 0.9rem; margin-top: 5px;"></div>
                 </div>
 
-                <!-- Скрытое поле для роли (всегда "User") -->
+                
                 <input type="hidden" id="role" value="user">
 
                 <button type="submit" class="btn-login" id="registerButton">
@@ -77,14 +77,14 @@
             const form = document.getElementById('registerForm');
             const registerButton = document.getElementById('registerButton');
 
-            // Функция для показа ошибки
+            
             function showError(elementId, message) {
                 const errorElement = document.getElementById(elementId);
                 errorElement.textContent = message;
                 errorElement.style.display = 'block';
             }
 
-            // Функция для скрытия ошибки
+            
             function hideError(elementId) {
                 const errorElement = document.getElementById(elementId);
                 errorElement.style.display = 'none';
@@ -141,16 +141,16 @@
                 hideError('phoneError');
 
                 if (!phone.trim()) {
-                    return true; // телефон не обязательный
+                    return true; 
                 }
 
-                // Проверяем длину (максимум 12 символов в базе)
+               
                 if (phone.length > 12) {
                     showError('phoneError', 'Номер телефона не должен превышать 12 символов');
                     return false;
                 }
 
-                // Проверяем формат: начинается с +7 и потом 10 цифр
+                
                 const phoneRegex = /^\+7\d{10}$/;
                 if (!phoneRegex.test(phone)) {
                     showError('phoneError', 'Введите корректный номер телефона. Формат: +79991234567');
@@ -199,26 +199,26 @@
                 return true;
             }
 
-            // Подготовка телефона для отправки
+            
             function preparePhoneForSend(phone) {
                 if (!phone.trim()) {
-                    return null; // отправляем null если пусто
+                    return null;
                 }
 
-                // Оставляем только цифры и +
+                
                 let cleaned = phone.replace(/[^\d+]/g, '');
 
-                // Если начинается с 8, меняем на +7
+                
                 if (cleaned.startsWith('8')) {
                     cleaned = '+7' + cleaned.substring(1);
                 }
 
-                // Если начинается с 7 без +, добавляем +
+                /
                 if (cleaned.startsWith('7') && !cleaned.startsWith('+7')) {
                     cleaned = '+' + cleaned;
                 }
 
-                // Обрезаем до 11 цифр после +7
+                
                 if (cleaned.length > 12) {
                     cleaned = cleaned.substring(0, 12);
                 }
@@ -227,24 +227,24 @@
                 return cleaned;
             }
 
-            // Автоматическое форматирование номера телефона при вводе
+            
             document.getElementById('phone').addEventListener('input', function (e) {
                 let value = e.target.value;
 
-                // Оставляем только цифры и +
+                
                 value = value.replace(/[^\d+]/g, '');
 
-                // Если начинается с 8, меняем на +7
+                
                 if (value.startsWith('8')) {
                     value = '+7' + value.substring(1);
                 }
 
-                // Если начинается с 7 без +, добавляем +
+                
                 if (value.startsWith('7') && !value.startsWith('+7')) {
                     value = '+' + value;
                 }
 
-                // Обрезаем до 12 символов
+                
                 if (value.length > 12) {
                     value = value.substring(0, 12);
                 }
@@ -271,13 +271,13 @@
                 return isValid;
             }
 
-            // Обработка сабмита формы
+            
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 console.log('Попытка регистрации');
 
-                // Валидация формы
+                
                 if (!validateForm()) {
                     return;
                 }
@@ -286,9 +286,9 @@
                 const email = document.getElementById('email').value.trim();
                 const phoneInput = document.getElementById('phone').value.trim();
                 const password = document.getElementById('password').value;
-                const role = document.getElementById('role').value; // "user" (в нижнем регистре!)
+                const role = document.getElementById('role').value; 
 
-                // Подготавливаем телефон для отправки
+                
                 const phone = preparePhoneForSend(phoneInput);
 
                 console.log('Данные для регистрации:', {
@@ -299,20 +299,20 @@
                     passwordLength: password.length
                 });
 
-                // Отправка запроса
+                
                 registerButton.innerHTML = 'Регистрация...';
                 registerButton.disabled = true;
 
                 try {
                     console.log('Отправляю запрос на регистрацию:', `${API_URL}/api/Auth/register`);
 
-                    // Формируем данные ТОЧНО как в DTO
+                    
                     const requestData = {
                         name: name,
                         email: email,
                         password: password,
-                        phone: phone, // отправляем подготовленный телефон или null
-                        role: role // "user" в нижнем регистре
+                        phone: phone, 
+                        role: role 
                     };
 
                     console.log('Отправляемые данные:', JSON.stringify(requestData, null, 2));
@@ -360,7 +360,7 @@
 
                     alert('Регистрация успешна! Вы будете перенаправлены...');
 
-                    // Перенаправление в панель пользователя
+                    
                     setTimeout(() => {
                         window.location.href = 'user-dashboard.html';
                     }, 1000);
@@ -368,7 +368,7 @@
                 } catch (error) {
                     console.error('❌ Ошибка регистрации:', error);
 
-                    // Показываем более подробное сообщение об ошибке
+                   
                     let errorMsg = error.message;
                     if (errorMsg.includes('Failed to fetch')) {
                         errorMsg = 'Не удалось подключиться к серверу. Проверьте, запущен ли сервер на localhost:7100';
@@ -376,13 +376,13 @@
 
                     alert('Ошибка при регистрации: ' + errorMsg);
                 } finally {
-                    // Всегда восстанавливаем кнопку
+                    
                     registerButton.innerHTML = 'Зарегистрироваться';
                     registerButton.disabled = false;
                 }
             });
 
-            // Валидация в реальном времени
+            
             document.getElementById('name').addEventListener('blur', function () {
                 validateName(this.value);
             });

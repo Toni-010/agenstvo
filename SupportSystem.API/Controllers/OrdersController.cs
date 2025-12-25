@@ -211,7 +211,7 @@ namespace SupportSystem.API.Controllers
                         CreateDate = order.CreateDate,
                         ClientId = order.ClientId,
                         ClientName = client?.Name ?? "Неизвестный клиент",
-                        ClientEmail = client?.Email ?? "Не указан",      // ← добавьте
+                        ClientEmail = client?.Email ?? "Не указан",      
                         ClientPhone = client?.Phone ?? "Не указан",
                         AssignedToId = order.AssignedToId,
                         CompleteDate = order.CompleteDate,
@@ -349,9 +349,9 @@ namespace SupportSystem.API.Controllers
             }
         }
 
-        // В контроллер OrdersController.cs добавим этот метод:
+        
 
-        // Обновим метод GetOrderDetailForManager в OrdersController.cs
+       
 
         [HttpGet("manager/detail/{id}")]
         [Authorize(Roles = "Admin,Manager")]
@@ -428,7 +428,7 @@ namespace SupportSystem.API.Controllers
                     CreateDate = order.CreateDate,
                     CompleteDate = order.CompleteDate,
 
-                    // Полные данные о клиенте
+                   
                     Client = new
                     {
                         Id = order.Client.Id,
@@ -438,7 +438,7 @@ namespace SupportSystem.API.Controllers
                         RegistrationDate = order.Client.RegDate
                     },
 
-                    // Полные данные о менеджере (если назначен)
+                    
                     Manager = order.Manager != null ? new
                     {
                         Id = order.Manager.Id,
@@ -460,7 +460,7 @@ namespace SupportSystem.API.Controllers
                         TotalTimeInDays = order.CompleteDate.HasValue ?
                             (order.CompleteDate.Value - order.CreateDate).TotalDays : 0,
 
-                        // Дополнительная статистика
+                        
                         HighPriorityServiceRequests = serviceRequests.Count(sr => sr.Status == "New" || sr.Status == "Processing"),
                         ActiveSupportRequests = supportRequests.Count(sr => sr.Status == "New" || sr.Status == "Processing"),
                         TotalCost = serviceRequests.Where(sr => sr.Cost.HasValue).Sum(sr => sr.Cost.Value)
@@ -610,8 +610,8 @@ namespace SupportSystem.API.Controllers
                         CompleteDate = updatedOrder.CompleteDate,
                         ClientId = updatedOrder.ClientId,
                         ClientName = updatedOrder.Client.Name,
-                        ClientEmail = updatedOrder.Client.Email ?? "Не указан",      // ← добавьте
-                        ClientPhone = updatedOrder.Client.Phone ?? "Не указан",      // ← добавьте
+                        ClientEmail = updatedOrder.Client.Email ?? "Не указан",      
+                        ClientPhone = updatedOrder.Client.Phone ?? "Не указан",      
                         AssignedToId = updatedOrder.AssignedToId,
                         ManagerName = updatedOrder.Manager != null ? updatedOrder.Manager.Name : "Не назначен",
                         ManagerEmail = updatedOrder.Manager != null ? updatedOrder.Manager.Email ?? "Не указан" : null,
@@ -815,7 +815,7 @@ namespace SupportSystem.API.Controllers
                 // Отвязываем менеджера и возвращаем статус в "Новый"
                 order.AssignedToId = null;
                 order.Status = OrderStatus.New;
-                order.CompleteDate = null; // Сбрасываем дату завершения
+                order.CompleteDate = null; 
 
                 await _context.SaveChangesAsync();
 
@@ -890,7 +890,7 @@ namespace SupportSystem.API.Controllers
                 var oldManager = oldManagerId.HasValue ?
                     await _context.Users.FindAsync(oldManagerId.Value) : null;
 
-                // Админ может снять любого менеджера
+                
                 order.AssignedToId = null;
 
                 // Возвращаем статус в "Новый" только если заказ был в обработке
@@ -899,7 +899,7 @@ namespace SupportSystem.API.Controllers
                     order.Status = OrderStatus.New;
                 }
 
-                order.CompleteDate = null; // Сбрасываем дату завершения
+                order.CompleteDate = null; 
 
                 await _context.SaveChangesAsync();
 

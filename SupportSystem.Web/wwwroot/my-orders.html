@@ -885,7 +885,7 @@
                 ? order.description.substring(0, 150) + '...'
                 : order.description;
 
-            // ТОЛЬКО ДАТА (без времени)
+           
             const date = new Date(order.createDate).toLocaleDateString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
@@ -966,12 +966,12 @@
                     document.getElementById('modalOrderStatus').textContent = getStatusText(order.status);
                     document.getElementById('modalOrderPriority').textContent = order.priority;
 
-                    // ТОЛЬКО ДАТА создания (без времени)
+                    
                     const createDate = new Date(order.createDate);
                     document.getElementById('modalCreateDate').textContent =
                         createDate.toLocaleDateString('ru-RU');
 
-                    // ТОЛЬКО ДАТА завершения (без времени)
+                    
                     if (order.completeDate) {
                         const completeDate = new Date(order.completeDate);
                         document.getElementById('modalCompleteDate').textContent =
@@ -1050,7 +1050,7 @@
 
                     if (reports && reports.length > 0) {
                         const reportsHtml = reports.map(report => {
-                            // ТОЛЬКО ДАТА отчета (без времени)
+                            
                             const reportDate = new Date(report.createDate);
                             const formattedDate = reportDate.toLocaleDateString('ru-RU', {
                                 day: '2-digit',
@@ -1277,7 +1277,7 @@
             }
         };
 
-        // Экспортируем функции для использования в onclick
+        
         window.filterOrders = filterOrders;
         window.viewOrderDetails = viewOrderDetails;
         window.closeModal = closeModal;

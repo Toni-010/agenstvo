@@ -496,7 +496,7 @@
                     return false;
                 }
 
-                // Обновляем имя пользователя в шапке
+                
                 document.getElementById('userName').textContent = currentUser.name || currentUser.email || 'Пользователь';
 
                 return true;
@@ -566,22 +566,22 @@
 
         async function selectRequest(requestId) {
             try {
-                // Убираем активный класс у всех элементов
+                
                 document.querySelectorAll('.request-item').forEach(item => {
                     item.classList.remove('active');
                 });
 
-                // Добавляем активный класс выбранному элементу
+                
                 const selectedItem = document.getElementById(`request-${requestId}`);
                 if (selectedItem) {
                     selectedItem.classList.add('active');
                 }
 
-                // Находим выбранное обращение
+                
                 const request = supportRequests.find(r => r.id === requestId);
                 if (!request) return;
 
-                // Показываем информацию о обращении
+                
                 document.getElementById('emptyState').style.display = 'none';
                 document.getElementById('responsesContent').style.display = 'flex';
 
@@ -589,7 +589,7 @@
                 document.getElementById('selectedDate').textContent = formatDate(request.createDate);
                 document.getElementById('selectedStatus').textContent = getStatusText(request.status);
 
-                // Загружаем ответы на это обращение
+                
                 await loadResponses(requestId);
             } catch (error) {
                 console.error('Error selecting request:', error);
@@ -672,7 +672,7 @@
 
         function formatDate(dateString) {
             const date = new Date(dateString);
-            // ТОЛЬКО ДАТА (без времени)
+            
             return date.toLocaleDateString('ru-RU', {
                 year: 'numeric',
                 month: 'long',
@@ -723,7 +723,7 @@
             }
         }
 
-        // Добавляем обработчик нажатия Escape для скрытия уведомлений
+        
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 const notification = document.getElementById('notification');

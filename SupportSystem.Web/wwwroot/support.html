@@ -38,7 +38,7 @@
 
             <!-- Две колонки: форма создания и история запросов -->
             <div class="support-container">
-                <!-- Левая колонка: Создание нового запроса -->
+                
                 <div class="form-container">
                     <div class="form-section">
                         <h3>
@@ -64,7 +64,7 @@
                             </label>
                             <select id="relatedOrderId" class="form-input orders-select">
                                 <option value="">-- Не привязывать к заказу --</option>
-                                <!-- Заказы будут загружены через JavaScript -->
+                               
                             </select>
                             <div class="form-hint">
                                 Выберите заказ, если ваш запрос связан с ним
@@ -114,7 +114,7 @@
                     </div>
                 </div>
 
-                <!-- Правая колонка: История запросов -->
+                
                 <div class="form-container">
                     <div class="form-section">
                         <h3>
@@ -171,7 +171,7 @@
                 <button onclick="closeModal()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body" id="modalContent">
-                <!-- Содержимое будет заполнено через JavaScript -->
+                
             </div>
         </div>
     </div>
@@ -271,7 +271,7 @@
                     // Сохраняем текущее выбранное значение
                     const currentValue = select.value;
 
-                    // Очищаем опции, кроме первой
+                    
                     while (select.options.length > 1) {
                         select.remove(1);
                     }
@@ -282,7 +282,7 @@
                             const option = document.createElement('option');
                             option.value = order.id;
 
-                            // Форматируем дату (только дата без времени)
+                            
                             const date = new Date(order.createDate);
                             const dateStr = date.toLocaleDateString('ru-RU', {
                                 day: '2-digit',
@@ -290,7 +290,7 @@
                                 year: 'numeric'
                             });
 
-                            // Обрезаем длинное название заказа
+                            
                             let orderName = order.orderName;
                             if (orderName.length > 50) {
                                 orderName = orderName.substring(0, 47) + '...';
@@ -300,12 +300,12 @@
                             select.appendChild(option);
                         });
 
-                        // Восстанавливаем выбранное значение, если оно было
+                        
                         if (currentValue) {
                             select.value = currentValue;
                         }
                     } else {
-                        // Если заказов нет, добавляем информационную опцию
+                        
                         const option = document.createElement('option');
                         option.value = "";
                         option.textContent = "У вас пока нет заказов";
@@ -387,7 +387,7 @@
                 const statusColor = getStatusColor(request.status);
                 const statusText = getStatusText(request.status);
 
-                // Форматируем дату (только дата без времени)
+                
                 const date = new Date(request.createDate);
                 const dateStr = date.toLocaleDateString('ru-RU', {
                     day: '2-digit',
@@ -395,7 +395,7 @@
                     year: 'numeric'
                 });
 
-                // Обрезаем длинную тему
+               
                 let topic = request.topic;
                 if (topic.length > 60) {
                     topic = topic.substring(0, 57) + '...';
@@ -493,7 +493,7 @@
             const statusText = getStatusText(request.status);
             const statusColor = getStatusColor(request.status);
 
-            // Форматируем дату (только дата без времени)
+            
             const date = new Date(request.createDate);
             const dateStr = date.toLocaleDateString('ru-RU', {
                 day: '2-digit',
@@ -574,7 +574,7 @@
                 const length = input.value.length;
                 counter.textContent = `${length}/${max} символов`;
 
-                // Изменяем цвет при приближении к лимиту
+                
                 if (length > max * 0.9) {
                     counter.className = 'char-counter limit-warning';
                 } else if (length > max) {
@@ -588,7 +588,7 @@
                 topicInput.addEventListener('input', () => {
                     updateCounter(topicInput, topicCounter, 250);
                 });
-                // Инициализируем счетчик
+                
                 updateCounter(topicInput, topicCounter, 250);
             }
 
@@ -596,7 +596,7 @@
                 messageInput.addEventListener('input', () => {
                     updateCounter(messageInput, messageCounter, 3500);
                 });
-                // Инициализируем счетчик
+                
                 updateCounter(messageInput, messageCounter, 3500);
             }
         }
@@ -607,7 +607,7 @@
             const relatedOrderId = document.getElementById('relatedOrderId').value;
             const createBtn = document.getElementById('createBtn');
 
-            // Скрываем предыдущие ошибки
+            
             clearErrors();
 
             // Валидация
@@ -719,7 +719,7 @@
                 notification.style.display = 'none';
             }, type === 'error' ? 5000 : 3000);
 
-            // Ручное скрытие по клику
+            
             notification.onclick = () => {
                 clearTimeout(hideTimeout);
                 notification.style.display = 'none';
@@ -746,7 +746,7 @@
             window.history.back();
         };
 
-        // Закрытие модального окна по клику вне его области
+        
         window.onclick = function (event) {
             const modal = document.getElementById('requestModal');
             if (event.target === modal) {
@@ -754,7 +754,7 @@
             }
         };
 
-        // Закрытие модального окна по Escape
+        
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeModal();

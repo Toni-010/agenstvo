@@ -390,7 +390,7 @@ namespace SupportSystem.API.Controllers
                     return NotFound(new { message = "Запрос поддержки не найден" });
                 }
 
-                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ СМОТРЕТЬ ОБРАЩЕНИЕ - УБРАЛИ ПРОВЕРКУ ПРАВ
+                
 
                 var supportRequestDetail = new
                 {
@@ -657,8 +657,7 @@ namespace SupportSystem.API.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ ОТВЕЧАТЬ НА ОБРАЩЕНИЯ
-                // Убрали проверку: if (supportRequest.AssignedToId != userId && userRole != "Admin")
+                
 
                 if (string.IsNullOrWhiteSpace(reportDto.Title))
                 {
@@ -686,8 +685,7 @@ namespace SupportSystem.API.Controllers
                     supportRequest.AssignedToId = userId;
                 }
 
-                // ВАЖНОЕ ИСПРАВЛЕНИЕ: если запрос поддержки связан с заказом,
-                // устанавливаем OrderId в отчете
+                
                 var report = new Report
                 {
                     Title = reportDto.Title.Trim(),
@@ -723,7 +721,7 @@ namespace SupportSystem.API.Controllers
                     reportId = report.Id,
                     supportRequestId = supportRequest.Id,
                     newStatus = supportRequest.Status.ToString(),
-                    // Возвращаем информацию о связанном заказе
+                    
                     relatedOrderId = supportRequest.RelatedOrderId,
                     orderLinked = supportRequest.RelatedOrderId.HasValue
                 });
@@ -760,7 +758,7 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Некорректный статус. Допустимые значения: New, Processing, Completed, Cancelled" });
                 }
 
-                // ЛЮБОЙ МЕНЕДЖЕР МОЖЕТ ИЗМЕНЯТЬ СТАТУСЫ
+               
 
                 // Автоматически назначаем обращение на менеджера при смене статуса на Processing
                 if (newStatus == RequestStatus.Processing && supportRequest.AssignedToId == null)

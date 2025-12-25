@@ -102,7 +102,7 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Пароль должен содержать минимум 6 символов" });
                 }
 
-                // Проверка email
+                
                 var emailRegex = new System.Text.RegularExpressions.Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
                 if (!emailRegex.IsMatch(registerDto.Email))
                 {
@@ -121,13 +121,13 @@ namespace SupportSystem.API.Controllers
                     });
                 }
 
-                // Проверка валидности роли
+                
                 if (!Enum.TryParse<UserRole>(registerDto.Role, true, out var userRole))
                 {
-                    userRole = UserRole.User; // По умолчанию User
+                    userRole = UserRole.User; 
                 }
 
-                // В реальном приложении нужно хэшировать пароль!
+                
                 var user = new User
                 {
                     Name = registerDto.Name.Trim(),
@@ -178,7 +178,7 @@ namespace SupportSystem.API.Controllers
         {
             try
             {
-                // Получаем ID текущего пользователя из токена
+                
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
                 if (userId == 0)
@@ -202,26 +202,25 @@ namespace SupportSystem.API.Controllers
                     return BadRequest(new { message = "Новый пароль должен содержать минимум 6 символов" });
                 }
 
-                // Находим пользователя
+                
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
                     return NotFound(new { message = "Пользователь не найден" });
                 }
 
-                // Проверяем старый пароль
                 if (user.Password != changePasswordDto.OldPassword)
                 {
                     return BadRequest(new { message = "Неверный старый пароль" });
                 }
 
-                // Проверяем, что новый пароль не совпадает со старым
+                
                 if (user.Password == changePasswordDto.NewPassword)
                 {
                     return BadRequest(new { message = "Новый пароль должен отличаться от старого" });
                 }
 
-                // Обновляем пароль
+                
                 user.Password = changePasswordDto.NewPassword;
                 await _context.SaveChangesAsync();
 
@@ -304,7 +303,7 @@ namespace SupportSystem.API.Controllers
         }
     }
 
-    // DTO классы
+    
     public class LoginDto
     {
         public string Email { get; set; } = string.Empty;

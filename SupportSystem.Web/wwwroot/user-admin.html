@@ -656,7 +656,7 @@
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                        <!-- Данные будут загружены через JavaScript -->
+                        
                     </tbody>
                 </table>
             </div>
@@ -927,7 +927,7 @@
                 savePassword();
             });
 
-            // Отслеживание изменения пароля для показа поля подтверждения
+            
             document.getElementById('userPassword').addEventListener('input', function() {
                 const isEditMode = document.getElementById('userId').value !== '';
                 if (isEditMode && this.value) {
@@ -1049,12 +1049,12 @@
                 let response;
 
                 if (isEditMode) {
-                    // Обновление пользователя
+                    
                     const updateData = {
                         name: name,
                         email: email,
                         phone: phone || null,
-                        role: role // Добавляем роль в данные
+                        role: role 
                     };
 
                     response = await fetch(`${API_URL}/api/Users/${userId}`, {
@@ -1069,7 +1069,7 @@
                     const result = await response.json();
 
                     if (response.ok && result.success) {
-                        // Если указан новый пароль, меняем его
+                        
                         if (password) {
                             await changeUserPasswordDirect(userId, password);
                         }
@@ -1183,11 +1183,10 @@
 
         async function changeUserPasswordDirect(userId, newPassword) {
             try {
-                // В реальном приложении здесь должен быть endpoint для смены пароля администратором
-                // Пока используем стандартный endpoint для смены пароля
+                
                 const token = localStorage.getItem('token');
 
-                // Сначала получаем текущего пользователя чтобы знать его старый пароль
+                
                 const userResponse = await fetch(`${API_URL}/api/Users/${userId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -1200,7 +1199,7 @@
 
                 const user = await userResponse.json();
 
-                // Пытаемся использовать стандартный endpoint для смены пароля
+                
                 const response = await fetch(`${API_URL}/api/Auth/change-password-admin`, {
                     method: 'POST',
                     headers: {
@@ -1214,16 +1213,14 @@
                 }).catch(() => null);
 
                 if (!response || !response.ok) {
-                    // Если специального endpoint нет, создаем пользователя с новым паролем
-                    // ВНИМАНИЕ: В реальном приложении так делать нельзя!
-                    // Нужен специальный endpoint для смены пароля администратором
+                    
                     console.warn('Используется упрощенный метод смены пароля');
 
                     const updateData = {
                         name: user.name,
                         email: user.email,
                         phone: user.phone,
-                        password: newPassword // Пароль передается напрямую - ОПАСНО!
+                        password: newPassword 
                     };
 
                     const putResponse = await fetch(`${API_URL}/api/Users/${userId}`, {
@@ -1333,13 +1330,13 @@
                 notification.style.display = 'none';
             }, 5000);
 
-            // Закрытие по клику
+            
             notification.onclick = () => {
                 notification.style.display = 'none';
             };
         }
 
-        // Глобальные функции
+        
         window.openAddUserModal = openAddUserModal;
         window.editUser = editUser;
         window.deleteUser = deleteUser;

@@ -14,6 +14,7 @@ wwwroot\my-orders.html
 wwwroot\order-admin.html
 wwwroot\orders-management.html
 wwwroot\register.html
+wwwroot\support-admin.html
 wwwroot\support-management.html
 wwwroot\support-responses.html
 wwwroot\support.html
@@ -21,4 +22,3 @@ wwwroot\team-management.html
 wwwroot\user-admin.html
 wwwroot\user-dashboard.html
 wwwroot\users-management.html
-wwwroot\support-admin.html
