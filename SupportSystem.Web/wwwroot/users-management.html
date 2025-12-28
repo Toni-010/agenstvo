@@ -610,6 +610,9 @@
                     throw new Error('Сервер вернул невалидный JSON ответ');
                 }
 
+                console.log('Все пользователи:', usersData);
+                console.log('Пользователи с ролью User:', usersData.filter(user => user.role === 'User'));
+                console.log('Все роли:', [...new Set(usersData.map(u => u.role))]);
                 
                 if (!Array.isArray(usersData)) {
                     throw new Error('Сервер вернул неверный формат данных');
@@ -831,7 +834,7 @@
                         showNotification('Данные пользователя успешно обновлены', 'success');
                         closeEditModal();
 
-                        /
+                        
                         const userIndex = allUsers.findIndex(u => u.id === parseInt(userId));
                         if (userIndex !== -1) {
                             allUsers[userIndex] = {
